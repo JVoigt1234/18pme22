@@ -1,0 +1,70 @@
+import QtQuick 2.3
+import QtQuick.Controls 1.2
+import QtQuick.Layouts 1.1
+import NumberConvert 1.0
+import "Schablonen"
+
+ApplicationWindow {
+    width: 1000
+    height: 500
+
+    NumberConverter{
+        id: numberConverterID;
+        bin: textbin.getText;
+        dec: textdec.getText;
+        oct: textoct.getText;
+        hex: texthex.getText;
+    }
+
+    Image{
+        id: background;
+        source: "it.jpg";
+        anchors{fill: parent;}
+    }
+
+
+
+    MyText{
+        id: titel;
+        x: parent.width/3;
+        y: parent.height/30;
+        label: "NumberConverter";
+        font.pixelSize: 30;
+        font.underline: true;
+    }
+
+    Column{
+        spacing: 20;
+        anchors{top: titel.bottom; topMargin: 100; fill: parent; leftMargin: 25; }
+        
+        MyText_TextField{
+            id: textbin;
+            label: "Binary: ";
+            placeholderText: "0000 0111 1101 1111";
+            setTextFieldText: numberConverterID.bin;
+        }
+
+        MyText_TextField{
+            id: textdec;
+            label: "Decimal: ";
+            placeholderText: "2015";
+            setTextFieldText: numberConverterID.dec;
+        }
+
+        MyText_TextField{
+            id: textoct;
+            label: "Octal: ";
+            placeholderText: "3 737";
+            setTextFieldText: numberConverterID.oct;
+        }
+
+        MyText_TextField{
+            id:texthex;
+            label: "Hexadecimal: ";
+            placeholderText: "7DF";
+            setTextFieldText: numberConverterID.hex;
+        }
+    }
+
+    Component.onCompleted: show()
+}

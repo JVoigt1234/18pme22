@@ -1,0 +1,22 @@
+#ifndef SIMULATOR_H
+#define SIMULATOR_H
+
+#include <QObject>
+
+class Simulator : public QObject
+{
+    Q_OBJECT
+
+    Q_PROPERTY(double rotX READ getRotX WRITE setRotX NOTIFY rotXChanged)
+    Q_PROPERTY(double rotY READ getRotY WRITE setRotY NOTIFY rotYChanged)
+    Q_PROPERTY(double rotZ READ getRotZ WRITE setRotZ NOTIFY rotZChanged)
+
+public:
+    explicit Simulator(QObject *parent = 0);
+
+signals:
+
+public slots:
+};
+
+#endif // SIMULATOR_H

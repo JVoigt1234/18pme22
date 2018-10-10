@@ -31,14 +31,21 @@ void DatabaseController::parseJSONListBloodSugar(QNetworkReply* reply)
 
 void DatabaseController::parseJSONListPatient(QNetworkReply* reply)
 {
+    if(reply->error())
+    {
+        qDebug() << "Error";
+        m_status = DatabaseController::failed;
+        return;
+    }
     QStringList propertyNames;
     QStringList propertyKeys;
 
     QString strReply = reply->readAll();
-    qDebug() << strReply;
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(strReply.toUtf8());
-    qDebug() << jsonDoc;
+    QJsonObject rootObject = jsonDoc.object();
+    QJsonArray jsonArray = rootObject["rows"].toArray();
+    jsonArray = jsonArray["value"].toArray()
 
     delete reply;
 }
@@ -48,15 +55,16 @@ void DatabaseController::replyError(QNetworkReply::NetworkError error)
     qDebug() << error;
 }
 
-void DatabaseController::sendHTTPRequest(QString subUrl, QNetworkAccessManager* networkAccessManager)
+void DatabaseController::sendHTTPRequest(QString subUrl)
 {
     m_status = DatabaseController::running;
     QNetworkRequest request;
     request.setUrl(QUrl(m_serverUrl + subUrl));
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
     //request.setRawHeader("User-Agent", "MyOwnBrowser 1.0");
 
-    networkAccessManager->get(request);
-    connect(networkAccessManager, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(replyError(QNetworkReply::NetworkError)));
+    m_networkManager.get(request);
+    //connect(networkAccessManager, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(replyError(QNetworkReply::NetworkError)));
 }
 
 //protected part
@@ -96,14 +104,14 @@ int DatabaseController::getListPatient(QList<Patient> listPatient) const
 void DatabaseController::request4ListPatient()
 {
     QString listPatient = "/diathesis/_design/patient/_view/listPatient";
-    //disconnect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseJSONListBloodSugar(QNetworkReply*)));
-    connect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseJSONListPatient(QNetworkReply*)));
-    sendHTTPRequest(listPatient, &networkManager);
+    disconnect(&m_networkManager, &QNetworkAccessManager::finished, this, &DatabaseController::parseJSONListBloodSugar);
+    connect(&m_networkManager,  &QNetworkAccessManager::finished, this,&DatabaseController::parseJSONListPatient);
+    sendHTTPRequest(listPatient);
 }
 void DatabaseController::request4ListBloodSugar(QDate startDate, QDate endDate)
 {
     QString listPatient = "/diathesis/_design/patient/_view/listPatient";
-    disconnect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseJSONListPatient(QNetworkReply*)));
-    connect(&networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(parseJSONListBloodSugar(QNetworkReply*)));
-    sendHTTPRequest(listPatient, &networkManager);
+    disconnect(&m_networkManager, &QNetworkAccessManager::finished, this,&DatabaseController::parseJSONListPatient );
+    connect(&m_networkManager,   &QNetworkAccessManager::finished, this, &DatabaseController::parseJSONListBloodSugar );
+    sendHTTPRequest(listPatient);
 }

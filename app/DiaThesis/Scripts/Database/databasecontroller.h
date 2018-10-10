@@ -23,6 +23,7 @@
 #include <QDateTime>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonArray>
 
 #include "Scripts/jsontyps.h"
 
@@ -32,15 +33,17 @@ private:
     enum { failed = -2, error, completed, running} m_status;
     //attribute
     QString m_serverUrl;
-    QNetworkAccessManager networkManager;
+    QNetworkAccessManager m_networkManager;
     QList<Patient> m_listPatient;
     QList<BloodSugar> m_listBloodSugar;
 
     //funtcion
+    void sendHTTPRequest(QString subUrl);
+
+private slots:
     void parseJSONListBloodSugar(QNetworkReply* reply);
     void parseJSONListPatient(QNetworkReply* reply);
     void replyError(QNetworkReply::NetworkError error);
-    void sendHTTPRequest(QString subUrl, QNetworkAccessManager* networkAccessManager);
 
 protected:
     void run() override;

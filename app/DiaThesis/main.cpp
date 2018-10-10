@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    DatabaseController test("http://http://localhost:4181");
+    DatabaseController test("http://localhost:4181");
     test.start();
 
 

@@ -1,0 +1,38 @@
+{
+  "PatientID": "123564",
+  "patientName": "Hans",
+  "email": "hans@gmail.com",
+  "phone": "123456789",
+  "adress": {
+    "street": "MainStreet",
+    "city": "Mannheim",
+    "state": "Ger",
+    "plz": 68217
+  },
+  "bloodSugar": [
+    {
+      "timestemp": "10.10.2018 15:00",
+      "sugarValue": 56
+    },
+    {
+      "timestemp": "10.10.2018 15:15",
+      "sugarValue": 56
+    },
+    {
+      "timestemp": "10.10.2018 15:30",
+      "sugarValue": 56
+    },
+    {
+      "timestemp": "10.10.2018 15:45",
+      "sugarValue": 56
+    },
+    {
+      "timestemp": "10.10.2018 16:00",
+      "sugarValue": 56
+    },
+    {
+      "timestemp": "10.10.2018 16:15",
+      "sugarValue": 56
+    }
+  ]
+}

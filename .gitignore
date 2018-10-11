@@ -34,3 +34,4 @@ Makefile*
 *.qmlproject.user
 *.qmlproject.user.*
 
+/documentation/paper/Datenbank.docx

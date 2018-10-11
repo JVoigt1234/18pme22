@@ -1,0 +1,29 @@
+[
+{
+	"PersonPage": {
+		"firstName":"name"
+		"familyName":"familyName"
+		"dateOfBirth":"01.01.2000"
+        "sex":"man"
+	}
+	"DailyRoutinePage": {
+		"getUpTime":"6:00"
+		"leavingHausTime":"7:00"
+		"startOfWorkTime":"8:00"
+		"lunchTime":"12:00"
+		"endOfJob":"16:00"
+		"dinnerTime":"19:00"
+		"bedtime":"22:30"
+	}
+	"BreakfastPage":{
+		"drinking":"kafee"
+		"muesli":"false"
+		"bread":"false"
+		"egg":"false"
+		"sausage":"false"
+		"jam":"false"
+		"cheese":"false"
+		"honey":"false"
+	}
+}
+]

@@ -1,0 +1,40 @@
+#include "simulator.h"
+
+Simulator::Simulator(QObject *parent) : QObject(parent)
+{
+    //connect(&m_timer, &QTimer::timeout, this, &Simulator::update );
+
+    connect(&m_timer,SIGNAL( timeout() ), this, SLOT( update() ) );
+    m_rotX = 0;
+    m_rotY = 0;
+    m_rotZ = 0;
+    m_timer.start(50);
+}
+
+void Simulator::stepSizeX(double value)
+{
+    m_rotX = value;
+}
+
+void Simulator::stepSizeY(double value)
+{
+    m_rotY = value;
+}
+
+void Simulator::stepSizeZ(double value)
+{
+    m_rotZ = value;
+}
+
+void Simulator::update()
+{
+    m_rotX += m_rotX;
+    m_rotY += m_rotY;
+    m_rotZ += m_rotZ;
+
+    emit rotXChanged();
+    emit rotYChanged();
+    emit rotZChanged();
+
+    m_timer.start(50);
+}

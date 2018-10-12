@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2018-10-10T16:50:09
+# Project created by QtCreator 2018-10-11T19:35:42
 #
 #-------------------------------------------------
 
@@ -11,6 +11,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += network
 
 TARGET = DiaThesis
 TEMPLATE = app
+
+INCLUDEPATH += ~/qmqtt/src/mqtt
+#LIBS += -L"~/qmqtt/src/mqtt" -lqmqtt
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
@@ -28,15 +31,14 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    Scripts/Database/databasecontroller.cpp \
-    main.cpp \
-    mainwindow.cpp
+    Scripts/Database/DatabaseController.cpp \
+    Scripts/MQTT/MQTTController.cpp
 
 HEADERS += \
         mainwindow.h \
-    Scripts/Database/databasecontroller.h \
-    Scripts/jsontyps.h \
-    mainwindow.h
+    Scripts/Database/DatabaseController.h \
+    Scripts/MQTT/MQTTController.h \
+    Scripts/jsontyps.h
 
 FORMS += \
         mainwindow.ui

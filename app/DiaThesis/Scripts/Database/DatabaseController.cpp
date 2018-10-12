@@ -11,7 +11,7 @@
 /// Revision History:   First release
 ///-----------------------------------------------------------------
 
-#include "databasecontroller.h"
+#include "DatabaseController.h"
 
 //private part
 void DatabaseController::parseJSONListBloodSugar(QNetworkReply* reply)
@@ -45,7 +45,6 @@ void DatabaseController::parseJSONListPatient(QNetworkReply* reply)
     QJsonDocument jsonDoc = QJsonDocument::fromJson(strReply.toUtf8());
     QJsonObject rootObject = jsonDoc.object();
     QJsonArray jsonArray = rootObject["rows"].toArray();
-    jsonArray = jsonArray["value"].toArray()
 
     delete reply;
 }

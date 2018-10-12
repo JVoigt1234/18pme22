@@ -29,14 +29,11 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     Scripts/Database/databasecontroller.cpp \
-    main.cpp \
-    mainwindow.cpp
 
 HEADERS += \
         mainwindow.h \
     Scripts/Database/databasecontroller.h \
     Scripts/jsontyps.h \
-    mainwindow.h
 
 FORMS += \
         mainwindow.ui

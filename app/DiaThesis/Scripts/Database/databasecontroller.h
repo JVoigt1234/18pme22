@@ -33,7 +33,7 @@ private:
     //attribute
     QString m_serverUrl;
     QNetworkAccessManager networkManager;
-    QList<Patient> m_listPatient;
+    QList<UserData> m_listPatient;
     QList<BloodSugar> m_listBloodSugar;
 
     void parseJSONListBloodSugar(QNetworkReply* reply);
@@ -54,7 +54,7 @@ public:
     DatabaseController(QString serverURL);
     ~DatabaseController();
     int getBooldSugar(QList<BloodSugar> listBloodSugar) const;
-    int getListPatient(QList<Patient> listPatient) const;
+    int getListPatient(QList<UserData> listPatient) const;
     void request4ListPatient();
     void request4ListBloodSugar(QDate startDate, QDate endDate);
 };

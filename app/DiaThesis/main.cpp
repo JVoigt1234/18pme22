@@ -10,8 +10,10 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    SqlDatabase test2;
-    test2.start();
+    SqlDatabase dataBase;
+    UserData firstperson;
+    dataBase.startDatabase();
+    dataBase.setPerson(firstperson);
 
     //DatabaseController test("http://http://localhost:4181");
     //test.start();

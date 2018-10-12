@@ -1,62 +1,172 @@
-#include "sqldatabase.h"
+///-----------------------------------------------------------------
+/// Namespace:
+/// Class:              SqlDatabase
+/// Description:
+/// Author:             Martin Bechberger
+/// Date:               Oct 2018
+/// Notes:  			error = -1   : error occours
+/// 					completed = 0: Function was sucessfull
+/// Revision History:   First release
+///-----------------------------------------------------------------
 
-#include <QtSql>
-#include <QtDebug>
+#include "sqldatabase.h"
 
 SqlDatabase::SqlDatabase()
 {
+    m_hostname = "db.inftech.hs-mannheim.de";
+    m_databasename = "1813680_DiaThesis";
+
+    m_username = "1813680";
+    m_password = "DiaThesis2018";
+
+    m_database = QSqlDatabase::addDatabase("QPSQL"); //QSqlDatabase !warning! software need to be installed
+    m_database.setConnectOptions();
+
+    m_database.setDatabaseName(m_databasename);
+    m_database.setHostName(m_hostname);
 
 }
 
-void SqlDatabase::run()
+SqlDatabase::~SqlDatabase()
 {
-    QString hostname = "db.inftech.hs-mannheim.de";
-    QString dbname = "1813680_DiaThesis";
-    QString user = "1813680";
-    QString passwd = "DiaThesis2018";
+    if(m_database.isOpen())
+        m_database.close();
+}
 
-    QSqlDatabase database = QSqlDatabase::addDatabase("QPSQL"); //QSqlDatabase !warning! software need to be installed
-
-    database.setConnectOptions();
-
-    database.setDatabaseName(dbname);
-    database.setHostName(hostname);
-
-    if(database.open(user, passwd))
+int SqlDatabase::startDatabase()
+{
+    if(m_database.open(m_username,m_password))
     {
-        qDebug() << "Opend!";
+        qDebug() << "connected to" << m_hostname;
+        return 0;
+    }
+    else
+    {
+        qDebug() << "Error =" << m_database.lastError().text();
+        return -1;
+    }
 
-        QSqlQuery creating("CREATE TABLE tasks (taskId INTEGER, PRIMARY KEY(taskId))");
+}
+
+int SqlDatabase::setPerson(UserData person)
+{
+    if(m_database.isOpen())
+    {
+        QSqlQuery creating;
+
+        //only make one table
+        if(m_database.tables().size() < 1)
+            creating.exec("create table person (id int primary key, firstname varchar(20), lastname varchar(20))");         //insert all properties here
+
+        //creating a formular
+        creating.prepare("INSERT INTO person (id,firstname,lastname)"
+                         "VALUES (:id, :firstname, :lastname)");
+
+        //insert person data here!
+        creating.bindValue(0, 1);
+        creating.bindValue(1, "Martin");
+        creating.bindValue(2, "Bechberger");
+
         creating.exec();
 
-        //writing
-        creating.prepare("INSERT INTO tasks (taskId) VALUES (:id)");
-        int value = 3;
-        creating.bindValue(":id", value);
+        creating.prepare("INSERT INTO person (id,firstname,lastname)"
+                         "VALUES (:id, :firstname, :lastname)");
+
+        //insert person data here!
+        creating.bindValue(0, 2);
+        creating.bindValue(1, "Martin");
+        creating.bindValue(2, "Bechberger");
+
         creating.exec();
 
-        qDebug() << database;
-        qDebug() << database.record(database.tables().at(0));
+        qDebug() << m_database;
+        qDebug() << m_database.record(m_database.tables().at(0));
 
-        //reading
+        return 0;
+    }
+
+    return -1;
+}
+
+//idea: calling after login -> searching person in table and returning all UserData
+int SqlDatabase::getPerson(UserData* person)
+{
+    if(m_database.isOpen())
+    {
         QSqlQuery reading;
         if(reading.exec("SELECT * FROM tasks"))
         {
             while(reading.next())
             {
-               //qDebug() << database.record(database.tables().at(0));
+               //search here :)
+               //(maybe other Query exec!)
             }
+            return 0;
         }
         else
-            qDebug() << "Error =" << database.lastError().text();
-
-        qDebug() << "Closed!";
-        if(database.isOpen())
-            database.close();
+            qDebug() << "Error =" << m_database.lastError().text();
     }
-    else
+
+    return -1;
+}
+
+int SqlDatabase::getPersonCount()
+{
+    if(m_database.isOpen())
     {
-        qDebug() << "Error =" << database.lastError().text();
+        m_personCount = 0;
+        QSqlQuery reading;
+        if(reading.exec("SELECT * FROM person"))
+        {
+            while(reading.next())
+            {
+               m_personCount++;
+            }
+            return m_personCount;
+        }
+        else
+            qDebug() << "Error =" << m_database.lastError().text();
     }
 
+    return -1;
+}
+
+int SqlDatabase::getData(int personId, BloodSugar* values, QDate startTime, QDate endTime)
+{
+    if(m_database.isOpen())
+    {
+        QSqlQuery reading;
+        if(reading.exec("SELECT * FROM tasks"))
+        {
+            while(reading.next())
+            {
+                //search with personId (maybe other Query exec!)
+            }
+            return 0;
+        }
+        else
+            qDebug() << "Error =" << m_database.lastError().text();
+    }
+
+    return -1;
+}
+
+int SqlDatabase::getPersonList(UserData* person)
+{
+    if(m_database.isOpen())
+    {
+        QSqlQuery reading;
+        if(reading.exec("SELECT * FROM tasks"))
+        {
+            while(reading.next())
+            {
+
+            }
+            return 0;
+        }
+        else
+            qDebug() << "Error =" << m_database.lastError().text();
+    }
+
+    return -1;
 }

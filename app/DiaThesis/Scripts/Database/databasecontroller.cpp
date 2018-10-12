@@ -87,7 +87,7 @@ int DatabaseController::getBooldSugar(QList<BloodSugar> listBloodSugar) const
     return  int(m_status);
 }
 
-int DatabaseController::getListPatient(QList<Patient> listPatient) const
+int DatabaseController::getListPatient(QList<UserData> listPatient) const
 {
     listPatient = m_listPatient;
     return int(m_status);

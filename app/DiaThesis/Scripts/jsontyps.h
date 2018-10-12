@@ -5,7 +5,7 @@
 #include <QString>
 #include <QDateTime>
 
-class Patient
+class UserData
 {
 
 };

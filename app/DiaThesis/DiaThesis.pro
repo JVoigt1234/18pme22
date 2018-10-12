@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += sql
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += network
@@ -29,11 +30,13 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     Scripts/Database/databasecontroller.cpp \
+    Scripts/Database/sqldatabase.cpp
 
 HEADERS += \
         mainwindow.h \
     Scripts/Database/databasecontroller.h \
     Scripts/jsontyps.h \
+    Scripts/Database/sqldatabase.h
 
 FORMS += \
         mainwindow.ui

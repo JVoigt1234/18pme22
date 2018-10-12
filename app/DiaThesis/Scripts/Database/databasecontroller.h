@@ -36,11 +36,15 @@ private:
     QList<Patient> m_listPatient;
     QList<BloodSugar> m_listBloodSugar;
 
-    //funtcion
     void parseJSONListBloodSugar(QNetworkReply* reply);
-    void parseJSONListPatient(QNetworkReply* reply);
     void replyError(QNetworkReply::NetworkError error);
     void sendHTTPRequest(QString subUrl, QNetworkAccessManager* networkAccessManager);
+
+    //funtcion
+public slots:
+    void parseJSONListPatient(QNetworkReply* reply);
+
+
 
 protected:
     void run() override;

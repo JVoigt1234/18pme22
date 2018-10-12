@@ -56,7 +56,7 @@ void DatabaseController::sendHTTPRequest(QString subUrl, QNetworkAccessManager* 
     //request.setRawHeader("User-Agent", "MyOwnBrowser 1.0");
 
     networkAccessManager->get(request);
-    connect(networkAccessManager, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(replyError(QNetworkReply::NetworkError)));
+    //connect(networkAccessManager, SIGNAL(sslErrors()), this, SLOT(replyError(QNetworkReply::NetworkError)));  falsches Signal
 }
 
 //protected part

@@ -1,0 +1,21 @@
+#include "simulator.h"
+
+Simulator::Simulator(QObject *parent) : QObject(parent)
+{
+
+}
+
+void Simulator::stepSizeX(double value)
+{
+
+}
+
+void Simulator::stepSizeY(double value)
+{
+
+}
+
+void Simulator::stepSizeZ(double value)
+{
+
+}

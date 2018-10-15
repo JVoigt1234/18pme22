@@ -4,26 +4,32 @@
   "bloodSugar": [
     {
       "timestemp": "10.10.2018 15:00",
+      "type": "blah",
       "sugarValue": 56
     },
     {
       "timestemp": "10.10.2018 15:15",
+      "type": "blah",
       "sugarValue": 56
     },
     {
       "timestemp": "10.10.2018 15:30",
+      "type": "blah",
       "sugarValue": 56
     },
     {
       "timestemp": "10.10.2018 15:45",
+      "type": "blah",
       "sugarValue": 56
     },
     {
       "timestemp": "10.10.2018 16:00",
+      "type": "blah",
       "sugarValue": 56
     },
     {
       "timestemp": "10.10.2018 16:15",
+      "type": "blah",
       "sugarValue": 56
     }
   ]

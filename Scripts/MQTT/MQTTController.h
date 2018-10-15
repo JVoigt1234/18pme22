@@ -13,7 +13,6 @@
 
 #include <QObject>
 #include <QtCore/QMap>
-#include
 
 class MQTTController : public QObject
 {

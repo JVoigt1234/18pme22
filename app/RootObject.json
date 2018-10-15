@@ -1,6 +1,11 @@
 {
   "PatientID": "123564",
   "patientName": "Hans",
+  "user": 1,
+  "age": 42,
+  "weight": 75,
+  "bodyheight": 170,
+  "sex": "m",
   "email": "hans@gmail.com",
   "phone": "123456789",
   "adress": {
@@ -9,6 +14,10 @@
     "state": "Ger",
     "plz": 68217
   },
+  "targetBloodSugar": 100,
+  "BloodSugar": "89/156",
+  "alcohol": false,
+  "cigaret": false,
   "bloodSugar": [
     {
       "timestemp": "10.10.2018 15:00",
@@ -33,6 +42,16 @@
     {
       "timestemp": "10.10.2018 16:15",
       "sugarValue": 56
+    }
+  ],
+  "bloodPressure": [
+    {
+      "timestemp": "10.10.2018 15:00",
+      "bloodPressureValue": 120
+    },
+    {
+      "timestemp": "10.10.2018 15:15",
+      "bloodPressureValue": 132
     }
   ]
 }

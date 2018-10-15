@@ -29,14 +29,11 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     Scripts/Database/databasecontroller.cpp \
-    main.cpp \
-    mainwindow.cpp
 
 HEADERS += \
         mainwindow.h \
     Scripts/Database/databasecontroller.h \
     Scripts/jsontyps.h \
-    mainwindow.h
 
 FORMS += \
         mainwindow.ui
@@ -45,3 +42,4 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+

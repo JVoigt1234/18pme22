@@ -29,17 +29,20 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     Scripts/Database/databasecontroller.cpp \
-    workwindow.cpp
+    workwindow.cpp \
+    registrationwindow.cpp
 
 HEADERS += \
         mainwindow.h \
     Scripts/Database/databasecontroller.h \
     Scripts/jsontyps.h \
-    workwindow.h
+    workwindow.h \
+    registrationwindow.h
 
 FORMS += \
         mainwindow.ui \
-    workwindow.ui
+    workwindow.ui \
+    registrationwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -20,7 +20,7 @@
       <item row="0" column="1">
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="nutzertyp_page">
          <widget class="QGroupBox" name="groupBox">
@@ -113,7 +113,7 @@
            </rect>
           </property>
           <property name="text">
-           <string>weiter</string>
+           <string>Account erstellen</string>
           </property>
          </widget>
          <widget class="QPushButton" name="back_btn_2">

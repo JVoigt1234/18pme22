@@ -19,9 +19,13 @@
 #include <QString>
 #include <QDateTime>
 #include <QGeoAddress>
+#include <QCryptographicHash>
+
+#include "Scripts/Exceptions/InvalidExceptions.h"
 
 enum class UserType
 {
+    inValidUser = -1,
     admin,
     patient,
     doctor,
@@ -35,60 +39,84 @@ enum class Gender
     other
 };
 
+///Time stamp conforming to ISO 8601
+///throws InvalidDateTimeFormate Execption
 class BloodSugar
 {
-public:
-    int m_userID;
-    QDateTime m_timeStemp;
-    double BloodSugarValue;
-};
-
-class BloodPressure
-{
 private:
-    int m_userID;
     QDateTime m_timeStemp;
     double m_value;
 public:
-    BloodPressure(int userID, QDateTime timeStemp, double value)
+    ///Time stamp conforming to ISO 8601
+    ///yyyy-MM-dd hh:mm:ss
+    BloodSugar(QString timeStemp, double value)
     {
-        m_userID = userID;
-        m_timeStemp = timeStemp;
+        m_timeStemp = QDateTime::fromString(timeStemp,"yyyy.MM.dd hh:mm:ss");
+        if(m_timeStemp.isNull())
+        {
+            throw InvalidDateTimeFormate("Invalid Date- or Timeformat.");
+        }
         m_value = value;
     }
 
+    ///Time stamp conforming to ISO 8601
+    ///yyyy-MM-dd hh:mm:ss
+    QString getTimeStemp(void) const {m_timeStemp.date().toString("yyyy-MM-dd hh:mm:ss"); }
+};
+
+///Time stamp conforming to ISO 8601
+///throws InvalidDateTimeFormate Execption
+class BloodPressure
+{
+private:
+    QDateTime m_timeStemp;
+    double m_value;
+public:
+    BloodPressure(QString timeStemp, double value)
+    {
+        m_timeStemp = QDateTime::fromString(timeStemp,"yyyy.MM.dd hh:mm:ss");
+        if(m_timeStemp.isNull())
+        {
+            throw InvalidDateTimeFormate("Invalid Date- or Timeformat. It musst be yyyy.MM.dd hh:mm:ss");
+        }
+        m_value = value;
+    }
+
+    ///Time stamp conforming to ISO 8601 (yyyy-MM-dd hh:mm:ss)
+    QString getTimeStemp(void) const {m_timeStemp.date().toString("yyyy-MM-dd hh:mm:ss"); }
 };
 
 class User
 {    
 protected:
     QString m_userID;
-    QString m_name;
-    UserType m_userType;    
+    QString m_forename;
+    QString m_surname;  
     QString m_eMail;
     QString m_phone;
+    UserType m_userType;
 
 public:
-    User(QString userID, QString name, UserType type, QString eMail, QString phone)
+    User(QString forename, QString surname, UserType type, QString eMail)
     {
-        m_userID = userID;
-        m_name = name;
+        m_userID = eMail;
+        m_forename = forename;
+        m_surname = surname;
         m_userType = type;
         m_eMail = eMail;
-        m_phone = phone;
     }
     virtual ~User() {}
-    virtual QString getUserID(void) const = 0;  //it is a pure virtual function and must be redefined in the derived class!
-    virtual QString getName(void) const = 0;
-    virtual UserType getUserType(void) const = 0;
-    virtual QString getE_Mail(void) const = 0;
-    virtual QString getPhone(void) const = 0;
+    virtual QString getUserID(void) const {return m_userID;}
+    virtual QString getForename(void) const {return m_forename;}
+    virtual QString getSurname(void) const {return m_surname;}
+    virtual UserType getUserType(void) const {return m_userType;}
+    virtual QString getE_Mail(void) const {return m_eMail;}
+    virtual QString getPhone(void) const {return m_phone;}
 
-    virtual void setUserID(const QString id) = 0;
-    virtual void setName(const QString name) = 0;
-    virtual void setUserType(const UserType type) = 0;
-    virtual void setE_Mail(const QString eMail) = 0;
-    virtual void setPhone(const QString phone) = 0;
+    virtual void setForename(const QString name) { m_forename = name; }
+    virtual void setSurname(const QString name) { m_surname = name; }
+    virtual void setEMail(const QString eMail) { m_eMail = eMail; m_userID = eMail; }
+    virtual void setPhone(const QString phone) { m_phone = phone; }
 };
 
 class Patient : virtual public User
@@ -104,11 +132,9 @@ private:
     bool m_alcohol;
     bool m_cigaret;
     QGeoAddress m_address;
-    QList<BloodSugar> m_bloodSugar;
-    QList<BloodPressure> m_bloodPressure;
 
 public:
-    Patient(QString userID, QString name, UserType type, QString eMail, QString phone) : User(userID, name, type, eMail, phone)
+    Patient(QString forename, QString surname, UserType type, QString eMail) : User(forename, surname, type, eMail)
     {
         m_age = 0;
         m_weight = 0;
@@ -120,8 +146,8 @@ public:
         m_alcohol = false;
         m_cigaret = false;
     }
-    Patient(QString userID, QString name, UserType type, QString eMail, QString phone, int age, double weight, double bodysize, Gender gender, double targetBS,
-             double minBS, double maxBS, bool alc, bool cig, QList<BloodSugar> bloodSugar, QList<BloodPressure> bloodPressure, QGeoAddress address) : User(userID, name, type, eMail, phone)
+    Patient(QString forename, QString surname, UserType type, QString eMail, int age, double weight, double bodysize, Gender gender, double targetBS,
+             double minBS, double maxBS, bool alc, bool cig, QGeoAddress address) : User(forename, surname, type, eMail)
     {
         m_age = age;
         m_weight = weight;
@@ -132,22 +158,8 @@ public:
         m_maxBloodSugar = maxBS;
         m_alcohol = alc;
         m_cigaret = cig;
-        m_bloodSugar = bloodSugar;
-        m_bloodPressure = bloodPressure;
         m_address = address;
     }
-
-    QString getUserID(void) const override  {return m_userID;}
-    QString getName(void) const override {return m_name;}
-    UserType getUserType(void) const override {return m_userType;}
-    QString getE_Mail(void) const override {return m_eMail;}
-    QString getPhone(void) const override {return m_phone;}
-
-    void setUserID(const QString id) override { m_userID = id; }
-    void setName(const QString name) override { m_name = name; }
-    void setUserType(const UserType type) override {m_userType = type; }
-    void setE_Mail(const QString eMail) override { m_eMail = eMail; }
-    void setPhone(const QString phone) override { m_phone = phone; }
 
     int getAge(void) const {return m_age;}
     double getWeight(void) const {return m_weight;}
@@ -158,8 +170,6 @@ public:
     double getMaxBloodSugar(void) const {return m_maxBloodSugar;}
     bool isAlcohol(void) const {return m_alcohol;}
     bool isCigaret(void) const {return m_cigaret;}
-    void getBloodSugar(QList<BloodSugar> bloodSugar) const {bloodSugar = m_bloodSugar;}
-    void getBloodPressure(QList<BloodPressure> bloodPressure) const {bloodPressure = m_bloodPressure;}
     QGeoAddress getAddress(void) const {return m_address;}
 
     void setAge(const int age) {m_age = age;}
@@ -171,8 +181,6 @@ public:
     void setMaxBloodSugar(const double value) { m_maxBloodSugar = value;}
     void setAlcohol(const bool value) { m_alcohol = value;}
     void setCigaret(const bool value) { m_cigaret = value;}
-    void setBloodSugar(const QList<BloodSugar>* bloodSugar) { m_bloodSugar = *bloodSugar;}
-    void setBloodPressure(const QList<BloodPressure>* bloodPressure) { m_bloodPressure = *bloodPressure;}
     void setAddress(const QGeoAddress address) {m_address = address;}
 };
 
@@ -181,39 +189,25 @@ class Doctor : virtual public User
 private:
     //all doctor properties
 public:
-    Doctor(QString userID, QString name, UserType type, QString eMail, QString phone) : User(userID, name, type, eMail, phone) {}
+    Doctor(QString forename, QString surname, UserType type, QString eMail, QString phone) : User(forename, surname, type, eMail)
+    {
+        m_phone = phone;
+    }
 
-    QString getUserID(void) const override {return m_userID;}
-    QString getName(void) const override {return m_name;}
-    UserType getUserType(void) const override {return m_userType;}
-    QString getE_Mail(void) const override {return m_eMail;}
-    QString getPhone(void) const override {return m_phone;}
-
-    void setUserID(const QString id) override { m_userID = id; }
-    void setName(const QString name) override { m_name = name; }
-    void setUserType(const UserType type) override {m_userType = type; }
-    void setE_Mail(const QString eMail) override { m_eMail = eMail; }
-    void setPhone(const QString phone) override { m_phone = phone; }
 };
 
 class Member : virtual public User
 {
 private:
     //all member properties
+    QString m_patientRelease;
 public:
-    Member(QString userID, QString name, UserType type, QString eMail, QString phone) : User(userID, name, type, eMail, phone) {}
+    Member(QString forename, QString surname, UserType type, QString eMail, QString patientRealeaseID) : User(forename, surname, type, eMail)
+    {
+        m_patientRelease = patientRealeaseID;
+    }
 
-    QString getUserID(void) const override {return m_userID;}
-    QString getName(void) const override  {return m_name;}
-    UserType getUserType(void) const override {return m_userType;}
-    QString getE_Mail(void) const override {return m_eMail;}
-    QString getPhone(void) const override {return m_phone;}
-
-    void setUserID(const QString id) override { m_userID = id; }
-    void setName(const QString name) override { m_name = name; }
-    void setUserType(const UserType type) override {m_userType = type; }
-    void setE_Mail(const QString eMail) override { m_eMail = eMail; }
-    void setPhone(const QString phone) override { m_phone = phone; }
+    QString getPatientRealease(void) const {return m_patientRelease;}
 };
 
 #endif // JSONTYPS_H

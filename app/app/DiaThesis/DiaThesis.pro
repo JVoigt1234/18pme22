@@ -30,12 +30,13 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    Scripts/Database/databasecontroller.cpp
+    Scripts/Database/DatabaseController.cpp
 
 HEADERS += \
         mainwindow.h \
-    Scripts/Database/databasecontroller.h \
-    Scripts/Databasetyps.h
+    Scripts/Databasetyps.h \
+    Scripts/Exceptions/InvalidExceptions.h \
+    Scripts/Database/DatabaseController.h
 
 FORMS += \
         mainwindow.ui

@@ -1,7 +1,7 @@
 {
   "patientID": "hans@gmail.com",
   "patientName": "Hans/Otto",
-  "user": 1,
+  "user": 0,
   "age": 42,
   "weight": 75,
   "bodysize": 170,

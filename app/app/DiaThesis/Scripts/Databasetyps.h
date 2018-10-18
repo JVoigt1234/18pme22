@@ -110,13 +110,18 @@ public:
     virtual QString getForename(void) const {return m_forename;}
     virtual QString getSurname(void) const {return m_surname;}
     virtual UserType getUserType(void) const {return m_userType;}
-    virtual QString getE_Mail(void) const {return m_eMail;}
+    virtual QString geteMail(void) const {return m_eMail;}
     virtual QString getPhone(void) const {return m_phone;}
 
     virtual void setForename(const QString name) { m_forename = name; }
     virtual void setSurname(const QString name) { m_surname = name; }
-    virtual void setEMail(const QString eMail) { m_eMail = eMail; m_userID = eMail; }
+    virtual void seteMail(const QString eMail) { m_eMail = eMail; m_userID = eMail; }
     virtual void setPhone(const QString phone) { m_phone = phone; }
+
+//    bool operator==(const User &a, const User &b)
+//    {
+//        return (QString::compare(a.getUserID(), b.getUserID()) ) && (a.getUserType() == b.getUserType());
+//    }
 };
 
 class Patient : virtual public User

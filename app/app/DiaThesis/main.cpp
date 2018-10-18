@@ -1,3 +1,13 @@
+///-----------------------------------------------------------------
+/// Namespace:
+/// Class:              main
+/// Description:        Example how to use the DatabaseController
+/// Author:             Kevin Kastner
+/// Date:               Oct 2018
+/// Notes:              -
+/// Revision History:   First release
+///-----------------------------------------------------------------
+
 #include "mainwindow.h"
 #include <QApplication>
 
@@ -10,23 +20,28 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    //Patient p("1", "hallo", UserType::admin, "admin@gmail.com", "123456789");
-
     DatabaseController data("db.inftech.hs-mannheim.de");
-    Patient p = data.loadDataset();
-    //data.creatUser(&p, "hallo");
+
+    Patient p = data.loadDataset();     //only for example
+
+    if(data.isUserDeleted(&p, "hallo"))
+    {
+        data.isUserCreated(&p, "hallo");
+    }
+
+
+    data.updateUser(&p);
     p = data.getPatientData(p.getUserID());
-
-    data.uploadData(&p);
     UserType g = data.isValidUser(p.getUserID(), "hallo");
-    qDebug() << int(g);
 
-//    data.getPatientData(p.getUserID());
-    //Patient pü = data.getUser();
-
-    //DatabaseController test("http://http://localhost:4181");
-    //test.start();
-
+    if(g > UserType::inValidUser )
+    {
+        qDebug() << "UserType: " << int(g);
+        p = data.getPatientData(p.getUserID());
+        qDebug() << "UserID: " << p.getUserID();
+        qDebug() << "Bodaysize: " << p.getBodysize();
+        qDebug() << "TargetBloodSugar: " << p.getTargetBloodSugar();
+    }
 
     return a.exec();
 }

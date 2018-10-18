@@ -16,7 +16,7 @@
 DatabaseController::DatabaseController(QString hostname)
 {
      //   m_user = User("hans", "otto", "1234", UserType::member, "hallo@ge.de", "123499");
-    m_serverUrl = hostname;     //"db.inftech.hs-mannheim.de"
+    m_hostname = hostname;     //"db.inftech.hs-mannheim.de"
     m_databasename = "1814116_DiaThesis";
     m_username = "1814116";
     m_password = "#DiaThesis";
@@ -25,12 +25,12 @@ DatabaseController::DatabaseController(QString hostname)
     m_database.setConnectOptions();
 
     m_database.setDatabaseName(m_databasename);
-    m_database.setHostName(m_serverUrl);
+    m_database.setHostName(m_hostname);
     m_database.setUserName(m_username);
 
     if(m_database.open(m_username,m_password))
     {
-        qDebug() << "connected to" << m_serverUrl;
+        qDebug() << "connected to" << m_hostname;
     }
     else
     {
@@ -67,7 +67,7 @@ bool DatabaseController::isUserOK(const User* user)
     if(user->getUserID().isNull() || user->getUserID().trimmed().isEmpty() ||
        user->getForename().isNull() || user->getForename().trimmed().isEmpty()||
        user->getSurname().isNull() || user->getSurname().trimmed().isEmpty()||
-       user->getE_Mail().isNull() || user->getE_Mail().trimmed().isEmpty() )
+       user->geteMail().isNull() || user->geteMail().trimmed().isEmpty() )
     {
         throw InvalidUser("Some data are missing.");
     }
@@ -77,7 +77,7 @@ bool DatabaseController::isUserOK(const User* user)
 
 bool DatabaseController::isUserAvailable(const User* user)
 {
-    QByteArray id = QCryptographicHash::hash(user->getUserID().toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash( QString(user->getUserID() + QString(user->getUserID().length()) ).toUtf8(), QCryptographicHash::Md5).toHex();
 
     QSqlQuery query("SELECT userid"
                     " FROM userdata"
@@ -111,7 +111,7 @@ QJsonObject DatabaseController::convertUser2JSON(const User* patient)
     QJsonObject userObject;
 
     userObject.insert("patientName", QJsonValue::fromVariant(patient->getForename() + "/" + patient->getSurname()) );
-    userObject.insert("email", QJsonValue::fromVariant(patient->getE_Mail() ));
+    userObject.insert("email", QJsonValue::fromVariant(patient->geteMail() ));
     userObject.insert("phone", QJsonValue::fromVariant(patient->getPhone() ));
 
     return userObject;
@@ -140,9 +140,8 @@ UserType DatabaseController::isValidUser(QString userID, QString password)
         return UserType::inValidUser;
     }
 
-    QByteArray id = QCryptographicHash::hash(QString(userID).toUtf8(),QCryptographicHash::Md5).toHex();
-    QByteArray pw = QCryptographicHash::hash(QString(password + userID).toUtf8(),QCryptographicHash::Md5).toHex();
-    QByteArray usertyp;
+    QByteArray id = QCryptographicHash::hash( QString(userID + QString(userID.length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray pw = QCryptographicHash::hash( QString(password + QString(id)).toUtf8(), QCryptographicHash::Md5).toHex();
 
     QSqlQuery query("SELECT userid,password,usertyp"
                     " FROM userdata"
@@ -161,7 +160,7 @@ UserType DatabaseController::isValidUser(QString userID, QString password)
         return UserType::inValidUser;
     }
 
-    usertyp = QByteArray::fromHex(query.value(2).toByteArray());
+    QByteArray usertyp = QByteArray::fromHex(query.value(2).toByteArray());
 
     if(usertyp.isEmpty())
     {
@@ -172,7 +171,7 @@ UserType DatabaseController::isValidUser(QString userID, QString password)
     return static_cast<UserType>(usertyp.toInt());
 }
 
-bool DatabaseController::creatUser(User* user, QString password)
+bool DatabaseController::isUserCreated(User* user, QString password)
 {
     if(!isConnected() )
     {
@@ -199,14 +198,15 @@ bool DatabaseController::creatUser(User* user, QString password)
     userObject = convertUser2JSON(user);
 
     //user
-    QByteArray userByteArray = QCryptographicHash::hash(QString(user->getUserID() ).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray userByteArray = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Md5).toHex();
+
+    //password
+    QByteArray passwordByteArray = QCryptographicHash::hash( QString(password + QString(userByteArray)).toUtf8(), QCryptographicHash::Md5).toHex();
 
     //data
     QJsonDocument doc(userObject);
-    QByteArray jsonByteArray = doc.toBinaryData().toHex();
-
-    //password
-    QByteArray passwordByteArray = QCryptographicHash::hash(QString(password + user->getUserID()).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray jsonByteArray = doc.toBinaryData();
+    jsonByteArray = crypt(jsonByteArray, passwordByteArray);
 
     //userTyp
     QByteArray usertyp;
@@ -214,19 +214,60 @@ bool DatabaseController::creatUser(User* user, QString password)
     usertyp = crypt(usertyp, passwordByteArray).toHex();
 
     creating.bindValue(0, QString(userByteArray) );
-    creating.bindValue(1, jsonByteArray);
+    creating.bindValue(1, jsonByteArray.toHex());
     creating.bindValue(2, QString(passwordByteArray) );
     creating.bindValue(3, QString(usertyp) );
 
-    qDebug() << creating.size();
     creating.exec();
 
-    qDebug() << m_database;
-    qDebug() << m_database.record(m_database.tables().at(0));
-    qDebug() << creating.lastError();
+    if(creating.lastError().type() == QSqlError::NoError)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
 }
 
-int DatabaseController::getBooldPressure(const QString userID_patient, const QDateTime From, const QDateTime To, QList<BloodPressure> listBloodPressure) const
+bool DatabaseController::isUserDeleted(User* user, QString password)
+{
+    if(!isConnected() )
+    {
+        return false;
+    }
+
+    try {
+        if(isUserAvailable(user) == false || isUserOK(user) == false || password.isNull() || password.trimmed().isEmpty())
+        {
+            return false;
+        }
+    } catch (InvalidUser e) {
+        qDebug() << e.getMessage();
+        return false;
+    }
+
+    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray pw = QCryptographicHash::hash( QString(password + QString(id)).toUtf8(), QCryptographicHash::Md5).toHex();
+
+    QSqlQuery creating;
+    creating.exec("DELETE FROM userdata"
+                " WHERE userid = '" + QString(id) + "'"
+                " AND password = '" + QString(pw) + "'" );
+
+
+    if(creating.lastError().type() == QSqlError::NoError)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+int DatabaseController::getBloodPressure(const QString userID_patient, const QDateTime from, const QDateTime to, QList<BloodPressure> listBloodPressure) const
 {
 //    if(user->getUserType() == UserType::doctor || user->getUserType() == UserType::member)
 //    {
@@ -234,18 +275,16 @@ int DatabaseController::getBooldPressure(const QString userID_patient, const QDa
 //    }
 
 //Datenbankabfrage from BETWEEN to
-    listBloodPressure = m_listBloodPressure;
     return DatabaseController::sucessfull;
 }
 
-int DatabaseController::getBooldSugar(const QString userID_patient, const QDateTime From, const QDateTime To, QList<BloodSugar> listBloodSugar) const
+int DatabaseController::getBloodSugar(const QString userID_patient, const QDateTime from, const QDateTime to, QList<BloodSugar> listBloodSugar) const
 {
 //    if(user->getUserType() == UserType::doctor || user->getUserType() == UserType::member)
 //    {
 //        return int(DatabaseController::error);
 //    }
 //Datenbankabfrage from BETWEEN to
-    listBloodSugar = m_listBloodSugar;
     return int(DatabaseController::sucessfull);
 }
 
@@ -257,7 +296,6 @@ int DatabaseController::getListPatient(QList<Patient> listPatient) const
 //        throw InvalidUser("Invalid User.");
 //    }
 
-    listPatient = m_listPatient;
     //m_currentState = DatabaseController::sucessfull;
     return int(m_currentState);
 }
@@ -274,9 +312,9 @@ Patient DatabaseController::getPatientData(const QString userID)
         throw InvalidUser("Incorrect userID");
     }
 
-    QByteArray id = QCryptographicHash::hash(userID.toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(userID + QString(userID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
 
-    QSqlQuery query("SELECT data,password,usertyp"
+    QSqlQuery query("SELECT password,data,usertyp"
                     " FROM userdata"
                     " WHERE userid = '" + QString(id) + "'" );
 
@@ -286,21 +324,23 @@ Patient DatabaseController::getPatientData(const QString userID)
     }
     query.first();
 
-    QJsonObject jsonObject = QJsonDocument::fromBinaryData(QByteArray::fromHex( query.value(0).toByteArray()) ).object();
+    QByteArray data = crypt(QByteArray::fromHex(query.value(1).toByteArray()), query.value(0).toByteArray());
+
+    QJsonObject jsonObject = QJsonDocument::fromBinaryData(data ).object();
     QJsonArray array = jsonObject["address"].toArray();
     QGeoAddress address = convertJSONArray2Address(array);
 
     QStringList name = jsonObject["patientName"].toString().split('/', QString::SkipEmptyParts);
     QStringList bs = jsonObject["bloodSugarRange"].toString().split('/', QString::SkipEmptyParts);
 
-    QByteArray usertyp = QByteArray::fromHex(query.value(1).toByteArray());
+    QByteArray usertyp = QByteArray::fromHex(query.value(2).toByteArray());
 
     if(usertyp.isEmpty())
     {
         throw InvalidUser("No UserTyp.");
     }
 
-    usertyp = crypt(usertyp, QByteArray::fromHex(query.value(2).toByteArray()));
+    usertyp = crypt(usertyp, QByteArray::fromHex(query.value(0).toByteArray()));
     if(name.length() != 2 || bs.length() != 2)
     {
         throw InvalidUser("Not enough parameters for name");
@@ -317,17 +357,17 @@ Member DatabaseController::getMemberData(const QString userID)
 
 }
 
-bool DatabaseController::uploadData(const Doctor* user)
+bool DatabaseController::updateUser(const Doctor* user)
 {
 
 }
 
 ///throws InvaildUser exception
-bool DatabaseController::uploadData(const Patient* user)
+bool DatabaseController::updateUser(const Patient* user)
 {
-    if(!m_database.isOpen() || isUserOK(user) == false || isUserAvailable(user) == false)
+    if(!m_database.isOpen() || isUserOK(user) == false || isUserAvailable(user) == false || user->getUserType() != UserType::patient)
     {
-        return int(DatabaseController::failed);
+        throw InvalidUser("Invaild User.");
     }
 
     QJsonObject userObject;
@@ -352,19 +392,30 @@ bool DatabaseController::uploadData(const Patient* user)
     userObject.insert("adress", addressObject);
 
     QSqlQuery creating;
-    QByteArray id = QCryptographicHash::hash(user->getUserID().toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Md5).toHex();
 
-//    QJsonObject temp;
-//    temp.insert("age", QJsonValue::fromVariant(user->getAge() ));
     //Data
     QJsonDocument doc(userObject);
     QByteArray jsonByteArray = doc.toBinaryData();
 
-    creating.exec("UPDATE userdata"
-                  " SET data =" + jsonByteArray +
-                  "WHERE userID = " + QString(id));
+    QSqlQuery query("SELECT password"
+                    " FROM userdata"
+                    " WHERE userid = '" + QString(id) + "'" );
 
-    if(creating.lastError().type() != QSqlError::NoError)
+    if(creating.lastError().type() != QSqlError::NoError || query.size() != 1)
+    {
+        return false;
+    }
+
+    query.first();
+
+    jsonByteArray = crypt(jsonByteArray, query.value(0).toByteArray());
+
+    creating.exec("UPDATE userdata"
+                  " SET data = '" + jsonByteArray.toHex() + "'" +
+                  " WHERE userid = '" + QString(id) + "'" );
+
+    if(creating.lastError().type() == QSqlError::NoError)
     {
         return true;
     }
@@ -374,9 +425,51 @@ bool DatabaseController::uploadData(const Patient* user)
     }
 }
 
-bool DatabaseController::uploadData(const Member* user)
+bool DatabaseController::updateUser(const Member* user)
 {
 
+}
+
+bool DatabaseController::uploadData(const BloodPressure* bloodPressure)
+{
+
+}
+
+bool DatabaseController::uploadData(const QList<BloodPressure>* listBloodPressure)
+{
+
+}
+
+bool DatabaseController::uploadData(const BloodSugar* bloodSugar)
+{
+
+}
+
+bool DatabaseController::uploadData(const QList<BloodSugar>* listBloodSugar)
+{
+
+}
+
+bool DatabaseController::deleteBloodPressureData(const QDateTime timeStemp)
+{
+
+}
+
+bool DatabaseController::deleteBloodPressureData(const QDateTime from, const QDateTime to)
+{
+    //delete from your_table
+    //where id between bottom_value and top_value;
+}
+
+bool DatabaseController::deleteBloodSugarData(const QDateTime timeStemp)
+{
+
+}
+
+bool DatabaseController::deleteBloodSugarData(const QDateTime from, const QDateTime to)
+{
+    //delete from your_table
+    //where id between bottom_value and top_value;
 }
 
 Patient DatabaseController::loadDataset()
@@ -384,7 +477,7 @@ Patient DatabaseController::loadDataset()
     QString val, filename, path;
     QFile file;
     QJsonDocument jsonDoc;
-    QJsonObject jsonObj;
+    QJsonObject jsonObject;
     //QJsonValue jsonVal;
     //QDir dir("C:/Users/Kevin_Costner1814116/Documents/Studium/Master/2. Semester/Projekt Labor Medizin/18pme22/app/app/DiaThesis/TestDaten");
     path = "C:/Users/Kevin_Costner1814116/Documents/Studium/Master/2. Semester/Projekt Labor Medizin/18pme22/app/app/DiaThesis/TestDaten";
@@ -398,17 +491,19 @@ Patient DatabaseController::loadDataset()
         val = file.readAll();
         file.close();
         jsonDoc = QJsonDocument::fromJson(val.toUtf8());
-        jsonObj = jsonDoc.object();
+        jsonObject = jsonDoc.object();
         //jsonVal = jsonObj["patientID"];
         QStringList name = jsonDoc["patientName"].toString().split('/', QString::SkipEmptyParts);
-        Patient patient(name[0], name[1], static_cast<UserType>(jsonDoc["user"].toInt()),
-                        jsonDoc["email"].toString());
-        QGeoAddress g;
-        g.setCity("Mannheim");
-        g.setCountry("Germany");
-        patient.setAddress(g);
+        QStringList bs = jsonDoc["bloodSugarRange"].toString().split('/', QString::SkipEmptyParts);
 
-        return patient;
+        QGeoAddress address;
+        address.setStreet("Mainstreet");
+        address.setPostalCode("68219");
+        address.setCity("Mannheim");
+        address.setCountry("Germany");
+
+        return Patient(name[0], name[1], UserType::patient, jsonObject["email"].toString(), jsonObject["age"].toInt(), jsonObject["weight"].toDouble(), jsonObject["bodysize"].toDouble(),
+                Gender::other, jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(), bs[1].toDouble(), jsonObject["alcohol"].toBool(), jsonObject["cigaret"].toBool(), address);
 
     }while (it.hasNext());
 

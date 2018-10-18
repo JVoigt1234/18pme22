@@ -1,13 +1,11 @@
 {
-  "patientID": "hans@gmail.com",
   "patientName": "Hans/Otto",
-  "user": 1,
+  "email": "hans@gmail.com",
+  "phone": "123456789",
   "age": 42,
   "weight": 75,
   "bodysize": 170,
   "gender": 0,
-  "email": "hans@gmail.com",
-  "phone": "123456789",
   "targetBloodSugar": 100,
   "bloodSugarRange": "89/156",
   "alcohol": false,
@@ -15,7 +13,7 @@
   "adress": {
     "street": "MainStreet",
     "city": "Mannheim",
-    "state": "Ger",
-    "plz": 68217
+    "country": "Ger",
+    "postalCode": 68217
   }
 }

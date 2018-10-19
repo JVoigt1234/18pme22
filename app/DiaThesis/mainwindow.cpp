@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
-    QPixmap logo("Pictures/Logo_Diathesis.png");
+    QPixmap logo("Pictures/Logo_DiaThesis.png");
     ui->picture_lb->setPixmap(logo);
 
     ui->stackedWidget->setCurrentIndex(0);

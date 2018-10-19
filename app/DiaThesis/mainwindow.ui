@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>817</width>
-    <height>478</height>
+    <height>567</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page_3">
        <layout class="QGridLayout" name="gridLayout_4">
@@ -70,19 +70,22 @@
           <property name="verticalSpacing">
            <number>30</number>
           </property>
-          <item row="0" column="0">
+          <item row="0" column="1">
            <layout class="QGridLayout" name="gridLayout">
             <property name="verticalSpacing">
              <number>20</number>
             </property>
-            <item row="3" column="0">
+            <item row="2" column="0">
+             <layout class="QVBoxLayout" name="verticalLayout"/>
+            </item>
+            <item row="3" column="2">
              <widget class="QPushButton" name="anmelden_btn">
               <property name="text">
                <string>Anmelden</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="0">
+            <item row="2" column="2">
              <widget class="QLineEdit" name="passwort_le">
               <property name="echoMode">
                <enum>QLineEdit::Password</enum>
@@ -95,7 +98,7 @@
               </property>
              </widget>
             </item>
-            <item row="1" column="0">
+            <item row="1" column="2">
              <widget class="QLineEdit" name="mail_le">
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -105,9 +108,23 @@
               </property>
              </widget>
             </item>
+            <item row="2" column="1">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Passwort: </string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>Email:</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <property name="sizeConstraint">
              <enum>QLayout::SetNoConstraint</enum>

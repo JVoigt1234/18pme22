@@ -20,7 +20,7 @@
       <item row="0" column="1">
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="nutzertyp_page">
          <widget class="QGroupBox" name="groupBox">
@@ -142,7 +142,7 @@
            <item row="0" column="1">
             <widget class="QLineEdit" name="user_le">
              <property name="placeholderText">
-              <string>Benutzername</string>
+              <string>example@host.com</string>
              </property>
             </widget>
            </item>
@@ -169,7 +169,7 @@
            <item row="0" column="0">
             <widget class="QLabel" name="label">
              <property name="text">
-              <string>Benutzername:</string>
+              <string>Email: </string>
              </property>
             </widget>
            </item>

@@ -1,9 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>main.qml</file>
-        <file>Schablonen/MyText.qml</file>
-        <file>pic.jpg</file>
-        <file>pic2.jpg</file>
-        <file>scream.wav</file>
-    </qresource>
-</RCC>

@@ -24,6 +24,12 @@ private slots:
 
     void on_next_btn_1_clicked();
 
+    void on_checkBox_clicked();
+
+    void on_agb_cb_clicked();
+
+    void on_datenschutz_cb_clicked();
+
 private:
     Ui::RegistrationWindow *ui;
 };

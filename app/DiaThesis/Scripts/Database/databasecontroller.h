@@ -4,10 +4,11 @@
 /// Description:
 /// Author:             Kevin Kastner
 /// Date:               Oct 2018
-/// Notes:              failed = -2  : No request could be sent to the database
-/// 					error = -1   : Some data have been skipped
-/// 					run = 1      : Connection to database running
-/// 					completed = 0: All data have been downloaded from the database and are available as List<DICOMFile>
+/// Notes:              failed = -3       :  No request could be sent to the database
+///                     disconnected = -2 :  No active connection to the database
+/// 					error = -1        :  Something went wrong with the SQL query.
+///                     connected = 0     :  Active connection to the database
+/// 					sucessfull = 1    :  Successful database query
 /// Revision History:   First release
 ///-----------------------------------------------------------------
 
@@ -17,42 +18,80 @@
 #include <QThread>
 #include <QString>
 #include <QList>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
+
 #include <QDebug>
 #include <QDateTime>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonArray>
+#include <QtSql>
+#include <QCryptographicHash>
 
-#include "Scripts/jsontyps.h"
+//only once
+#include <QDirIterator>
 
+#include "Scripts/Databasetyps.h"
+
+///failed: -3, disconnected: -2, error: -1, connected: 0, sucessfull: 1
 class DatabaseController : public QThread
 {
 private:
-    enum { failed = -2, error, completed, running} m_status;
+    enum { failed = -3, disconnected, error, connected, sucessfull} m_currentState;
     //attribute
-    QString m_serverUrl;
-    QNetworkAccessManager networkManager;
-    QList<Patient> m_listPatient;
-    QList<BloodSugar> m_listBloodSugar;
+    QSqlDatabase m_database;
+    QString m_hostname;    //Hostname;
+    QString m_databasename;
+    QString m_username;
+    QString m_password;
 
-    //funtcion
-    void parseJSONListBloodSugar(QNetworkReply* reply);
-    void parseJSONListPatient(QNetworkReply* reply);
-    void replyError(QNetworkReply::NetworkError error);
-    void sendHTTPRequest(QString subUrl, QNetworkAccessManager* networkAccessManager);
+    QByteArray crypt (const QByteArray text, const QByteArray key);
+    bool isUserOK(const User* user);
+    bool isUserAvailable(const User* user);
 
-protected:
-    void run() override;
+    //conversion features
+    QGeoAddress convertJSONArray2Address(const QJsonArray jsonArray);
+
+    QJsonObject convertUser2JSON(const User* patient);
+    QJsonObject convertAddress2JSON(const QGeoAddress address);
 
 public:
-    //DatabaseController();
-    DatabaseController(QString serverURL);
+    DatabaseController(QString hostname);
     ~DatabaseController();
-    int getBooldSugar(QList<BloodSugar> listBloodSugar) const;
+
+    //Database
+    bool isConnected() const;
+    UserType isValidUser(QString userID, QString password);
+    bool isUserCreated(User* user, QString password);
+    bool isUserDeleted(User* user, QString password);
+
+    //for every user
+    int getBloodPressure(const QString userID, const QDateTime From, const QDateTime To, QList<BloodPressure> listBloodPressure) const;
+    int getBloodSugar(const QString userID, const QDateTime From, const QDateTime To, QList<BloodSugar> listBloodSugar) const;
+
+    //only for doctor
     int getListPatient(QList<Patient> listPatient) const;
-    void request4ListPatient();
-    void request4ListBloodSugar(QDate startDate, QDate endDate);
+
+    //getter functions for users
+    Doctor getDoctorData(const QString userID);
+    Patient getPatientData(const QString userID);
+    Member getMemberData(const QString userID);
+
+    //upload functions
+    bool updateUser(const Doctor* user);
+    bool updateUser(const Patient* user);
+    bool updateUser(const Member* user);
+
+    bool uploadData(const BloodPressure* bloodPressure);
+    bool uploadData(const QList<BloodPressure>* listBloodPressure);
+    bool uploadData(const BloodSugar* bloodSugar);
+    bool uploadData(const QList<BloodSugar>* listBloodSugar);
+
+    bool deleteBloodPressureData(const QDateTime timeStemp);
+    bool deleteBloodPressureData(const QDateTime from, const QDateTime to);
+    bool deleteBloodSugarData(const QDateTime timeStemp);
+    bool deleteBloodSugarData(const QDateTime from, const QDateTime to);
+
+    Patient loadDataset();
 };
 
 #endif // DATABASECONTROLLER_H

@@ -5,6 +5,8 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += sql
+QT       += positioning
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 greaterThan(QT_MAJOR_VERSION, 4): QT += network
@@ -29,16 +31,28 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     Scripts/Database/databasecontroller.cpp \
+    workwindow.cpp \
+    registrationwindow.cpp
 
 HEADERS += \
         mainwindow.h \
     Scripts/Database/databasecontroller.h \
     Scripts/jsontyps.h \
+    workwindow.h \
+    registrationwindow.h \
+    Scripts/Databasetyps.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    workwindow.ui \
+    registrationwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    Pictures/Logo_DiaThesis.png \
+    Pictures/Logo_DiaThesis.png
+

@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QPixmap logo("Pictures/Logo_Diathesis.png");
     ui->picture_lb->setPixmap(logo);
+
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 MainWindow::~MainWindow()
@@ -32,4 +34,9 @@ void MainWindow::on_anmelden_btn_clicked()
 void MainWindow::on_registrieren_btn_clicked()
 {
     registrationwindow.show();
+}
+
+void MainWindow::on_login_btn_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
 }

@@ -22,6 +22,8 @@ private slots:
 
     void on_registrieren_btn_clicked();
 
+    void on_login_btn_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

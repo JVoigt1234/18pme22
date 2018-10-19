@@ -35,3 +35,4 @@ Makefile*
 *.qmlproject.user.*
 
 /documentation/paper/Datenbank.docx
+/app/build-DiaThesis-Desktop_Qt_5_9_1_MinGW_32bit-Debug

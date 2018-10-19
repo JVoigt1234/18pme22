@@ -5,14 +5,15 @@
 #include <QPixmap>
 
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
 
-
     ui->setupUi(this);
-    QPixmap logo("Z:/UI_branch/18pme22/app/DiaThesis/Pictures/Logo_DiaThesis.png");
+
+    QPixmap logo("Pictures/Logo_Diathesis.png");
     ui->picture_lb->setPixmap(logo);
 }
 

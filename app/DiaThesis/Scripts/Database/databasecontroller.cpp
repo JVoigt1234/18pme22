@@ -61,7 +61,7 @@ bool DatabaseController::isUserOK(const User* user)
 {
     if(user == nullptr)
     {
-        return false;
+        return DatabaseController::error;
     }
 
     if(user->getUserID().isNull() || user->getUserID().trimmed().isEmpty() ||
@@ -72,7 +72,7 @@ bool DatabaseController::isUserOK(const User* user)
         throw InvalidUser("Some data are missing.");
     }
 
-    return true;
+    return DatabaseController::sucessfull;
 }
 
 bool DatabaseController::isUserAvailable(const User* user)
@@ -85,10 +85,10 @@ bool DatabaseController::isUserAvailable(const User* user)
 
     if(query.lastError().type() == QSqlError::NoError && query.size() == 1)
     {
-        return true;
+        return DatabaseController::sucessfull;
     }
 
-    return false;
+    return DatabaseController::error;
 }
 
 QGeoAddress DatabaseController::convertJSONArray2Address(const QJsonArray jsonArray)
@@ -175,17 +175,17 @@ bool DatabaseController::isUserCreated(User* user, QString password)
 {
     if(!isConnected() )
     {
-        return false;
+        return DatabaseController::failed;
     }
 
     try {
-        if(isUserAvailable(user) == true || isUserOK(user) == false || password.isNull() || password.trimmed().isEmpty())
+        if(isUserAvailable(user) == DatabaseController::error || isUserOK(user) == DatabaseController::error || password.isNull() || password.trimmed().isEmpty())
         {
-            return false;
+            return DatabaseController::error;
         }
     } catch (InvalidUser e) {
         qDebug() << e.getMessage();
-        return false;
+        return DatabaseController::error;
     }
 
     QSqlQuery creating;
@@ -222,13 +222,10 @@ bool DatabaseController::isUserCreated(User* user, QString password)
 
     if(creating.lastError().type() == QSqlError::NoError)
     {
-        return true;
-    }
-    else
-    {
-        return false;
+        return DatabaseController::sucessfull;
     }
 
+    return DatabaseController::failed;
 }
 
 bool DatabaseController::isUserDeleted(User* user, QString password)
@@ -259,11 +256,11 @@ bool DatabaseController::isUserDeleted(User* user, QString password)
 
     if(creating.lastError().type() == QSqlError::NoError)
     {
-        return true;
+        return DatabaseController::sucessfull;
     }
     else
     {
-        return false;
+        return DatabaseController::failed;
     }
 }
 
@@ -288,7 +285,7 @@ int DatabaseController::getBloodSugar(const QString userID_patient, const QDateT
     return int(DatabaseController::sucessfull);
 }
 
-int DatabaseController::getListPatient(QList<Patient> listPatient) const
+int DatabaseController::getListPatient(QList<Patient>& listPatient) const
 {
 //    if(user->getUserType() != UserType::admin || user->getUserType() != UserType::doctor)
 //    {
@@ -297,7 +294,6 @@ int DatabaseController::getListPatient(QList<Patient> listPatient) const
 //    }
 
     //m_currentState = DatabaseController::sucessfull;
-    return int(m_currentState);
 }
 
 Doctor DatabaseController::getDoctorData(const QString userID)
@@ -354,13 +350,13 @@ Patient DatabaseController::getPatientData(const QString userID)
     UserType typ = static_cast<UserType>(usertyp.toInt());
 
     if(bs.isEmpty()){
-        return Patient(name[0], name[1], typ, jsonObject["email"].toString());
+        return Patient(name[0], name[1], typ, jsonObject["email"].toString(), jsonObject["birthDate"].toString() );
     }
 
     if(bs.length() == 2)
     {
 
-        return Patient(name[0], name[1], typ, jsonObject["email"].toString(), jsonObject["age"].toInt(), jsonObject["weight"].toDouble(),
+        return Patient(name[0], name[1], typ, jsonObject["email"].toString(), jsonObject["birthDate"].toString(), jsonObject["age"].toInt(), jsonObject["weight"].toDouble(),
                   jsonObject["bodysize"].toDouble(), static_cast<Gender>(jsonObject["gender"].toInt()), jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(),
                    bs[1].toDouble(), jsonObject["alcohol"].toBool(), jsonObject["cigaret"].toBool(), address);
     }
@@ -395,7 +391,7 @@ bool DatabaseController::updateUser(const Patient* user)
 
     if(userObject.isEmpty())
     {
-        return  DatabaseController::error;
+        return  DatabaseController::failed;
     }
 
     userObject.insert("age", QJsonValue::fromVariant(user->getAge() ));
@@ -406,6 +402,7 @@ bool DatabaseController::updateUser(const Patient* user)
     userObject.insert("bloodSugarRange", QJsonValue::fromVariant(QString::number(user->getMinBloodSugar() ) + "/" + QString::number(user->getMaxBloodSugar() ) ));
     userObject.insert("alcohol", QJsonValue::fromVariant(user->isAlcohol() ));
     userObject.insert("cigaret", QJsonValue::fromVariant(user->isCigaret() ));
+    userObject.insert("birthDate", QJsonValue::fromVariant(user->getBirthDay() ));
 
     QJsonObject addressObject;
     addressObject = convertAddress2JSON(user->getAddress());
@@ -424,7 +421,7 @@ bool DatabaseController::updateUser(const Patient* user)
 
     if(creating.lastError().type() != QSqlError::NoError || query.size() != 1)
     {
-        return false;
+        return DatabaseController::failed;
     }
 
     query.first();
@@ -437,11 +434,11 @@ bool DatabaseController::updateUser(const Patient* user)
 
     if(creating.lastError().type() == QSqlError::NoError)
     {
-        return true;
+        return DatabaseController::sucessfull;
     }
     else
     {
-        return false;
+        return DatabaseController::failed;
     }
 }
 
@@ -455,7 +452,7 @@ bool DatabaseController::uploadData(const BloodPressure* bloodPressure)
 
 }
 
-bool DatabaseController::uploadData(const QList<BloodPressure>* listBloodPressure)
+bool DatabaseController::uploadData(const QList<BloodPressure>& listBloodPressure)
 {
 
 }
@@ -465,7 +462,7 @@ bool DatabaseController::uploadData(const BloodSugar* bloodSugar)
 
 }
 
-bool DatabaseController::uploadData(const QList<BloodSugar>* listBloodSugar)
+bool DatabaseController::uploadData(const QList<BloodSugar>& listBloodSugar)
 {
 
 }
@@ -508,6 +505,7 @@ void DatabaseController::loadDataset(QList<Patient>& list, QString path)
         val = file.readAll();
         file.close();
 
+        filename.remove(".json");
         jsonDoc = QJsonDocument::fromJson(val.toUtf8());
         jsonObject = jsonDoc.object();
         //jsonVal = jsonObj["patientID"];
@@ -520,9 +518,59 @@ void DatabaseController::loadDataset(QList<Patient>& list, QString path)
         address.setCity("Mannheim");
         address.setCountry("Germany");
 
-         patient.append( Patient(name[0], name[1], UserType::patient, jsonObject["email"].toString(), jsonObject["age"].toInt(), jsonObject["weight"].toDouble(), jsonObject["bodysize"].toDouble(),
-                Gender::other, jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(), bs[1].toDouble(), jsonObject["alcohol"].toBool(), jsonObject["cigaret"].toBool(), address) );
+         list.append( Patient(name[0], name[1], static_cast<UserType>(filename.toInt()), jsonObject["email"].toString(), jsonObject["birthDate"].toString(), jsonObject["age"].toInt(), jsonObject["weight"].toDouble(), jsonObject["bodysize"].toDouble(),
+                static_cast<Gender>(jsonObject["gender"].toInt()), jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(), bs[1].toDouble(), jsonObject["alcohol"].toBool(), jsonObject["cigaret"].toBool(), address) );
+    }
+}
+
+bool DatabaseController::creatDatabase()
+{
+    QSqlQuery query;
+    query.exec(
+                "CREATE TABLE userdata("
+                   "userid text NOT NULL,"
+                   "data bytea,"
+                   "password text NOT NULL,"
+                   "usertyp text NOT NULL,"
+                   "UNIQUE(userid),"
+                   "PRIMARY KEY (userid)"
+                   ");"
+
+                   "CREATE TABLE sugarmeasurment("
+                   "userid text NOT NULL REFERENCES userdata(userid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "value double precision,"
+                   "timestemp text NOT NULL,"
+                   "UNIQUE(userid, timestemp),"
+                   "PRIMARY KEY (userid, timestemp)"
+                   ");"
+
+                   "CREATE TABLE bloodmeasurment("
+                   "userid text NOT NULL REFERENCES userdata(userid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "value double precision,"
+                   "timestemp text NOT NULL,"
+                   "UNIQUE(userid, timestemp),"
+                   "PRIMARY KEY (userid, timestemp)"
+                   ");"
+               );
+
+    if(query.lastError().type() == QSqlError::NoError)
+    {
+        return DatabaseController::sucessfull;
     }
 
-    list = patient;
+    return DatabaseController::failed;
 }
+
+bool DatabaseController::deleteDatabase()
+{
+    QSqlQuery query;
+    query.exec( "DROP TABLE userdata, sugarmeasurment,bloodmeasurment");
+
+    if(query.lastError().type() == QSqlError::NoError)
+    {
+        return DatabaseController::sucessfull;
+    }
+
+    return DatabaseController::failed;
+}
+

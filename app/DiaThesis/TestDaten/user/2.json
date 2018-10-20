@@ -1,7 +1,8 @@
 {
-  "patientName": "Hans/Otto",
-  "email": "hans@gmail.com",
-  "phone": "123456789",
+  "patientName": "Ich/Du",
+  "email": "doc@msi.com",
+  "phone": "15528993",
+  "birthDate": "1970.04.05",
   "age": 42,
   "weight": 75,
   "bodysize": 170,

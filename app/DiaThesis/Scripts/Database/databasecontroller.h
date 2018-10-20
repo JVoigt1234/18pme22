@@ -4,10 +4,8 @@
 /// Description:
 /// Author:             Kevin Kastner
 /// Date:               Oct 2018
-/// Notes:              failed = -3       :  No request could be sent to the database
-///                     disconnected = -2 :  No active connection to the database
+/// Notes:              failed = -2       :  No request could be sent to the database
 /// 					error = -1        :  Something went wrong with the SQL query.
-///                     connected = 0     :  Active connection to the database
 /// 					sucessfull = 1    :  Successful database query
 /// Revision History:   First release
 ///-----------------------------------------------------------------
@@ -32,11 +30,10 @@
 
 #include "Scripts/Databasetyps.h"
 
-///failed: -3, disconnected: -2, error: -1, connected: 0, sucessfull: 1
+///failed: 0, sucessfull: 1
 class DatabaseController : public QThread
 {
 private:
-    enum { failed = -3, disconnected, error, connected, sucessfull} m_currentState;
     //attribute
     QSqlDatabase m_database;
     QString m_hostname;    //Hostname;
@@ -44,7 +41,7 @@ private:
     QString m_username;
     QString m_password;
 
-        QList<Patient> patient;
+    QList<Patient> patient;
 
     QByteArray crypt (const QByteArray text, const QByteArray key);
     bool isUserOK(const User* user);
@@ -60,6 +57,7 @@ public:
     DatabaseController(QString hostname);
     ~DatabaseController();
 
+    enum { failed = 0, sucessfull,  error};
     //Database
     bool isConnected() const;
     UserType isValidUser(QString userID, QString password);
@@ -71,7 +69,7 @@ public:
     int getBloodSugar(const QString userID, const QDateTime From, const QDateTime To, QList<BloodSugar> listBloodSugar) const;
 
     //only for doctor
-    int getListPatient(QList<Patient> listPatient) const;
+    int getListPatient(QList<Patient>& listPatient) const;
 
     //getter functions for users
     Doctor getDoctorData(const QString userID);
@@ -84,9 +82,9 @@ public:
     bool updateUser(const Member* user);
 
     bool uploadData(const BloodPressure* bloodPressure);
-    bool uploadData(const QList<BloodPressure>* listBloodPressure);
+    bool uploadData(const QList<BloodPressure>& listBloodPressure);
     bool uploadData(const BloodSugar* bloodSugar);
-    bool uploadData(const QList<BloodSugar>* listBloodSugar);
+    bool uploadData(const QList<BloodSugar>& listBloodSugar);
 
     bool deleteBloodPressureData(const User* user, const QDateTime timeStemp);
     bool deleteBloodPressureData(const User* user, const QDateTime from, const QDateTime to);
@@ -94,6 +92,8 @@ public:
     bool deleteBloodSugarData(const User* user, const QDateTime from, const QDateTime to);
 
     void loadDataset(QList<Patient>& list, QString path);
+    bool creatDatabase();
+    bool deleteDatabase();
 };
 
 #endif // DATABASECONTROLLER_H

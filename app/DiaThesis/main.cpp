@@ -10,6 +10,7 @@
 
 #include "mainwindow.h"
 #include <QApplication>
+#include <QRandomGenerator>
 
 #include "Scripts/Database/databasecontroller.h"
 //#include "Scripts/Database/sqldatabase.h"
@@ -21,15 +22,17 @@ int main(int argc, char *argv[])
     w.show();
 
     DatabaseController data("db.inftech.hs-mannheim.de");
-    Patient p("hans", "otto", UserType::patient, "hans@gmail.com");
+    Patient p("hans", "otto", UserType::patient, "hans@gmail.com", "1992.03.23");
     UserType g;
     QList<Patient> pList;
+
+    //data.creatDatabase();
 
     try {
         g = data.isValidUser("hans@gmail.com", "hallo");
         if( g == UserType::inValidUser)
         {
-            if(data.isUserCreated(&p, "hallo") == true)
+            if(data.isUserCreated(&p, "hallo") == DatabaseController::sucessfull)
             {
                qDebug() << "Patient erzeugt.";
                qDebug() << "UserType: " << int(p.getUserType());
@@ -79,12 +82,44 @@ int main(int argc, char *argv[])
             qDebug() << "Patient gelöscht.";
         }
 
+//        int correct = 0, failed = 0, value = 5000, deleted = 0, creat = 0, index;
+//        data.loadDataset(pList, "TestDaten/user/");
+
+//        for(int i = 0; i < value; i++)
+//        {
+//            index = qrand() % pList.length();
+//            if(data.isUserCreated(&pList[index], "Hier_könnte_ihre_Werbung_stehen"))
+//                creat++;
+
+//            data.updateUser(&pList[index]);
+
+//            g = data.isValidUser(pList[index].getUserID(), "Hier_könnte_ihre_Werbung_stehen");
+//            p = data.getPatientData(pList[index].getUserID());
+
+//            if(p.getUserType() == g && p == pList[index])
+//                correct++;
+//            else
+//                failed++;
+
+//            if(data.isUserDeleted(&pList[index], "Hier_könnte_ihre_Werbung_stehen"))
+//                deleted++;
+//        }
+
+//        qDebug() << "creat: " << creat << "from " << value ;
+//        qDebug() << "Correct: " << correct << "from " << value ;
+//        qDebug() << "Failed: " << failed << "from " << value ;
+//        qDebug() << "Deleted: " << deleted << "from " << value ;
+
     } catch (InvalidUser e) {
         qDebug() << e.getMessage();
     }
     catch (UserNotFound e) {
             qDebug() << e.getMessage();
     }
+    catch (InvalidDateTimeFormate e) {
+        qDebug() << e.getMessage();
+    }
 
+    data.deleteDatabase();
     return a.exec();
 }

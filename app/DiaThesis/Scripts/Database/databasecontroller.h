@@ -44,6 +44,8 @@ private:
     QString m_username;
     QString m_password;
 
+        QList<Patient> patient;
+
     QByteArray crypt (const QByteArray text, const QByteArray key);
     bool isUserOK(const User* user);
     bool isUserAvailable(const User* user);
@@ -55,7 +57,7 @@ private:
     QJsonObject convertAddress2JSON(const QGeoAddress address);
 
 public:
-    DatabaseController(QString serverURL);
+    DatabaseController(QString hostname);
     ~DatabaseController();
 
     //Database
@@ -86,12 +88,12 @@ public:
     bool uploadData(const BloodSugar* bloodSugar);
     bool uploadData(const QList<BloodSugar>* listBloodSugar);
 
-    bool deleteBloodPressureData(const QDateTime timeStemp);
-    bool deleteBloodPressureData(const QDateTime from, const QDateTime to);
-    bool deleteBloodSugarData(const QDateTime timeStemp);
-    bool deleteBloodSugarData(const QDateTime from, const QDateTime to);
+    bool deleteBloodPressureData(const User* user, const QDateTime timeStemp);
+    bool deleteBloodPressureData(const User* user, const QDateTime from, const QDateTime to);
+    bool deleteBloodSugarData(const User* user, const QDateTime timeStemp);
+    bool deleteBloodSugarData(const User* user, const QDateTime from, const QDateTime to);
 
-    Patient loadDataset();
+    void loadDataset(QList<Patient>& list, QString path);
 };
 
 #endif // DATABASECONTROLLER_H

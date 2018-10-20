@@ -115,7 +115,6 @@ public:
 
     virtual void setForename(const QString name) { m_forename = name; }
     virtual void setSurname(const QString name) { m_surname = name; }
-    virtual void seteMail(const QString eMail) { m_eMail = eMail; m_userID = eMail; }
     virtual void setPhone(const QString phone) { m_phone = phone; }
 
 //    bool operator==(const User &a, const User &b)

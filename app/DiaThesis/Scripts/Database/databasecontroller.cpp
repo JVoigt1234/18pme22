@@ -11,11 +11,11 @@
 /// Revision History:   First release
 ///-----------------------------------------------------------------
 
-#include "DatabaseController.h"
+#include "databasecontroller.h"
 
 DatabaseController::DatabaseController(QString hostname)
 {
-     //   m_user = User("hans", "otto", "1234", UserType::member, "hallo@ge.de", "123499");
+
     m_hostname = hostname;     //"db.inftech.hs-mannheim.de"
     m_databasename = "1814116_DiaThesis";
     m_username = "1814116";
@@ -148,7 +148,7 @@ UserType DatabaseController::isValidUser(QString userID, QString password)
                     " WHERE userid = '" + QString(id) + "'"
                     " AND password = '" + QString(pw) + "'" );
 
-    if(query.lastError().type() != QSqlError::NoError && query.size() != 1)
+    if(query.lastError().type() != QSqlError::NoError || query.size() != 1)
     {
         return UserType::inValidUser;
     }
@@ -211,7 +211,7 @@ bool DatabaseController::isUserCreated(User* user, QString password)
     //userTyp
     QByteArray usertyp;
     usertyp.setNum(int(user->getUserType()));
-    usertyp = crypt(usertyp, passwordByteArray).toHex();
+    usertyp = crypt(usertyp, passwordByteArray ).toHex();
 
     creating.bindValue(0, QString(userByteArray) );
     creating.bindValue(1, jsonByteArray.toHex());
@@ -239,7 +239,7 @@ bool DatabaseController::isUserDeleted(User* user, QString password)
     }
 
     try {
-        if(isUserAvailable(user) == false || isUserOK(user) == false || password.isNull() || password.trimmed().isEmpty())
+        if(isUserOK(user) == false || isUserAvailable(user) == false || password.isNull() || password.trimmed().isEmpty())
         {
             return false;
         }
@@ -307,7 +307,12 @@ Doctor DatabaseController::getDoctorData(const QString userID)
 ///throws InvalidUser, UserNotFound Exception
 Patient DatabaseController::getPatientData(const QString userID)
 {
-    if(!m_database.isOpen() || userID.isNull() == true || userID.trimmed().isEmpty() == true)
+    if(!m_database.isOpen())
+    {
+        throw InvalidUser("Database closed.");
+    }
+
+    if(userID.isNull() == true || userID.trimmed().isEmpty() == true)
     {
         throw InvalidUser("Incorrect userID");
     }
@@ -318,7 +323,7 @@ Patient DatabaseController::getPatientData(const QString userID)
                     " FROM userdata"
                     " WHERE userid = '" + QString(id) + "'" );
 
-    if(query.lastError().type() != QSqlError::NoError && query.size() != 1)
+    if(query.lastError().type() != QSqlError::NoError || query.size() != 1)
     {
         throw UserNotFound(QString("User with ID: " + userID + " not found.").toLocal8Bit().data());
     }
@@ -340,15 +345,25 @@ Patient DatabaseController::getPatientData(const QString userID)
         throw InvalidUser("No UserTyp.");
     }
 
-    usertyp = crypt(usertyp, QByteArray::fromHex(query.value(0).toByteArray()));
-    if(name.length() != 2 || bs.length() != 2)
+    usertyp = crypt(usertyp, query.value(0).toByteArray());
+    if(name.length() != 2)
     {
         throw InvalidUser("Not enough parameters for name");
     }
 
-    return Patient(name[0], name[1], static_cast<UserType>(usertyp.toInt()), jsonObject["email"].toString(), jsonObject["age"].toInt(), jsonObject["weight"].toDouble(),
+    UserType typ = static_cast<UserType>(usertyp.toInt());
+
+    if(bs.isEmpty()){
+        return Patient(name[0], name[1], typ, jsonObject["email"].toString());
+    }
+
+    if(bs.length() == 2)
+    {
+
+        return Patient(name[0], name[1], typ, jsonObject["email"].toString(), jsonObject["age"].toInt(), jsonObject["weight"].toDouble(),
                   jsonObject["bodysize"].toDouble(), static_cast<Gender>(jsonObject["gender"].toInt()), jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(),
                    bs[1].toDouble(), jsonObject["alcohol"].toBool(), jsonObject["cigaret"].toBool(), address);
+    }
 
 }
 
@@ -365,7 +380,12 @@ bool DatabaseController::updateUser(const Doctor* user)
 ///throws InvaildUser exception
 bool DatabaseController::updateUser(const Patient* user)
 {
-    if(!m_database.isOpen() || isUserOK(user) == false || isUserAvailable(user) == false || user->getUserType() != UserType::patient)
+    if(!m_database.isOpen())
+    {
+        throw InvalidUser("Database closed.");
+    }
+
+    if(isUserOK(user) == false || isUserAvailable(user) == false || user->getUserType() != UserType::patient)
     {
         throw InvalidUser("Invaild User.");
     }
@@ -450,46 +470,44 @@ bool DatabaseController::uploadData(const QList<BloodSugar>* listBloodSugar)
 
 }
 
-bool DatabaseController::deleteBloodPressureData(const QDateTime timeStemp)
+bool DatabaseController::deleteBloodPressureData(const User* user, const QDateTime timeStemp)
 {
 
 }
 
-bool DatabaseController::deleteBloodPressureData(const QDateTime from, const QDateTime to)
+bool DatabaseController::deleteBloodPressureData(const User* user, const QDateTime from, const QDateTime to)
 {
     //delete from your_table
     //where id between bottom_value and top_value;
 }
 
-bool DatabaseController::deleteBloodSugarData(const QDateTime timeStemp)
+bool DatabaseController::deleteBloodSugarData(const User* user, const QDateTime timeStemp)
 {
 
 }
 
-bool DatabaseController::deleteBloodSugarData(const QDateTime from, const QDateTime to)
+bool DatabaseController::deleteBloodSugarData(const User* user, const QDateTime from, const QDateTime to)
 {
     //delete from your_table
     //where id between bottom_value and top_value;
 }
 
-Patient DatabaseController::loadDataset()
+void DatabaseController::loadDataset(QList<Patient>& list, QString path)
 {
-    QString val, filename, path;
+    QString val;
     QFile file;
     QJsonDocument jsonDoc;
     QJsonObject jsonObject;
-    //QJsonValue jsonVal;
-    //QDir dir("C:/Users/Kevin_Costner1814116/Documents/Studium/Master/2. Semester/Projekt Labor Medizin/18pme22/app/app/DiaThesis/TestDaten");
-    path = "C:/Users/Kevin_Costner1814116/Documents/Studium/Master/2. Semester/Projekt Labor Medizin/18pme22/app/app/DiaThesis/TestDaten";
-    filename = "C:/Users/Kevin_Costner1814116/Documents/Studium/Master/2. Semester/Projekt Labor Medizin/18pme22/app/app/DiaThesis/TestDaten/Patient.json";
-    QDirIterator it(path, QStringList() << ".json", QDir::Files, QDirIterator::Subdirectories);
-    do
-    {
-        //filename = it.next();
-        file.setFileName(filename);
+
+    QDir directory(path);
+    QStringList data = directory.entryList(QStringList() << "*.json",QDir::Files);
+
+    foreach(QString filename, data) {
+        file.setFileName(path + filename);
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         val = file.readAll();
         file.close();
+
         jsonDoc = QJsonDocument::fromJson(val.toUtf8());
         jsonObject = jsonDoc.object();
         //jsonVal = jsonObj["patientID"];
@@ -502,10 +520,9 @@ Patient DatabaseController::loadDataset()
         address.setCity("Mannheim");
         address.setCountry("Germany");
 
-        return Patient(name[0], name[1], UserType::patient, jsonObject["email"].toString(), jsonObject["age"].toInt(), jsonObject["weight"].toDouble(), jsonObject["bodysize"].toDouble(),
-                Gender::other, jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(), bs[1].toDouble(), jsonObject["alcohol"].toBool(), jsonObject["cigaret"].toBool(), address);
+         patient.append( Patient(name[0], name[1], UserType::patient, jsonObject["email"].toString(), jsonObject["age"].toInt(), jsonObject["weight"].toDouble(), jsonObject["bodysize"].toDouble(),
+                Gender::other, jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(), bs[1].toDouble(), jsonObject["alcohol"].toBool(), jsonObject["cigaret"].toBool(), address) );
+    }
 
-    }while (it.hasNext());
-
-
+    list = patient;
 }

@@ -30,18 +30,35 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    Scripts/Database/DatabaseController.cpp
+    Scripts/Database/databasecontroller.cpp \
+    workwindow.cpp \
+    registrationwindow.cpp
 
 HEADERS += \
         mainwindow.h \
+    Scripts/Database/databasecontroller.h \
+    workwindow.h \
+    registrationwindow.h \
     Scripts/Databasetyps.h \
     Scripts/Exceptions/InvalidExceptions.h \
-    Scripts/Database/DatabaseController.h
+    ui_mainwindow.h \
+    ui_registrationwindow.h \
+    ui_workwindow.h \
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    workwindow.ui \
+    registrationwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    Pictures/Logo_DiaThesis.png \
+    Pictures/Logo_DiaThesis.png \
+    TestDaten/Patient.json \
+    TestDaten/measurment/datasingle.json \
+    TestDaten/measurment/datenarray.json
+

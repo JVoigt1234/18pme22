@@ -13,6 +13,14 @@
   <property name="windowTitle">
    <string>DiaThesis</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">QToolBar {
+    background: darkgrey;
+    spacing: 10px; /* spacing between items in the tool bar */
+
+}
+</string>
+  </property>
   <widget class="QWidget" name="centralwidget"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -32,6 +40,13 @@
    <property name="windowTitle">
     <string>toolBar</string>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QToolBar {
+    background:darkgrey;
+    spacing: 10px; /* spacing between items in the tool bar */
+}
+</string>
+   </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonTextBesideIcon</enum>
    </property>
@@ -44,17 +59,25 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionLogo"/>
    <addaction name="actionNutzername"/>
+   <addaction name="separator"/>
    <addaction name="separator"/>
    <addaction name="actionProfileinstellungen"/>
    <addaction name="separator"/>
+   <addaction name="separator"/>
    <addaction name="actionDaten_aktualisieren"/>
+   <addaction name="separator"/>
    <addaction name="separator"/>
    <addaction name="actionTagesansicht"/>
    <addaction name="separator"/>
    <addaction name="actionMonatsansicht"/>
    <addaction name="separator"/>
    <addaction name="actionQuartalsansicht"/>
+   <addaction name="separator"/>
+   <addaction name="separator"/>
+   <addaction name="actionLogout"/>
+   <addaction name="separator"/>
    <addaction name="separator"/>
   </widget>
   <action name="actionProfileinstellungen">
@@ -91,6 +114,23 @@
   <action name="actionQuartalsansicht">
    <property name="text">
     <string>Quartalsansicht</string>
+   </property>
+  </action>
+  <action name="actionLogout">
+   <property name="text">
+    <string>Logout</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionLogo">
+   <property name="icon">
+    <iconset>
+     <normaloff>Pictures/Logo_DiaThesis.png</normaloff>Pictures/Logo_DiaThesis.png</iconset>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </action>
  </widget>

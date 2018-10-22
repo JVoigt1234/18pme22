@@ -2,7 +2,9 @@
 #include "registrationwindow.h"
 #include <QApplication>
 
+
 #include "Scripts/Database/databasecontroller.h"
+#include <QtGui>
 
 int main(int argc, char *argv[])
 {
@@ -13,6 +15,8 @@ int main(int argc, char *argv[])
 
     DatabaseController test("http://http://localhost:4181");
     test.start();
+
+
 
 
     return a.exec();

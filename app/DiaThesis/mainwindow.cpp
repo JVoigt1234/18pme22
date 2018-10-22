@@ -3,6 +3,7 @@
 #include "workwindow.h"
 #include "registrationwindow.h"
 #include <QPixmap>
+#include "userwindow.h"
 
 
 
@@ -26,9 +27,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_anmelden_btn_clicked()
 {
-    workwindow workwindow;
-    workwindow.setModal(true);
-    workwindow.exec();
+    userwindow.show();
 }
 
 void MainWindow::on_registrieren_btn_clicked()

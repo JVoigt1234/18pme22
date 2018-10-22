@@ -15,6 +15,13 @@ public:
     explicit workwindow(QWidget *parent = nullptr);
     ~workwindow();
 
+private slots:
+    void on_diary_btn_clicked();
+
+    void on_patient_btn_clicked();
+
+    void on_diary_btn_2_clicked();
+
 private:
     Ui::workwindow *ui;
 };

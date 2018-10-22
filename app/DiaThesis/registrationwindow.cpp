@@ -20,33 +20,33 @@ void RegistrationWindow::on_back_btn_2_clicked()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
-void RegistrationWindow::on_pushButton_clicked()
-{}
-
-void RegistrationWindow::on_back_btn_1_clicked()
-{}
 
 void RegistrationWindow::on_next_btn_1_clicked()
 {
    ui->stackedWidget->setCurrentIndex(1);
 }
 
-void RegistrationWindow::on_agb_cb_clicked()
+
+void RegistrationWindow::on_datenschutz_cb_stateChanged(int arg1)
 {
-    if (ui->datenschutz_cb->isChecked())
+    if ((arg1 == 2 )&& (ui->agb_cb->isChecked() == true))
     {
         ui->next_btn_2->setEnabled(true);
     }
-
-}
-
-void RegistrationWindow::on_datenschutz_cb_clicked()
-{
-    if (ui->agb_cb->isChecked())
+    else
     {
-        ui->next_btn_2->setEnabled(true);
+        ui->next_btn_2->setEnabled(false);
     }
 }
 
-void RegistrationWindow::on_checkBox_clicked()
-{}
+void RegistrationWindow::on_agb_cb_stateChanged(int arg1)
+{
+    if ((arg1 == 2 )&& (ui->datenschutz_cb->isChecked() == true))
+    {
+        ui->next_btn_2->setEnabled(true);
+    }
+    else
+    {
+        ui->next_btn_2->setEnabled(false);
+    }
+}

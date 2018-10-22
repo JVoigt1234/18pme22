@@ -16,19 +16,15 @@ public:
     ~RegistrationWindow();
 
 private slots:
-    void on_pushButton_clicked();
-
-    void on_back_btn_1_clicked();
 
     void on_back_btn_2_clicked();
 
     void on_next_btn_1_clicked();
 
-    void on_checkBox_clicked();
 
-    void on_agb_cb_clicked();
+    void on_datenschutz_cb_stateChanged(int arg1);
 
-    void on_datenschutz_cb_clicked();
+    void on_agb_cb_stateChanged(int arg1);
 
 private:
     Ui::RegistrationWindow *ui;

@@ -26,8 +26,17 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="windowTitle">
     <string>toolBar</string>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
    </property>
    <attribute name="toolBarArea">
     <enum>LeftToolBarArea</enum>
@@ -35,7 +44,55 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionNutzername"/>
+   <addaction name="separator"/>
+   <addaction name="actionProfileinstellungen"/>
+   <addaction name="separator"/>
+   <addaction name="actionDaten_aktualisieren"/>
+   <addaction name="separator"/>
+   <addaction name="actionTagesansicht"/>
+   <addaction name="separator"/>
+   <addaction name="actionMonatsansicht"/>
+   <addaction name="separator"/>
+   <addaction name="actionQuartalsansicht"/>
+   <addaction name="separator"/>
   </widget>
+  <action name="actionProfileinstellungen">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Profileinstellungen</string>
+   </property>
+  </action>
+  <action name="actionNutzername">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Nutzername</string>
+   </property>
+  </action>
+  <action name="actionDaten_aktualisieren">
+   <property name="text">
+    <string>Daten aktualisieren</string>
+   </property>
+  </action>
+  <action name="actionTagesansicht">
+   <property name="text">
+    <string>Tagesansicht</string>
+   </property>
+  </action>
+  <action name="actionMonatsansicht">
+   <property name="text">
+    <string>Monatsansicht</string>
+   </property>
+  </action>
+  <action name="actionQuartalsansicht">
+   <property name="text">
+    <string>Quartalsansicht</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

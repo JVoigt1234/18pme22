@@ -4,9 +4,7 @@
 /// Description:
 /// Author:             Kevin Kastner
 /// Date:               Oct 2018
-/// Notes:              failed = -2       :  No request could be sent to the database
-/// 					error = -1        :  Something went wrong with the SQL query.
-/// 					sucessfull = 1    :  Successful database query
+/// Notes:              -
 /// Revision History:   First release
 ///-----------------------------------------------------------------
 
@@ -24,6 +22,7 @@
 #include <QJsonArray>
 #include <QtSql>
 #include <QCryptographicHash>
+#include <QMetaEnum>
 
 //only once
 #include <QDirIterator>
@@ -36,7 +35,7 @@ class DatabaseController : public QThread
 private:
     //attribute
     QSqlDatabase m_database;
-    QString m_hostname;    //Hostname;
+    QString m_hostname;
     QString m_databasename;
     QString m_username;
     QString m_password;
@@ -45,7 +44,6 @@ private:
 
     QByteArray crypt (const QByteArray text, const QByteArray key);
     bool isUserOK(const User* user);
-    bool isUserAvailable(const User* user);
 
     //conversion features
     QGeoAddress convertJSONArray2Address(const QJsonArray jsonArray);
@@ -57,19 +55,21 @@ public:
     DatabaseController(QString hostname);
     ~DatabaseController();
 
-    enum { failed = 0, sucessfull,  error};
     //Database
     bool isConnected() const;
-    UserType isValidUser(QString userID, QString password);
+    bool isUserAvailable(const QString userID);
     bool isUserCreated(User* user, QString password);
     bool isUserDeleted(User* user, QString password);
+    UserType isValidUser(QString userID, QString password);
 
     //for every user
-    int getBloodPressure(const QString userID, const QDateTime From, const QDateTime To, QList<BloodPressure> listBloodPressure) const;
-    int getBloodSugar(const QString userID, const QDateTime From, const QDateTime To, QList<BloodSugar> listBloodSugar) const;
+    bool getBloodPressure(const Patient* patientID, const QDateTime From, const QDateTime To, QList<BloodPressure>& listBloodPressure) const;
+    bool getBloodSugar(const Patient* patientID, const QDateTime From, const QDateTime To, QList<BloodSugar>& listBloodSugar) const;
+    bool getBloodPressure(const User* userID, const QString patientID, const QDateTime From, const QDateTime To, QList<BloodPressure>& listBloodPressure) const;
+    bool getBloodSugar(const User* userID, const QString patientID, const QDateTime From, const QDateTime To, QList<BloodSugar>& listBloodSugar) const;
 
     //only for doctor
-    int getListPatient(QList<Patient>& listPatient) const;
+    bool getListPatient(QList<Patient>& listPatient) const;
 
     //getter functions for users
     Doctor getDoctorData(const QString userID);
@@ -81,11 +81,13 @@ public:
     bool updateUser(const Patient* user);
     bool updateUser(const Member* user);
 
-    bool uploadData(const BloodPressure* bloodPressure);
+    //upload functions (write new data to the database)
+    bool uploadData(const BloodPressure& bloodPressure);
     bool uploadData(const QList<BloodPressure>& listBloodPressure);
-    bool uploadData(const BloodSugar* bloodSugar);
+    bool uploadData(const BloodSugar& bloodSugar);
     bool uploadData(const QList<BloodSugar>& listBloodSugar);
 
+    //delete measurements
     bool deleteBloodPressureData(const User* user, const QDateTime timeStemp);
     bool deleteBloodPressureData(const User* user, const QDateTime from, const QDateTime to);
     bool deleteBloodSugarData(const User* user, const QDateTime timeStemp);

@@ -41,7 +41,9 @@ DatabaseController::DatabaseController(QString hostname)
 DatabaseController::~DatabaseController()
 {
     if(m_database.isOpen())
+    {
         m_database.close();
+    }
 }
 
 QByteArray DatabaseController::crypt (const QByteArray text, const QByteArray key)
@@ -57,40 +59,51 @@ QByteArray DatabaseController::crypt (const QByteArray text, const QByteArray ke
 }
 
 ///throw Exception InvalidUser()
+///checks whether the user has empty or null values
 bool DatabaseController::isUserOK(const User* user)
 {
     if(user == nullptr)
     {
-        return DatabaseController::error;
+        return false;
     }
 
     if(user->getUserID().isNull() || user->getUserID().trimmed().isEmpty() ||
        user->getForename().isNull() || user->getForename().trimmed().isEmpty()||
        user->getSurname().isNull() || user->getSurname().trimmed().isEmpty()||
-       user->geteMail().isNull() || user->geteMail().trimmed().isEmpty() )
+       user->geteMail().isNull() || user->geteMail().trimmed().isEmpty() || !user->geteMail().contains('@'))
     {
-        throw InvalidUser("Some data are missing.");
+        throw InvalidUser("Some data are wrong.");
     }
 
-    return DatabaseController::sucessfull;
+    return true;
 }
 
-bool DatabaseController::isUserAvailable(const User* user)
+///checks if the user with the given ID is stored on the database
+/// throws SqlError
+bool DatabaseController::isUserAvailable(const QString userID)
 {
-    QByteArray id = QCryptographicHash::hash( QString(user->getUserID() + QString(user->getUserID().length()) ).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash( QString(userID + QString(userID.length()) ).toUtf8(), QCryptographicHash::Md5).toHex();
 
     QSqlQuery query("SELECT userid"
-                    " FROM userdata"
-                    " WHERE userid = '" + QString(id) + "'" );
+                    " FROM registration"
+                    " WHERE userid = '" + QString(id) + "'"
+                    );
 
     if(query.lastError().type() == QSqlError::NoError && query.size() == 1)
     {
-        return DatabaseController::sucessfull;
+        return true;
     }
 
-    return DatabaseController::error;
+    if(query.lastError().type() != QSqlError::NoError)
+    {
+        throw SqlError(query.lastError().text());
+    }
+
+    return false;
 }
 
+///Converts a given jsonArray to a QGeoAddress object
+///The values used are street, city, country, and postal code
 QGeoAddress DatabaseController::convertJSONArray2Address(const QJsonArray jsonArray)
 {
     QGeoAddress address;
@@ -106,6 +119,7 @@ QGeoAddress DatabaseController::convertJSONArray2Address(const QJsonArray jsonAr
     return address;
 }
 
+///Converts a user into a QJsonObject with the values patientName (Forename/Surename), e-mail and phone
 QJsonObject DatabaseController::convertUser2JSON(const User* patient)
 {
     QJsonObject userObject;
@@ -117,6 +131,7 @@ QJsonObject DatabaseController::convertUser2JSON(const User* patient)
     return userObject;
 }
 
+///Converts a QGeoAddress into a QJsonObject with the values street, city, country and postalCode
 QJsonObject DatabaseController::convertAddress2JSON(const QGeoAddress address)
 {
     QJsonObject addressObject;
@@ -128,11 +143,13 @@ QJsonObject DatabaseController::convertAddress2JSON(const QGeoAddress address)
     return addressObject;
 }
 
+///checks if the database is open and returns the result
 bool DatabaseController::isConnected() const
 {
     m_database.isOpen();
 }
 
+///checks if the databse has the given user and password
 UserType DatabaseController::isValidUser(QString userID, QString password)
 {
     if(userID.isNull() || userID.trimmed().isEmpty() || password.isNull() || password.trimmed().isEmpty() )
@@ -144,7 +161,7 @@ UserType DatabaseController::isValidUser(QString userID, QString password)
     QByteArray pw = QCryptographicHash::hash( QString(password + QString(id)).toUtf8(), QCryptographicHash::Md5).toHex();
 
     QSqlQuery query("SELECT userid,password,usertyp"
-                    " FROM userdata"
+                    " FROM registration"
                     " WHERE userid = '" + QString(id) + "'"
                     " AND password = '" + QString(pw) + "'" );
 
@@ -155,11 +172,6 @@ UserType DatabaseController::isValidUser(QString userID, QString password)
 
     query.first();      //i need this to select the first one
 
-    if(QByteArray::fromHex(query.value(0).toByteArray()) == id && QByteArray::fromHex(query.value(1).toByteArray()) == pw )
-    {
-        return UserType::inValidUser;
-    }
-
     QByteArray usertyp = QByteArray::fromHex(query.value(2).toByteArray());
 
     if(usertyp.isEmpty())
@@ -169,65 +181,99 @@ UserType DatabaseController::isValidUser(QString userID, QString password)
 
     usertyp = crypt(usertyp, pw);
     return static_cast<UserType>(usertyp.toInt());
+
 }
 
+///create a new user on the database
 bool DatabaseController::isUserCreated(User* user, QString password)
 {
     if(!isConnected() )
     {
-        return DatabaseController::failed;
+        return false;
     }
 
     try {
-        if(isUserAvailable(user) == DatabaseController::error || isUserOK(user) == DatabaseController::error || password.isNull() || password.trimmed().isEmpty())
+        if(isUserAvailable(user->getUserID()) == true || isUserOK(user) == false || password.isNull() || password.trimmed().isEmpty())
         {
-            return DatabaseController::error;
+            return false;
         }
     } catch (InvalidUser e) {
         qDebug() << e.getMessage();
-        return DatabaseController::error;
+        return false;
     }
 
     QSqlQuery creating;
 
-    //creating a formular
-    creating.prepare("INSERT INTO userdata(userid, data, password, usertyp) "
-                     "VALUES (:userid, :data, :password, :usertyp)" );
-
-    QJsonObject userObject;
-    userObject = convertUser2JSON(user);
-
     //user
-    QByteArray userByteArray = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Md5).toHex();
-
+    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Md5).toHex();
     //password
-    QByteArray passwordByteArray = QCryptographicHash::hash( QString(password + QString(userByteArray)).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray pw = QCryptographicHash::hash( QString(password + QString(id)).toUtf8(), QCryptographicHash::Md5).toHex();
 
-    //data
-    QJsonDocument doc(userObject);
-    QByteArray jsonByteArray = doc.toBinaryData();
-    jsonByteArray = crypt(jsonByteArray, passwordByteArray);
 
+    creating.prepare("INSERT INTO registration(userid,password,usertyp) "
+                     "VALUES (:userid, :password, :usertyp)" );
     //userTyp
     QByteArray usertyp;
     usertyp.setNum(int(user->getUserType()));
-    usertyp = crypt(usertyp, passwordByteArray ).toHex();
+    usertyp = crypt(usertyp, pw ).toHex();
 
-    creating.bindValue(0, QString(userByteArray) );
-    creating.bindValue(1, jsonByteArray.toHex());
-    creating.bindValue(2, QString(passwordByteArray) );
-    creating.bindValue(3, QString(usertyp) );
+    creating.bindValue(0, QString(id) );
+    creating.bindValue(1, QString(pw) );
+    creating.bindValue(2, usertyp);
+    creating.exec();
+
+    qDebug() << creating.lastError();
+    if(creating.lastError().type() != QSqlError::NoError)
+    {
+        return false;
+    }
+
+    QString tablename;
+
+    switch (user->getUserType()) {
+        case UserType::admin:
+        case UserType::doctor: tablename = "doctor";
+            break;
+        case UserType::patient: tablename = "patient";
+            break;
+        case UserType::member: tablename = "member";
+            break;
+        default:
+            return false;
+    }
+
+    //creating a formular
+    creating.prepare("INSERT INTO " + tablename + "(userid,password,data) "
+                     "VALUES ("
+                     "(SELECT userid from registration WHERE userid = '" + QString(id) + "' AND password = '" + QString(pw) + "'),"
+                     "(SELECT password from registration WHERE userid = '" + QString(id) + "' AND password = '" + QString(pw) + "'),"
+                     ":data)" );
+
+    //data
+    QJsonObject userObject;
+    userObject = convertUser2JSON(user);
+    QJsonDocument doc(userObject);
+    QByteArray jsonByteArray = doc.toBinaryData();
+    jsonByteArray = crypt(jsonByteArray, pw);
+
+    creating.bindValue(0, jsonByteArray.toHex());
 
     creating.exec();
 
     if(creating.lastError().type() == QSqlError::NoError)
     {
-        return DatabaseController::sucessfull;
+        return true;
     }
 
-    return DatabaseController::failed;
+    //if it was not possible to write user to "user"table
+    creating.exec("DELETE FROM registration"
+                " WHERE userid = '" + QString(id) + "'"
+                " AND password = '" + QString(pw) + "'" );
+
+    return false;
 }
 
+///delete a user from the database
 bool DatabaseController::isUserDeleted(User* user, QString password)
 {
     if(!isConnected() )
@@ -236,7 +282,7 @@ bool DatabaseController::isUserDeleted(User* user, QString password)
     }
 
     try {
-        if(isUserOK(user) == false || isUserAvailable(user) == false || password.isNull() || password.trimmed().isEmpty())
+        if(isUserOK(user) == false || isUserAvailable(user->getUserID()) == false || password.isNull() || password.trimmed().isEmpty())
         {
             return false;
         }
@@ -249,43 +295,42 @@ bool DatabaseController::isUserDeleted(User* user, QString password)
     QByteArray pw = QCryptographicHash::hash( QString(password + QString(id)).toUtf8(), QCryptographicHash::Md5).toHex();
 
     QSqlQuery creating;
-    creating.exec("DELETE FROM userdata"
+    creating.exec("DELETE FROM registration"
                 " WHERE userid = '" + QString(id) + "'"
                 " AND password = '" + QString(pw) + "'" );
 
 
     if(creating.lastError().type() == QSqlError::NoError)
     {
-        return DatabaseController::sucessfull;
+        return true;
     }
     else
     {
-        return DatabaseController::failed;
+        return false;
     }
 }
 
-int DatabaseController::getBloodPressure(const QString userID_patient, const QDateTime from, const QDateTime to, QList<BloodPressure> listBloodPressure) const
+bool DatabaseController::getBloodPressure(const Patient* patientID, const QDateTime From, const QDateTime To, QList<BloodPressure>& listBloodPressure) const
 {
-//    if(user->getUserType() == UserType::doctor || user->getUserType() == UserType::member)
-//    {
-//        return int(DatabaseController::error);
-//    }
-
-//Datenbankabfrage from BETWEEN to
-    return DatabaseController::sucessfull;
+    //Datenbankabfrage from BETWEEN to
 }
 
-int DatabaseController::getBloodSugar(const QString userID_patient, const QDateTime from, const QDateTime to, QList<BloodSugar> listBloodSugar) const
+bool DatabaseController::getBloodPressure(const User* userID, const QString patientID, const QDateTime From, const QDateTime To, QList<BloodPressure>& listBloodPressure) const
 {
-//    if(user->getUserType() == UserType::doctor || user->getUserType() == UserType::member)
-//    {
-//        return int(DatabaseController::error);
-//    }
-//Datenbankabfrage from BETWEEN to
-    return int(DatabaseController::sucessfull);
+
 }
 
-int DatabaseController::getListPatient(QList<Patient>& listPatient) const
+bool DatabaseController::getBloodSugar(const Patient* patientID, const QDateTime From, const QDateTime To, QList<BloodSugar>& listBloodSugar) const
+{
+
+}
+
+bool DatabaseController::getBloodSugar(const User* userID, const QString patientID, const QDateTime From, const QDateTime To, QList<BloodSugar>& listBloodSugar) const
+{
+
+}
+
+bool DatabaseController::getListPatient(QList<Patient>& listPatient) const
 {
 //    if(user->getUserType() != UserType::admin || user->getUserType() != UserType::doctor)
 //    {
@@ -294,6 +339,7 @@ int DatabaseController::getListPatient(QList<Patient>& listPatient) const
 //    }
 
     //m_currentState = DatabaseController::sucessfull;
+    listPatient.append(Patient("jladf","kaf",UserType::admin,"jalkdöf","akjldf"));
 }
 
 Doctor DatabaseController::getDoctorData(const QString userID)
@@ -315,14 +361,15 @@ Patient DatabaseController::getPatientData(const QString userID)
 
     QByteArray id = QCryptographicHash::hash(QString(userID + QString(userID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
 
-    QSqlQuery query("SELECT password,data,usertyp"
-                    " FROM userdata"
+    QSqlQuery query("SELECT password,data"
+                    " FROM patient"
                     " WHERE userid = '" + QString(id) + "'" );
 
     if(query.lastError().type() != QSqlError::NoError || query.size() != 1)
     {
         throw UserNotFound(QString("User with ID: " + userID + " not found.").toLocal8Bit().data());
     }
+    qDebug() << query.size();
     query.first();
 
     QByteArray data = crypt(QByteArray::fromHex(query.value(1).toByteArray()), query.value(0).toByteArray());
@@ -334,29 +381,19 @@ Patient DatabaseController::getPatientData(const QString userID)
     QStringList name = jsonObject["patientName"].toString().split('/', QString::SkipEmptyParts);
     QStringList bs = jsonObject["bloodSugarRange"].toString().split('/', QString::SkipEmptyParts);
 
-    QByteArray usertyp = QByteArray::fromHex(query.value(2).toByteArray());
-
-    if(usertyp.isEmpty())
+    if(name.isEmpty() || name.size() != 2)
     {
-        throw InvalidUser("No UserTyp.");
+        throw InvalidUser("patient name is wrong.");
     }
-
-    usertyp = crypt(usertyp, query.value(0).toByteArray());
-    if(name.length() != 2)
-    {
-        throw InvalidUser("Not enough parameters for name");
-    }
-
-    UserType typ = static_cast<UserType>(usertyp.toInt());
 
     if(bs.isEmpty()){
-        return Patient(name[0], name[1], typ, jsonObject["email"].toString(), jsonObject["birthDate"].toString() );
+        return Patient(name[0], name[1], UserType::patient, jsonObject["email"].toString(), jsonObject["birthDate"].toString() );
     }
 
     if(bs.length() == 2)
     {
 
-        return Patient(name[0], name[1], typ, jsonObject["email"].toString(), jsonObject["birthDate"].toString(), jsonObject["age"].toInt(), jsonObject["weight"].toDouble(),
+        return Patient(name[0], name[1], UserType::patient, jsonObject["email"].toString(), jsonObject["birthDate"].toString(), jsonObject["age"].toInt(), jsonObject["weight"].toDouble(),
                   jsonObject["bodysize"].toDouble(), static_cast<Gender>(jsonObject["gender"].toInt()), jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(),
                    bs[1].toDouble(), jsonObject["alcohol"].toBool(), jsonObject["cigaret"].toBool(), address);
     }
@@ -381,17 +418,23 @@ bool DatabaseController::updateUser(const Patient* user)
         throw InvalidUser("Database closed.");
     }
 
-    if(isUserOK(user) == false || isUserAvailable(user) == false || user->getUserType() != UserType::patient)
-    {
-        throw InvalidUser("Invaild User.");
+    try {
+        if(isUserOK(user) == false || isUserAvailable(user->getUserID()) == false || user->getUserType() != UserType::patient)
+        {
+            throw InvalidUser("Invaild User.");
+        }
+    } catch (InvalidUser e) {
+        qDebug() << e.getMessage();
+        return false;
     }
+
 
     QJsonObject userObject;
     userObject = convertUser2JSON(user);
 
     if(userObject.isEmpty())
     {
-        return  DatabaseController::failed;
+        return  false;
     }
 
     userObject.insert("age", QJsonValue::fromVariant(user->getAge() ));
@@ -415,30 +458,30 @@ bool DatabaseController::updateUser(const Patient* user)
     QJsonDocument doc(userObject);
     QByteArray jsonByteArray = doc.toBinaryData();
 
-    QSqlQuery query("SELECT password"
-                    " FROM userdata"
+    QSqlQuery query("SELECT password,data"
+                    " FROM patient"
                     " WHERE userid = '" + QString(id) + "'" );
 
     if(creating.lastError().type() != QSqlError::NoError || query.size() != 1)
     {
-        return DatabaseController::failed;
+        return false;
     }
 
     query.first();
 
     jsonByteArray = crypt(jsonByteArray, query.value(0).toByteArray());
 
-    creating.exec("UPDATE userdata"
+    creating.exec("UPDATE patient"
                   " SET data = '" + jsonByteArray.toHex() + "'" +
                   " WHERE userid = '" + QString(id) + "'" );
 
     if(creating.lastError().type() == QSqlError::NoError)
     {
-        return DatabaseController::sucessfull;
+        return true;
     }
     else
     {
-        return DatabaseController::failed;
+        return false;
     }
 }
 
@@ -447,7 +490,7 @@ bool DatabaseController::updateUser(const Member* user)
 
 }
 
-bool DatabaseController::uploadData(const BloodPressure* bloodPressure)
+bool DatabaseController::uploadData(const BloodPressure& bloodPressure)
 {
 
 }
@@ -457,7 +500,7 @@ bool DatabaseController::uploadData(const QList<BloodPressure>& listBloodPressur
 
 }
 
-bool DatabaseController::uploadData(const BloodSugar* bloodSugar)
+bool DatabaseController::uploadData(const BloodSugar& bloodSugar)
 {
 
 }
@@ -527,50 +570,74 @@ bool DatabaseController::creatDatabase()
 {
     QSqlQuery query;
     query.exec(
-                "CREATE TABLE userdata("
-                   "userid text NOT NULL,"
-                   "data bytea,"
-                   "password text NOT NULL,"
-                   "usertyp text NOT NULL,"
-                   "UNIQUE(userid),"
-                   "PRIMARY KEY (userid)"
-                   ");"
+                "CREATE TABLE registration("
+                "userid text NOT NULL PRIMARY KEY,"
+                "password text NOT NULL,"
+                "usertyp bytea NOT NULL,"
+                "UNIQUE(userid, password)"
+                ");"
 
-                   "CREATE TABLE sugarmeasurment("
-                   "userid text NOT NULL REFERENCES userdata(userid) ON DELETE CASCADE ON UPDATE CASCADE,"
-                   "value double precision,"
-                   "timestemp text NOT NULL,"
-                   "UNIQUE(userid, timestemp),"
-                   "PRIMARY KEY (userid, timestemp)"
-                   ");"
+                "CREATE TABLE patient("
+                "userid text  NOT NULL,"
+                "password text  NOT NULL,"
+                "data bytea,"
+                "UNIQUE(userid, password),"
+                "PRIMARY KEY (userid),"
+                "FOREIGN KEY (userid, password) REFERENCES registration (userid, password) ON DELETE CASCADE ON UPDATE CASCADE"
+                ");"
 
-                   "CREATE TABLE bloodmeasurment("
-                   "userid text NOT NULL REFERENCES userdata(userid) ON DELETE CASCADE ON UPDATE CASCADE,"
-                   "value double precision,"
-                   "timestemp text NOT NULL,"
-                   "UNIQUE(userid, timestemp),"
-                   "PRIMARY KEY (userid, timestemp)"
-                   ");"
+                "CREATE TABLE doctor("
+                "userid text  NOT NULL,"
+                "password text  NOT NULL,"
+                "data bytea,"
+                "UNIQUE(userid, password),"
+                "PRIMARY KEY (userid),"
+                "FOREIGN KEY (userid, password) REFERENCES registration (userid, password) ON DELETE CASCADE ON UPDATE CASCADE"
+                ");"
+
+                "CREATE TABLE member("
+                "userid text  NOT NULL,"
+                "password text  NOT NULL,"
+                "data bytea,"
+                "UNIQUE(userid, password),"
+                "PRIMARY KEY (userid),"
+                "FOREIGN KEY (userid, password) REFERENCES registration (userid, password) ON DELETE CASCADE ON UPDATE CASCADE"
+                ");"
+
+                "CREATE TABLE sugarmeasurment("
+                "userid text NOT NULL REFERENCES patient(userid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                "value double precision,"
+                "timestemp text NOT NULL,"
+                "UNIQUE(userid, timestemp),"
+                "PRIMARY KEY (userid, timestemp)"
+                ");"
+
+                "CREATE TABLE bloodmeasurment("
+                "userid text NOT NULL REFERENCES patient(userid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                "value double precision,"
+                "timestemp text NOT NULL,"
+                "UNIQUE(userid, timestemp),"
+                "PRIMARY KEY (userid, timestemp)"
+                ");"
                );
-
     if(query.lastError().type() == QSqlError::NoError)
     {
-        return DatabaseController::sucessfull;
+        return true;
     }
 
-    return DatabaseController::failed;
+    return false;
 }
 
 bool DatabaseController::deleteDatabase()
 {
     QSqlQuery query;
-    query.exec( "DROP TABLE userdata, sugarmeasurment,bloodmeasurment");
+    query.exec( "DROP TABLE patient, member, doctor, access, registration, sugarmeasurment, bloodmeasurment ");
 
     if(query.lastError().type() == QSqlError::NoError)
     {
-        return DatabaseController::sucessfull;
+        return true;
     }
 
-    return DatabaseController::failed;
+    return false;
 }
 

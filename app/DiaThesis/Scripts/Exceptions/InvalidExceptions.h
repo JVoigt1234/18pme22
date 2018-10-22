@@ -50,4 +50,16 @@ public:
     QString getMessage(void) const {return m_message;}
 };
 
+class SqlError : public QException
+{
+private:
+    QString m_message;
+public:
+    void raise() const override { throw *this; }
+    SqlError *clone() const override { return new SqlError(*this); }
+    SqlError(const QString desc) {m_message = desc; }
+
+    QString getMessage(void) const {return m_message;}
+};
+
 #endif // INVALIDEXCEPTIONS_H

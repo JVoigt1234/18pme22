@@ -5,10 +5,7 @@
 /// Description:
 /// Author:             Kevin Kastner
 /// Date:               Oct 2018
-/// Notes:              failed = -2  : No request could be sent to the database
-/// 					error = -1   : Some data have been skipped
-/// 					run = 1      : Connection to database running
-/// 					completed = 0: All data have been downloaded from the database and are available as List<DICOMFile>
+/// Notes:              -
 /// Revision History:   First release
 ///-----------------------------------------------------------------
 
@@ -218,14 +215,27 @@ class Member : virtual public User
 {
 private:
     //all member properties
-    QString m_patientRelease;
+    QList<QString> m_patientRelease;
 public:
-    Member(QString forename, QString surname, UserType type, QString eMail, QString patientRealeaseID) : User(forename, surname, type, eMail)
+    Member(QString forename, QString surname, UserType type, QString eMail, QList<QString> patientRelease) : User(forename, surname, type, eMail)
     {
-        m_patientRelease = patientRealeaseID;
+        m_patientRelease.append(patientRelease);
     }
 
-    QString getPatientRealease(void) const {return m_patientRelease;}
+    ///add a new access id
+    bool addPatientRealease(const QString patientID)
+    {
+        if(m_patientRelease.contains(patientID))
+            return false;
+        m_patientRelease.append(patientID);
+        return true;
+    }
+    ///retrun all access id
+    void getPatientRealease(const QList<QString>* list) const {list = &m_patientRelease;}
+    ///delete all ids
+    bool deletePatientRealease(void) { m_patientRelease.clear(); return true;}
+    ///delete the given id
+    bool deletePatientRealease(const QString patientID) {return m_patientRelease.removeOne(patientID); }
 };
 
 #endif // JSONTYPS_H

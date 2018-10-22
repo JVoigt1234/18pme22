@@ -25,90 +25,24 @@ int main(int argc, char *argv[])
     Patient p("hans", "otto", UserType::patient, "hans@gmail.com", "1992.03.23");
     UserType g;
     QList<Patient> pList;
+    data.loadDataset(pList,"TestDaten/user/" );
 
     //data.creatDatabase();
-
     try {
-        g = data.isValidUser("hans@gmail.com", "hallo");
-        if( g == UserType::inValidUser)
+        if(data.isUserAvailable(pList[1].getUserID()) == false)
         {
-            if(data.isUserCreated(&p, "hallo") == DatabaseController::sucessfull)
+            data.isUserCreated(&pList[1], "hallo");
+            if(data.isValidUser(pList[1].getUserID(), "hallo") == UserType::patient )
             {
-               qDebug() << "Patient erzeugt.";
-               qDebug() << "UserType: " << int(p.getUserType());
+                qDebug() << "User Patient vorhanden";
             }
         }
-        else
+
+        if(data.isValidUser(pList[1].getUserID(), "hallo") == UserType::patient )
         {
-           qDebug() << "Benutzer vorhanden.";
-           qDebug() << "UserType: " << int(g);
+            qDebug() << "User Patient vorhanden";
         }
 
-        p = data.getPatientData(p.getUserID());
-        qDebug() << p.getForename();
-        qDebug() << p.getUserID();
-        qDebug() << "Bodaysize: " << p.getBodysize();
-
-        data.loadDataset(pList, "TestDaten/user/");
-        //data.loadDataset(pList, "TestDaten/measurement");
-
-        data.updateUser(&pList[0]);
-        qDebug() << "User update. New Data";
-
-        g = data.isValidUser(p.getUserID(), "hallo");
-
-        switch (g) {
-
-        case UserType::patient:
-            p = data.getPatientData(p.getUserID());
-            qDebug() << "UserType: " << int(g);;
-            qDebug() << "UserID: " << p.getUserID();
-            qDebug() << "Bodaysize: " << p.getBodysize();
-            qDebug() << "TargetBloodSugar: " << p.getTargetBloodSugar();
-
-            p.setTargetBloodSugar(150);
-            data.updateUser(&p);
-            p = data.getPatientData(p.getUserID());
-            qDebug() << "New TargetBloodSugar: " << p.getTargetBloodSugar();
-            break;
-
-        case UserType::inValidUser:
-            qDebug() << "Invaild User.";
-            break;
-        }
-
-        if(data.isUserDeleted(&p, "hallo") == true )
-        {
-            qDebug() << "Patient gelöscht.";
-        }
-
-//        int correct = 0, failed = 0, value = 5000, deleted = 0, creat = 0, index;
-//        data.loadDataset(pList, "TestDaten/user/");
-
-//        for(int i = 0; i < value; i++)
-//        {
-//            index = qrand() % pList.length();
-//            if(data.isUserCreated(&pList[index], "Hier_könnte_ihre_Werbung_stehen"))
-//                creat++;
-
-//            data.updateUser(&pList[index]);
-
-//            g = data.isValidUser(pList[index].getUserID(), "Hier_könnte_ihre_Werbung_stehen");
-//            p = data.getPatientData(pList[index].getUserID());
-
-//            if(p.getUserType() == g && p == pList[index])
-//                correct++;
-//            else
-//                failed++;
-
-//            if(data.isUserDeleted(&pList[index], "Hier_könnte_ihre_Werbung_stehen"))
-//                deleted++;
-//        }
-
-//        qDebug() << "creat: " << creat << "from " << value ;
-//        qDebug() << "Correct: " << correct << "from " << value ;
-//        qDebug() << "Failed: " << failed << "from " << value ;
-//        qDebug() << "Deleted: " << deleted << "from " << value ;
 
     } catch (InvalidUser e) {
         qDebug() << e.getMessage();
@@ -120,6 +54,5 @@ int main(int argc, char *argv[])
         qDebug() << e.getMessage();
     }
 
-    data.deleteDatabase();
     return a.exec();
 }

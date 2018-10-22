@@ -1,0 +1,57 @@
+CREATE TABLE patient(
+userid text NOT NULL,
+password text NOT NULL,
+data bytea,
+UNIQUE(userid),
+PRIMARY KEY (userid)
+);
+
+CREATE TABLE doctor(
+userid text NOT NULL,
+password text NOT NULL,
+data bytea,
+UNIQUE(userid),
+PRIMARY KEY (userid)
+);
+
+CREATE TABLE member(
+userid text NOT NULL,
+password text NOT NULL,
+data bytea,
+UNIQUE(userid),
+PRIMARY KEY (userid)
+);
+
+CREATE TABLE admin(
+userid text NOT NULL,
+password text NOT NULL,
+data bytea,
+UNIQUE(userid),
+PRIMARY KEY (userid)
+);
+
+CREATE TABLE access(
+patientid text NOT NULL REFERENCES patient(userid) ON DELETE CASCADE ON UPDATE CASCADE,
+foreignid text NOT NULL REFERENCES patient(userid) ON DELETE CASCADE ON UPDATE CASCADE
+                        REFERENCES member(userid) ON DELETE CASCADE ON UPDATE CASCADE
+                        REFERENCES doctor(userid) ON DELETE CASCADE ON UPDATE CASCADE
+                        REFERENCES admin(userid) ON DELETE CASCADE ON UPDATE CASCADE,
+UNIQUE(patientid, foreignid),
+PRIMARY KEY (patientid, foreignid)
+);
+
+CREATE TABLE sugarmeasurment(
+userid text NOT NULL REFERENCES patient(userid) ON DELETE CASCADE ON UPDATE CASCADE,
+value double precision,
+timestemp text NOT NULL,
+UNIQUE(userid, timestemp),
+PRIMARY KEY (userid, timestemp)
+);
+
+CREATE TABLE bloodmeasurment(
+userid text NOT NULL REFERENCES patient(userid) ON DELETE CASCADE ON UPDATE CASCADE,
+value double precision,
+timestemp text NOT NULL,
+UNIQUE(userid, timestemp),
+PRIMARY KEY (userid, timestemp)
+);

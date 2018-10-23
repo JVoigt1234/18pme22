@@ -50,3 +50,13 @@ void RegistrationWindow::on_agb_cb_stateChanged(int arg1)
         ui->next_btn_2->setEnabled(false);
     }
 }
+
+void RegistrationWindow::on_back_btn_1_clicked()
+{
+    this->close();
+}
+
+void RegistrationWindow::on_next_btn_2_clicked()
+{
+    this->close(); //zuvor muss das neue Profil in der Datenbank gespeichert werden
+}

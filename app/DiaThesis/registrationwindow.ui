@@ -101,7 +101,7 @@
            </rect>
           </property>
           <property name="text">
-           <string>zurück</string>
+           <string>zurück zur Anmeldung</string>
           </property>
          </widget>
          <widget class="QGroupBox" name="groupBox_2">

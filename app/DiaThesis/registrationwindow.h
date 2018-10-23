@@ -26,6 +26,10 @@ private slots:
 
     void on_agb_cb_stateChanged(int arg1);
 
+    void on_back_btn_1_clicked();
+
+    void on_next_btn_2_clicked();
+
 private:
     Ui::RegistrationWindow *ui;
 };

@@ -28,6 +28,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_anmelden_btn_clicked()
 {
     userwindow.show();
+    this->close();
 }
 
 void MainWindow::on_registrieren_btn_clicked()

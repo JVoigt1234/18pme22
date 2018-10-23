@@ -17,6 +17,20 @@ public:
     //QTabBar tb;
 
 
+private slots:
+
+    void on_actionProfileinstellungen_triggered();
+
+    void on_actionDaten_aktualisieren_triggered();
+
+    void on_actionTagesansicht_triggered();
+
+    void on_actionMonatsansicht_triggered();
+
+    void on_actionQuartalsansicht_triggered();
+
+    void on_actionLogout_triggered();
+
 private:
     Ui::UserWindow *ui;
 };

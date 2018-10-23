@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>875</width>
+    <height>570</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,18 +21,72 @@
 }
 </string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>21</height>
-    </rect>
-   </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="0">
+     <widget class="QStackedWidget" name="mainStackWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="profilePage">
+       <layout class="QGridLayout" name="gridLayout_6">
+        <item row="0" column="0">
+         <widget class="QLabel" name="Profileinstellungen_lb">
+          <property name="text">
+           <string>Profileinstellungen</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="GetDataPage">
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <widget class="QPushButton" name="getNewData_btn">
+          <property name="text">
+           <string>Neue Daten abholen (Serversynchro)</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="DayViewPage">
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QLabel" name="Tagesasicht_lb">
+          <property name="text">
+           <string>Tagesansicht</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="MonthViewPage">
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="0">
+         <widget class="QLabel" name="Monatsansicht_lb">
+          <property name="text">
+           <string>Monatsansicht</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="QuartalViewPage">
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Quartalsansicht</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
    <property name="enabled">
     <bool>true</bool>
@@ -46,6 +100,9 @@
     spacing: 10px; /* spacing between items in the tool bar */
 }
 </string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
    </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -130,7 +187,7 @@
      <normaloff>Pictures/Logo_DiaThesis.png</normaloff>Pictures/Logo_DiaThesis.png</iconset>
    </property>
    <property name="text">
-    <string/>
+    <string>Logo</string>
    </property>
   </action>
  </widget>

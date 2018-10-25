@@ -17,18 +17,17 @@ public:
 
 private slots:
 
-    void on_back_btn_2_clicked();
-
-    void on_next_btn_1_clicked();
-
-
     void on_datenschutz_cb_stateChanged(int arg1);
 
     void on_agb_cb_stateChanged(int arg1);
 
-    void on_back_btn_1_clicked();
+    void on_zurSeite1Reg_btn_clicked();
 
-    void on_next_btn_2_clicked();
+    void on_accountErstellen_btn_clicked();
+
+    void on_zurAnmeldung_btn_clicked();
+
+    void on_seiteZweiReg_btn_clicked();
 
 private:
     Ui::RegistrationWindow *ui;

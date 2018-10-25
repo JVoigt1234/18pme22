@@ -23,10 +23,10 @@
       <item row="0" column="1">
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="nutzertyp_page">
-         <widget class="QGroupBox" name="groupBox">
+         <widget class="QGroupBox" name="nutzertyp_gb">
           <property name="geometry">
            <rect>
             <x>340</x>
@@ -38,7 +38,7 @@
           <property name="title">
            <string>Ich möchte die Applikation nutzen als:...</string>
           </property>
-          <widget class="QRadioButton" name="radioButton">
+          <widget class="QRadioButton" name="Arzt_rb">
            <property name="geometry">
             <rect>
              <x>40</x>
@@ -51,7 +51,7 @@
             <string>Arzt</string>
            </property>
           </widget>
-          <widget class="QRadioButton" name="radioButton_2">
+          <widget class="QRadioButton" name="Patient_rb">
            <property name="geometry">
             <rect>
              <x>40</x>
@@ -64,7 +64,7 @@
             <string>Patient</string>
            </property>
           </widget>
-          <widget class="QRadioButton" name="radioButton_3">
+          <widget class="QRadioButton" name="Angehoeriger_rb">
            <property name="geometry">
             <rect>
              <x>40</x>
@@ -78,7 +78,7 @@
            </property>
           </widget>
          </widget>
-         <widget class="QPushButton" name="next_btn_1">
+         <widget class="QPushButton" name="seiteZweiReg_btn">
           <property name="geometry">
            <rect>
             <x>754</x>
@@ -91,7 +91,7 @@
            <string>weiter</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="back_btn_1">
+         <widget class="QPushButton" name="zurAnmeldung_btn">
           <property name="geometry">
            <rect>
             <x>20</x>
@@ -104,7 +104,7 @@
            <string>zurück zur Anmeldung</string>
           </property>
          </widget>
-         <widget class="QGroupBox" name="groupBox_2">
+         <widget class="QGroupBox" name="persoenlDaten_gb">
           <property name="geometry">
            <rect>
             <x>340</x>
@@ -116,7 +116,7 @@
           <property name="title">
            <string>Persönliche Daten: </string>
           </property>
-          <widget class="QLabel" name="label_4">
+          <widget class="QLabel" name="vorname_lb">
            <property name="geometry">
             <rect>
              <x>10</x>
@@ -129,7 +129,7 @@
             <string>Vorname: </string>
            </property>
           </widget>
-          <widget class="QLabel" name="label_5">
+          <widget class="QLabel" name="nachname_lb">
            <property name="geometry">
             <rect>
              <x>10</x>
@@ -170,8 +170,8 @@
           </widget>
          </widget>
         </widget>
-        <widget class="QWidget" name="page_2">
-         <widget class="QPushButton" name="next_btn_2">
+        <widget class="QWidget" name="MailPW_page">
+         <widget class="QPushButton" name="accountErstellen_btn">
           <property name="enabled">
            <bool>false</bool>
           </property>
@@ -187,7 +187,7 @@
            <string>Account erstellen</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="back_btn_2">
+         <widget class="QPushButton" name="zurSeite1Reg_btn">
           <property name="geometry">
            <rect>
             <x>10</x>
@@ -238,21 +238,21 @@
             </widget>
            </item>
            <item row="0" column="0">
-            <widget class="QLabel" name="label">
+            <widget class="QLabel" name="mail_lb">
              <property name="text">
               <string>Email: </string>
              </property>
             </widget>
            </item>
            <item row="1" column="0">
-            <widget class="QLabel" name="label_2">
+            <widget class="QLabel" name="passwort_lb">
              <property name="text">
               <string>Passwort:</string>
              </property>
             </widget>
            </item>
            <item row="2" column="0">
-            <widget class="QLabel" name="label_3">
+            <widget class="QLabel" name="passwort2_lb">
              <property name="text">
               <string>Passwort bestätigen:</string>
              </property>

@@ -27,9 +27,9 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
-      <widget class="QWidget" name="page_3">
+      <widget class="QWidget" name="LogoPage">
        <layout class="QGridLayout" name="gridLayout_4">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_6">
@@ -60,7 +60,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="page_4">
+      <widget class="QWidget" name="AnmeldePage">
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_2">

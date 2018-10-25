@@ -23,7 +23,7 @@
       <item row="0" column="1">
        <widget class="QStackedWidget" name="stackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="nutzertyp_page">
          <widget class="QGroupBox" name="nutzertyp_gb">
@@ -298,6 +298,32 @@
             </item>
            </layout>
           </widget>
+         </widget>
+         <widget class="QLabel" name="passwortSicherheit_lb">
+          <property name="geometry">
+           <rect>
+            <x>690</x>
+            <y>170</y>
+            <width>111</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Passwortsicherheit:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="PwHint_lb">
+          <property name="geometry">
+           <rect>
+            <x>690</x>
+            <y>200</y>
+            <width>61</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
          </widget>
         </widget>
        </widget>

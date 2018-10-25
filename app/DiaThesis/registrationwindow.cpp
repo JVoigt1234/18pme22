@@ -1,5 +1,6 @@
 #include "registrationwindow.h"
 #include "ui_registrationwindow.h"
+#include <QChar>
 
 RegistrationWindow::RegistrationWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -7,6 +8,11 @@ RegistrationWindow::RegistrationWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
+
+    pwHasCapitalLetter=false;
+    pwHasSmallLetter=false;
+    pwHasNumber=false;
+    pwHasSixChars=false;
 }
 
 RegistrationWindow::~RegistrationWindow()
@@ -59,3 +65,42 @@ void RegistrationWindow::on_seiteZweiReg_btn_clicked()
 {
    ui->stackedWidget->setCurrentIndex(1);
 }
+
+void RegistrationWindow::on_password_le_textChanged(const QString &arg1)
+{
+    pwHasCapitalLetter=false;
+    pwHasNumber=false;
+    pwHasSixChars=false;
+    pwHasSmallLetter=false;
+    ui->PwHint_lb->text()="";
+  for (int i = 0; i<arg1.length(); i++)
+  {
+      if (arg1.at(i).isLower())
+      {
+          pwHasSmallLetter=true;
+      }
+      if(arg1.at(i).isUpper())
+      {
+          pwHasCapitalLetter=true;
+      }
+      if(arg1.at(i).isNumber())
+      {
+          pwHasNumber=true;
+      }
+      if (arg1.length()>=6)
+      {
+          pwHasSixChars=true;
+      }
+  } //hier koplettes einegegbenes Passwort geprüft
+
+  if (pwHasCapitalLetter&&pwHasNumber&&pwHasSixChars&&pwHasSmallLetter)
+  {
+      ui->PwHint_lb->setStyleSheet("QLabel { background-color : green;}");
+  }
+  else
+  {
+      ui->PwHint_lb->setStyleSheet("QLabel { background-color : red;}");
+  }
+
+}
+

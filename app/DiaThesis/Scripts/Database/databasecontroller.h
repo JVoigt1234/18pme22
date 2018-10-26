@@ -27,7 +27,7 @@
 //only once
 #include <QDirIterator>
 
-#include "Scripts/Databasetyps.h"
+#include "Scripts/Database/Databasetyps.h"
 
 ///failed: 0, sucessfull: 1
 class DatabaseController : public QThread
@@ -72,9 +72,9 @@ public:
     bool getListPatient(QList<Patient>& listPatient) const;
 
     //getter functions for users
-    Doctor getDoctorData(const QString userID);
-    Patient getPatientData(const QString userID);
-    Member getMemberData(const QString userID);
+    Doctor getDoctorData(const Doctor* userID);
+    Patient getPatientData(const Patient* userID);
+    Member getMemberData(const Member* userID);
 
     //upload functions
     bool updateUser(const Doctor* user);

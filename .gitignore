@@ -8,7 +8,6 @@
 *.la
 *.lai
 *.so
-*.dll
 *.dylib
 
 # Qt-es
@@ -35,5 +34,7 @@ Makefile*
 *.qmlproject.user.*
 
 /documentation/paper/Datenbank.docx
+/app/DiaThesis/debug
+/app/DiaThesis/release
 /documentation/picture/Database_Pic
 /documentation/CODING Standard.pdf

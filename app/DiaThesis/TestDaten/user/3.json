@@ -2,15 +2,9 @@
   "patientName": "Bechberger/Martin",
   "email": "troll@nix.com",
   "phone": "9877112520",
-  "birthDate": "1989.12.23",
-  "age": 42,
-  "weight": 75,
-  "bodysize": 170,
-  "gender": 2,
-  "targetBloodSugar": 100,
-  "bloodSugarRange": "89/156",
-  "alcohol": false,
-  "cigaret": false,
+  "patientRelease": [
+    "hans@gmail.com"
+  ],
   "adress": {
     "street": "MainStreet",
     "city": "Mannheim",

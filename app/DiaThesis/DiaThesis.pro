@@ -8,8 +8,7 @@ QT       += core gui
 QT       += sql
 QT       += positioning
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-greaterThan(QT_MAJOR_VERSION, 4): QT += network
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = DiaThesis
 TEMPLATE = app
@@ -28,27 +27,32 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
-        main.cpp \
-        mainwindow.cpp \
     Scripts/Database/databasecontroller.cpp \
-    workwindow.cpp \
-    registrationwindow.cpp
+    Scripts/UI/mainwindow.cpp \
+    Scripts/UI/qcustomplot.cpp \
+    Scripts/UI/registrationwindow.cpp \
+    Scripts/UI/userwindow.cpp \
+    Scripts/UI/workwindow.cpp \
+    Scripts/main.cpp
+
 
 HEADERS += \
-        mainwindow.h \
     Scripts/Database/databasecontroller.h \
-    workwindow.h \
-    registrationwindow.h \
-    Scripts/Databasetyps.h \
+    Scripts/Database/Databasetyps.h \
     Scripts/Exceptions/InvalidExceptions.h \
-    ui_mainwindow.h \
-    ui_registrationwindow.h \
-    ui_workwindow.h \
+    Scripts/UI/mainwindow.h \
+    Scripts/UI/qcustomplot.h \
+    Scripts/UI/registrationwindow.h \
+    Scripts/UI/userwindow.h \
+    Scripts/UI/workwindow.h \
+    Scripts/UI/ui_userwindow.h
+
 
 FORMS += \
-        mainwindow.ui \
-    workwindow.ui \
-    registrationwindow.ui
+    Scripts/UI/mainwindow.ui \
+    Scripts/UI/registrationwindow.ui \
+    Scripts/UI/userwindow.ui \
+    Scripts/UI/workwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

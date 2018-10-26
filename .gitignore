@@ -19,6 +19,8 @@
 *.qbs.user
 *.qbs.user.*
 *.moc
+*.Debug
+*.Release
 moc_*.cpp
 qrc_*.cpp
 ui_*.h

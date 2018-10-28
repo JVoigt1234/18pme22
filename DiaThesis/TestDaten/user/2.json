@@ -1,0 +1,20 @@
+{
+  "patientName": "Ich/Du",
+  "email": "doc@msi.com",
+  "phone": "15528993",
+  "birthDate": "1970.04.05",
+  "age": 42,
+  "weight": 75,
+  "bodysize": 170,
+  "gender": 0,
+  "targetBloodSugar": 100,
+  "bloodSugarRange": "89/156",
+  "alcohol": false,
+  "cigaret": false,
+  "adress": {
+    "street": "MainStreet",
+    "city": "Mannheim",
+    "country": "Ger",
+    "postalCode": 68217
+  }
+}

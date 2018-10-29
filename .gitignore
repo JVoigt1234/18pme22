@@ -8,7 +8,6 @@
 *.la
 *.lai
 *.so
-*.dll
 *.dylib
 
 # Qt-es
@@ -20,6 +19,8 @@
 *.qbs.user
 *.qbs.user.*
 *.moc
+*.Debug
+*.Release
 moc_*.cpp
 qrc_*.cpp
 ui_*.h
@@ -35,4 +36,7 @@ Makefile*
 *.qmlproject.user.*
 
 /documentation/paper/Datenbank.docx
-/app/build-DiaThesis-Desktop_Qt_5_9_1_MinGW_32bit-Debug
+DiaThesis/debug
+DiaThesis/release
+/documentation/picture/Database_Pic
+/documentation/CODING Standard.pdf

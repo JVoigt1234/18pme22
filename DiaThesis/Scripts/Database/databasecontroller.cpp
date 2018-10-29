@@ -743,8 +743,13 @@ void DatabaseController::loadDataset(QList<Patient>& list, QString path)
         jsonDoc = QJsonDocument::fromJson(val.toUtf8());
         jsonObject = jsonDoc.object();
         //jsonVal = jsonObj["patientID"];
+<<<<<<< HEAD
         QStringList name = jsonObject["patientName"].toString().split('/', QString::SkipEmptyParts);
         QStringList bs = jsonObject["bloodSugarRange"].toString().split('/', QString::SkipEmptyParts);
+=======
+        //QStringList name = jsonDoc["patientName"].toString().split('/', QString::SkipEmptyParts);
+        //QStringList bs = jsonDoc["bloodSugarRange"].toString().split('/', QString::SkipEmptyParts);
+>>>>>>> master
 
         QGeoAddress address;
         address.setStreet("Mainstreet");
@@ -752,8 +757,6 @@ void DatabaseController::loadDataset(QList<Patient>& list, QString path)
         address.setCity("Mannheim");
         address.setCountry("Germany");
 
-         list.append( Patient(name[0], name[1], static_cast<UserType>(filename.toInt()), jsonObject["email"].toString(), jsonObject["phone"].toString() , jsonObject["birthDate"].toString(), jsonObject["age"].toInt(), jsonObject["weight"].toDouble(), jsonObject["bodysize"].toDouble(),
-                static_cast<Gender>(jsonObject["gender"].toInt()), jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(), bs[1].toDouble(), jsonObject["alcohol"].toBool(), jsonObject["cigaret"].toBool(), address) );
     }
 }
 

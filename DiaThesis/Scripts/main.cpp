@@ -10,7 +10,7 @@
 
 #include "Scripts/UI/mainwindow.h"
 #include <QApplication>
-#include <QRandomGenerator>
+//#include <QRandomGenerator>
 
 #include "Scripts/Database/databasecontroller.h"
 //#include "Scripts/Database/sqldatabase.h"

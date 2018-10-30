@@ -44,8 +44,7 @@ HEADERS += \
     Scripts/UI/qcustomplot.h \
     Scripts/UI/registrationwindow.h \
     Scripts/UI/userwindow.h \
-    Scripts/UI/workwindow.h \
-    Scripts/UI/ui_userwindow.h
+    Scripts/UI/workwindow.h
 
 
 FORMS += \
@@ -60,9 +59,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    Pictures/Logo_DiaThesis.png \
-    Pictures/Logo_DiaThesis.png \
-    TestDaten/Patient.json \
-    TestDaten/measurment/datasingle.json \
-    TestDaten/measurment/datenarray.json
+    Pictures/Logo_DiaThesis.png
 

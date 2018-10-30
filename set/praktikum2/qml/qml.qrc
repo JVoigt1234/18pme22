@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>main.qml</file>
-        <file>hs-mannheim.jpg</file>
-        <file>MyButton.qml</file>
-    </qresource>
-</RCC>

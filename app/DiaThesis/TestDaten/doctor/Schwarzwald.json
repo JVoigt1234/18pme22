@@ -1,0 +1,12 @@
+{
+  "patientName": "Ich/Du",
+  "institutionName": "Schwarzwaldklinik",
+  "email": "doc@msi.com",
+  "phone": "15528993",
+  "address": {
+    "street": "MainStreet",
+    "city": "Mannheim",
+    "country": "Ger",
+    "postalCode": "68217"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "patientName": "Hans/Otto",
+  "email": "hans@gmail.com",
+  "phone": "123456789",
+  "birthDate": "1992.03.23",
+  "age": 42,
+  "weight": 75,
+  "bodysize": 170,
+  "gender": 1,
+  "targetBloodSugar": 100,
+  "bloodSugarRange": "89/156",
+  "alcohol": false,
+  "cigaret": false,
+  "address": {
+    "street": "MainStreet",
+    "city": "Mannheim",
+    "country": "Ger",
+    "postalCode": "68217"
+  }
+}

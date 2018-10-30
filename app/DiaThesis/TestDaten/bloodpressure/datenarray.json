@@ -1,0 +1,32 @@
+[
+  {
+    "userid": "hans@gmail.com",
+    "timestemp": "10.10.2018 15:00:25",
+    "pressureValue": 50
+  },
+  {
+    "userid": "hans@gmail.com",
+    "timestemp": "10.10.2018 15:15:32",
+    "pressureValue": 200
+  },
+  {
+    "userid": "hans@gmail.com",
+    "timestemp": "10.10.2018 15:30:26",
+    "pressureValue": 156
+  },
+  {
+    "userid": "hans@gmail.com",
+    "timestemp": "10.10.2018 15:45:20",
+    "pressureValue": 130
+  },
+  {
+    "userid": "hans@gmail.com",
+    "timestemp": "10.10.2018 16:00:48",
+    "pressureValue": 125
+  },
+  {
+    "userid": "hans@gmail.com",
+    "timestemp": "10.10.2018 16:15:59",
+    "pressureValue": 56
+  }
+]

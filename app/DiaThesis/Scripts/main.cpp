@@ -10,7 +10,6 @@
 
 #include "Scripts/UI/mainwindow.h"
 #include <QApplication>
-#include <QRandomGenerator>
 
 #include "Scripts/Database/databasecontroller.h"
 //#include "Scripts/Database/sqldatabase.h"
@@ -22,43 +21,51 @@ int main(int argc, char *argv[])
     w.show();
 
     DatabaseController data("db.inftech.hs-mannheim.de");
-    Patient p("hans", "otto", UserType::patient, "hans@gmail.com", "1992.03.23");
-    UserType g;
     QList<Patient> pList;
-    //data.loadDataset(pList,"TestDaten/user/" );
+    QList<Doctor> dList;
+    QList<Member> mList;
+    data.loadDataset(pList);
+    data.loadDataset(dList);
+    data.loadDataset(mList);
 
     //data.creatDatabase();
-//    try {
-//        if(data.isUserAvailable(pList[1].getUserID()) == false)
-//        {
-//            data.isUserCreated(&pList[1], "hallo");
-//            if(data.isValidUser(pList[1].getUserID(), "hallo") == UserType::patient )
-//            {
-//                qDebug() << "User Patient angelegt";
-//            }
-//        }
-//        else{
-//            qDebug() << "User existiert bereits.";
-//        }
+    try {
+       if(data.isUserCreated(&dList[0], "hallo") == true) qDebug() << "Doktor angelegt.";
+       if(data.isUserCreated(&pList[0], "hallo") == true) qDebug() << "Patient angelegt.";
+       if(data.isUserCreated(&mList[0], "hallo") == true) qDebug() << "Member angelegt.";
+       if(data.isValidUser(dList[0].getUserID(), "hallo") == UserType::doctor)
+       {
+           qDebug() << "Doktor vorhanden.";
+           data.updateUser(&dList[0]);
+       }
+       if(data.isValidUser(mList[0].getUserID(), "hallo") == UserType::member)
+       {
+           qDebug() << "Member vorhanden.";
+           data.updateUser(&mList[0]);
+       }
+       if(data.isValidUser(pList[0].getUserID(), "hallo") == UserType::patient)
+       {
+           qDebug() << "Patient vorhanden.";
+           data.updateUser(&pList[0]);
+       }
 
-//        p = data.getPatientData(&pList[1]);
+       data.allowAccess(dList[0].getUserID());
+       Doctor d = data.getDoctorData(dList[0].getUserID());
+       if(d == dList[0])
+       {qDebug() << "same";}
+       data.denyAccess(dList[0].getUserID());
 
-//        if(data.isValidUser(pList[1].getUserID(), "hallo") == UserType::patient )
-//        {
-//            qDebug() << "User Patient vorhanden";
-//            data.isUserDeleted(&pList[1], "hallo");
-//        }
+    } catch (InvalidUser e) {
+        qDebug() << e.getMessage();
+    }
+    catch (UserNotFound e) {
+            qDebug() << e.getMessage();
+    }
+    catch (InvalidDateTimeFormate e) {
+        qDebug() << e.getMessage();
+    }
 
-
-//    } catch (InvalidUser e) {
-//        qDebug() << e.getMessage();
-//    }
-//    catch (UserNotFound e) {
-//            qDebug() << e.getMessage();
-//    }
-//    catch (InvalidDateTimeFormate e) {
-//        qDebug() << e.getMessage();
-//    }
+    //data.deleteDatabase();
 
     return a.exec();
 }

@@ -6,6 +6,7 @@
 #include <QMessageBox>
 #include <QMetaEnum>
 #include "qcustomplot.h"
+#include <QtMath>
 
 UserWindow::UserWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,16 +24,55 @@ UserWindow::~UserWindow()
 void UserWindow::setupTagesansicht(QCustomPlot *Plot)
 {
     // generate daily data:
-    QVector<double> x(96), y(96), z(96); // initialize with entries 0..100
+    QVector<double> x(96), y(96), z(96), p(96); // initialize with entries 0..100
+
+    //Minimaler und Maximaler Blutzuckerwert
+    int max= 200;
+    int min= 70;
+
     for (int i=0; i<96; ++i)
     {
         x[i] = i/4; // x goes from -1 to 1
         y[i] = x[i]*x[i];  // let's plot a quadratic function
-        z[i] =
+        z[i]= max;
+        p[i]= min;
     }
+
+    Plot->legend->setVisible(true);
+    QFont legendFont = font();  // start out with MainWindow's font..
+    legendFont.setPointSize(9); // and make a bit smaller for legend
+    Plot->legend->setFont(legendFont);
+    Plot->legend->setBrush(QBrush(QColor(255,255,255,230)));
+    // by default, the legend is in the inset layout of the main axis rect. So this is how we access it to change legend placement:
+    Plot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignBottom|Qt::AlignRight);
+
     // create graph and assign data to it:
     Plot->addGraph();
-    Plot->graph(0)->setData(x, y);
+    Plot->graph(0)->setPen(QPen(Qt::black));
+    Plot->graph(0)->setLineStyle(QCPGraph::lsLine);
+    Plot->graph(0)->setName("Blutzucker Tagestrend");
+    Plot->graph(0)->setData(x,y);
+
+    //Maximal Wert
+    Plot->addGraph();
+    QPen redDotPen;
+    redDotPen.setColor(QColor(Qt::red));
+    redDotPen.setStyle(Qt::DotLine);
+    redDotPen.setWidthF(4);
+    Plot->graph(1)->setPen(redDotPen);
+    Plot->graph(1)->setName("Maximalwert");
+    Plot->graph(1)->setData(x,z);
+
+    //Minimal Wert
+    Plot->addGraph();
+    QPen greenDotPen;
+    greenDotPen.setColor(QColor(Qt::green));
+    greenDotPen.setStyle(Qt::DotLine);
+    greenDotPen.setWidthF(4);
+    Plot->graph(2)->setPen(greenDotPen);
+    Plot->graph(2)->setName("Minimalwert");
+    Plot->graph(2)->setData(x,p);
+
     // give the axes some labels:
     Plot->xAxis->setLabel("Uhrzeit");
     Plot->yAxis->setLabel("Blutzucker mg/dl");
@@ -56,6 +96,7 @@ void UserWindow::setupMonatsansicht(QCustomPlot *Plot)
     Plot->graph(0)->setData(x, ymax);
     Plot->addGraph();
     Plot->graph(1)->setData(x, ymin);
+    Plot->graph(1)->setName("Monat");
     // give the axes some labels:
     Plot->xAxis->setLabel("Tage");
     Plot->yAxis->setLabel("Blutzucker mg/dl");
@@ -71,7 +112,7 @@ void UserWindow::setupQuartalsansicht(QCustomPlot *Plot)
     for (int i=0; i<90; ++i)
     {
       x[i] = i/30; // x goes from -1 to 1
-      y[i] = x[i]*0.3;  // let's plot a quadratic function
+      y[i] = qSin(x[i]);  // let's plot a quadratic function
     }
     // create graph and assign data to it:
     Plot->addGraph();
@@ -84,7 +125,80 @@ void UserWindow::setupQuartalsansicht(QCustomPlot *Plot)
     Plot->yAxis->setRange(0, 300);
 }
 
+//Mouse Interactions
+void UserWindow::mousePressTag()
+{
+  // if an axis is selected, only allow the direction of that axis to be dragged
+  // if no axis is selected, both directions may be dragged
+  if (ui->Tagesplot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Tagesplot->axisRect()->setRangeDrag(ui->Tagesplot->xAxis->orientation());
+  else if (ui->Tagesplot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Tagesplot->axisRect()->setRangeDrag(ui->Tagesplot->yAxis->orientation());
+  else
+    ui->Tagesplot->axisRect()->setRangeDrag(Qt::Horizontal|Qt::Vertical);
+}
 
+void UserWindow::mouseWheelTag()
+{
+  // if an axis is selected, only allow the direction of that axis to be zoomed
+  // if no axis is selected, both directions may be zoomed
+  if (ui->Tagesplot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Tagesplot->axisRect()->setRangeZoom(ui->Tagesplot->xAxis->orientation());
+  else if (ui->Tagesplot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Tagesplot->axisRect()->setRangeZoom(ui->Tagesplot->yAxis->orientation());
+  else
+    ui->Tagesplot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+}
+
+void UserWindow::mousePressMonat()
+{
+  // if an axis is selected, only allow the direction of that axis to be dragged
+  // if no axis is selected, both directions may be dragged
+  if (ui->Monatplot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Monatplot->axisRect()->setRangeDrag(ui->Monatplot->xAxis->orientation());
+  else if (ui->Monatplot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Monatplot->axisRect()->setRangeDrag(ui->Monatplot->yAxis->orientation());
+  else
+    ui->Monatplot->axisRect()->setRangeDrag(Qt::Horizontal|Qt::Vertical);
+}
+
+void UserWindow::mouseWheelMonat()
+{
+  // if an axis is selected, only allow the direction of that axis to be zoomed
+  // if no axis is selected, both directions may be zoomed
+  if (ui->Monatplot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Monatplot->axisRect()->setRangeZoom(ui->Monatplot->xAxis->orientation());
+  else if (ui->Monatplot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Monatplot->axisRect()->setRangeZoom(ui->Monatplot->yAxis->orientation());
+  else
+    ui->Monatplot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+}
+
+void UserWindow::mousePressQuartal()
+{
+  // if an axis is selected, only allow the direction of that axis to be dragged
+  // if no axis is selected, both directions may be dragged
+  if (ui->Quartalsplot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Quartalsplot->axisRect()->setRangeDrag(ui->Quartalsplot->xAxis->orientation());
+  else if (ui->Quartalsplot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Quartalsplot->axisRect()->setRangeDrag(ui->Quartalsplot->yAxis->orientation());
+  else
+    ui->Quartalsplot->axisRect()->setRangeDrag(Qt::Horizontal|Qt::Vertical);
+}
+
+void UserWindow::mouseWheelQuartal()
+{
+  // if an axis is selected, only allow the direction of that axis to be zoomed
+  // if no axis is selected, both directions may be zoomed
+  if (ui->Quartalsplot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Quartalsplot->axisRect()->setRangeZoom(ui->Quartalsplot->xAxis->orientation());
+  else if (ui->Quartalsplot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Quartalsplot->axisRect()->setRangeZoom(ui->Quartalsplot->yAxis->orientation());
+  else
+    ui->Quartalsplot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+}
+
+//Menübar Interactions
 void UserWindow::on_actionProfileinstellungen_triggered()
 {
     ui->mainStackWidget->setCurrentIndex(0);
@@ -98,18 +212,31 @@ void UserWindow::on_actionDaten_aktualisieren_triggered()
 void UserWindow::on_actionTagesansicht_triggered()
 {
     setupTagesansicht(ui->Tagesplot);
+    ui->Tagesplot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes |
+                                      QCP::iSelectLegend | QCP::iSelectPlottables);
+    setupTagesansicht(ui->Tagesplot);
+    connect(ui->Tagesplot, SIGNAL(mousePressTag(QMouseEvent*)), this, SLOT(mousePressTag()));
+    connect(ui->Tagesplot, SIGNAL(mouseWheelTag(QWheelEvent*)), this, SLOT(mouseWheelTag()));
     ui->mainStackWidget->setCurrentIndex(2);
 }
 
 void UserWindow::on_actionMonatsansicht_triggered()
 {
+    ui->Monatplot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes |
+                                      QCP::iSelectLegend | QCP::iSelectPlottables);
     setupMonatsansicht(ui->Monatplot);
+    connect(ui->Monatplot, SIGNAL(mousePressMonat(QMouseEvent*)), this, SLOT(mousePressMonat()));
+    connect(ui->Monatplot, SIGNAL(mouseWheelMonat(QWheelEvent*)), this, SLOT(mouseWheelMonat()));
     ui->mainStackWidget->setCurrentIndex(3);
 }
 
 void UserWindow::on_actionQuartalsansicht_triggered()
 {
+    ui->Quartalsplot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes |
+                                      QCP::iSelectLegend | QCP::iSelectPlottables);
     setupQuartalsansicht(ui->Quartalsplot);
+    connect(ui->Quartalsplot, SIGNAL(mousePressQuartal(QMouseEvent*)), this, SLOT(mousePressQuartal()));
+    connect(ui->Quartalsplot, SIGNAL(mouseWheelQuartal(QWheelEvent*)), this, SLOT(mouseWheelQuartal()));
     ui->mainStackWidget->setCurrentIndex(4);
 }
 

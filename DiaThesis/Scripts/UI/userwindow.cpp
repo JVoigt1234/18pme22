@@ -23,11 +23,12 @@ UserWindow::~UserWindow()
 void UserWindow::setupTagesansicht(QCustomPlot *Plot)
 {
     // generate daily data:
-    QVector<double> x(96), y(96); // initialize with entries 0..100
+    QVector<double> x(96), y(96), z(96); // initialize with entries 0..100
     for (int i=0; i<96; ++i)
     {
         x[i] = i/4; // x goes from -1 to 1
         y[i] = x[i]*x[i];  // let's plot a quadratic function
+        z[i] =
     }
     // create graph and assign data to it:
     Plot->addGraph();

@@ -743,13 +743,10 @@ void DatabaseController::loadDataset(QList<Patient>& list, QString path)
         jsonDoc = QJsonDocument::fromJson(val.toUtf8());
         jsonObject = jsonDoc.object();
         //jsonVal = jsonObj["patientID"];
-<<<<<<< HEAD
+
         QStringList name = jsonObject["patientName"].toString().split('/', QString::SkipEmptyParts);
         QStringList bs = jsonObject["bloodSugarRange"].toString().split('/', QString::SkipEmptyParts);
-=======
-        //QStringList name = jsonDoc["patientName"].toString().split('/', QString::SkipEmptyParts);
-        //QStringList bs = jsonDoc["bloodSugarRange"].toString().split('/', QString::SkipEmptyParts);
->>>>>>> master
+
 
         QGeoAddress address;
         address.setStreet("Mainstreet");

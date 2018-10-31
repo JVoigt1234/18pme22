@@ -1,6 +1,10 @@
 #include "Scripts/UI/registrationwindow.h"
 #include "ui_registrationwindow.h"
 #include <QChar>
+#include "Scripts/Database/Databasetyps.h"
+#include "Scripts/Database/databasecontroller.h"
+#include <QMessageBox>
+#include <QDate>
 
 RegistrationWindow::RegistrationWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -9,10 +13,16 @@ RegistrationWindow::RegistrationWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
 
+    //Initialisiere die Prüfvariablen für die Passwortprüfung
     pwHasCapitalLetter=false;
     pwHasSmallLetter=false;
     pwHasNumber=false;
     pwHasSixChars=false;
+
+    //Set the RegularExpression for the Mail-window
+    QRegularExpression rx("\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}\\b",
+                          QRegularExpression::CaseInsensitiveOption);
+    ui->user_le->setValidator(new QRegularExpressionValidator(rx, this));
 }
 
 RegistrationWindow::~RegistrationWindow()
@@ -51,7 +61,125 @@ void RegistrationWindow::on_zurSeite1Reg_btn_clicked()
 
 void RegistrationWindow::on_accountErstellen_btn_clicked()
 {
-    this->close(); //zuvor muss das neue Profil in der Datenbank gespeichert werden
+    //Hier als allererstes alle Angaben auf Richtigkeit prüfen:
+    //--------------------------------------------------------------
+    alleAngabenRichtig = true;
+    falscheFelder = "";
+
+    //vorname
+    if (ui->vorname_le->text().isEmpty())
+    {
+        alleAngabenRichtig=false;
+        ui->vorname_le->setStyleSheet("border: 1px solid red");
+        falscheFelder = falscheFelder + "\tVorname\n";
+    }
+    else{ui->vorname_le->setStyleSheet("border: 1px solid grey");}
+
+    //nachname
+    if (ui->nachname_le->text().isEmpty())
+    {
+        alleAngabenRichtig=false;
+        ui->nachname_le->setStyleSheet("border: 1px solid red");
+        falscheFelder = falscheFelder + "\tNachname\n";
+    }
+    else{ui->nachname_le->setStyleSheet("border: 1px solid grey");}
+
+    //usertyp
+    if (!(ui->Arzt_rb->isChecked()||ui->Patient_rb->isChecked()||ui->Angehoeriger_rb->isChecked()))
+    {
+        alleAngabenRichtig = false;
+        ui->nutzertyp_gb->setStyleSheet("border: 1px solid red");
+        falscheFelder = falscheFelder + "\tBenutzertyp (Sind Sie Arzt, Patient oder Angehöriger?)\n";
+    }
+    else{ui->nutzertyp_gb->setStyleSheet("border: 1px solid grey");}
+
+    //geburtstag
+    QDate date;
+    date = QDate::fromString(ui->geburtstag_le->text(),"yyyy.MM.dd");
+    if (!date.isValid())
+    {
+        alleAngabenRichtig = false;
+        ui->geburtstag_le->setStyleSheet("border: 1px solid red");
+        falscheFelder = falscheFelder + "\tGeburtstag\n";
+    }
+    else{ ui->geburtstag_le->setStyleSheet("border: 1px solid grey");}
+
+    //email
+    if(!ui->user_le->hasAcceptableInput())
+    {
+        alleAngabenRichtig = false;
+        ui->user_le->setStyleSheet("border: 1px solid red");
+        falscheFelder = falscheFelder + "\tEmail\n";
+    }
+    else{ ui->user_le->setStyleSheet("border: 1px solid grey");}
+
+    //Passwort identisch? Oder einer der beiden Eingaben leer??
+    if (!(ui->password_le->text() == ui->password2_le->text()))
+    {
+        alleAngabenRichtig = false;
+        ui->password_le->setStyleSheet("border: 1px solid red");
+        ui->password2_le->setStyleSheet("border: 1px solid red");
+        falscheFelder = falscheFelder + "\nIhre Passwörter stimmen nicht überein!";
+    }
+    else if (ui->password_le->text().length() == 0 || ui->password2_le->text().length() == 0)
+    {
+        alleAngabenRichtig = false;
+        ui->password_le->setStyleSheet("border: 1px solid red");
+        ui->password2_le->setStyleSheet("border: 1px solid red");
+        falscheFelder = falscheFelder + "\nBitte geben Sie Ihr Passwort zwei mal ein!";
+    }
+    else{ ui->password_le->setStyleSheet("border: 1px solid grey"); ui->password2_le->setStyleSheet("border: 1px solid grey");}
+
+    //Erst hier wenn alle Angaben richtig waren,
+    //______________________________________________________________________________________________
+    if (alleAngabenRichtig)
+    {
+        //Erst dann neuen Benutzer anlegen und in die Datenbank schreiben
+        User* newUser;
+        //Benutzerprofil anlegen (User)
+        if (ui->Arzt_rb->isChecked())
+        {
+            //Neuen Arzt erstellen
+            //newUser = new Doctor(ui->vorname_le, ui->nachname_le, UserType::doctor, ui->user_le, );
+        }
+        else if (ui->Patient_rb->isChecked())
+        {
+            //Neuen Patient erstellen
+            newUser = new Patient(ui->vorname_le->text(), ui->nachname_le->text(), UserType::patient, ui->user_le->text(), ui->geburtstag_le->text());
+        }
+        else if (ui->Angehoeriger_rb->isChecked())
+        {
+            //Neuen Angehörigen erstellen
+            //newUser = new Member(ui->vorname_le->text(), ui->nachname_le->text(), UserType::member,...... PATIENT RELEASE?!?! );
+        }
+
+        //Hier dann in Datenbank abspeichern
+        DatabaseController data("db.inftech.hs-mannheim.de");
+        if(data.isUserCreated(newUser, ui->password_le->text()) == true)
+        {
+            //Nutzer ist angelegt
+        }
+
+        else
+        {
+            //Benutzer ist vorhanden oder Exception wurde geworfen k.Pl
+        }
+
+
+        //Dieses Fenster schließen
+        this->close(); //zuvor muss das neue Profil in der Datenbank gespeichert werden
+    }
+    else
+    {
+        //Warnung anzeigen, welche Felder nicht korrekt ausgefüllt wurden.
+
+        msgBox.setWindowTitle("Fehler beim Erstellen des Accounts");
+        msgBox.setText("Bitte die Angaben in den folgenden Feldern prüfen: \n"+falscheFelder);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.show();
+    }
+
+
 }
 
 

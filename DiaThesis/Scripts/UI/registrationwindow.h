@@ -2,6 +2,7 @@
 #define REGISTRATIONWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
 
 namespace Ui {
 class RegistrationWindow;
@@ -14,6 +15,12 @@ class RegistrationWindow : public QMainWindow
 public:
     explicit RegistrationWindow(QWidget *parent = nullptr);
     ~RegistrationWindow();
+    //Variable zur Prüfung der eingegebenen Daten zur Registrierung
+    bool alleAngabenRichtig = true;
+    //Messagebox zur Warnung bei falsch oder nicht ausgefüllten Feldern
+    QMessageBox msgBox;
+    //Nachricht über falsch oder nicht ausgefüllte Felder
+    QString falscheFelder;
 
 private slots:
 

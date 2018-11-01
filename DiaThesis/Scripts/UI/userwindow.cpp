@@ -24,29 +24,31 @@ UserWindow::~UserWindow()
 void UserWindow::setupTagesansicht(QCustomPlot *Plot)
 {
     // generate daily data:
-    QVector<double> x(96), y(96), z(96), p(96); // initialize with entries 0..100
+    QVector<double> x(97), y(97), z(97), p(97);
 
     //Minimaler und Maximaler Blutzuckerwert
     int max= 200;
     int min= 70;
 
-    for (int i=0; i<96; ++i)
+    for (int i=0; i<97; ++i)
     {
-        x[i] = i/4; // x goes from -1 to 1
-        y[i] = x[i]*x[i];  // let's plot a quadratic function
+        x[i] = i/4; // x goes from 0 to 24
+        y[i] = x[i]*x[i];
         z[i]= max;
         p[i]= min;
     }
 
+    //Legende
+    /*
     Plot->legend->setVisible(true);
-    QFont legendFont = font();  // start out with MainWindow's font..
-    legendFont.setPointSize(9); // and make a bit smaller for legend
+    QFont legendFont = font();
+    legendFont.setPointSize(9);
     Plot->legend->setFont(legendFont);
     Plot->legend->setBrush(QBrush(QColor(255,255,255,230)));
     // by default, the legend is in the inset layout of the main axis rect. So this is how we access it to change legend placement:
     Plot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignBottom|Qt::AlignRight);
-
-    // create graph and assign data to it:
+*/
+    // create graph and assign data to it: Blood Sugar
     Plot->addGraph();
     Plot->graph(0)->setPen(QPen(Qt::black));
     Plot->graph(0)->setLineStyle(QCPGraph::lsLine);
@@ -60,16 +62,15 @@ void UserWindow::setupTagesansicht(QCustomPlot *Plot)
     redDotPen.setStyle(Qt::DotLine);
     redDotPen.setWidthF(4);
     Plot->graph(1)->setPen(redDotPen);
+    Plot->graph(1)->setBrush(QBrush(QColor(202,255,112,50)));
+    //Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
     Plot->graph(1)->setName("Maximalwert");
     Plot->graph(1)->setData(x,z);
 
     //Minimal Wert
     Plot->addGraph();
-    QPen greenDotPen;
-    greenDotPen.setColor(QColor(Qt::green));
-    greenDotPen.setStyle(Qt::DotLine);
-    greenDotPen.setWidthF(4);
-    Plot->graph(2)->setPen(greenDotPen);
+    Plot->graph(2)->setPen(redDotPen);
+    Plot->graph(2)->setBrush(QBrush(QColor(255,48,48,70)));
     Plot->graph(2)->setName("Minimalwert");
     Plot->graph(2)->setData(x,p);
 
@@ -84,23 +85,49 @@ void UserWindow::setupTagesansicht(QCustomPlot *Plot)
 void UserWindow::setupMonatsansicht(QCustomPlot *Plot)
 {
     // generate month data:
-    QVector<double> x(30), ymax(30), ymin(30); // initialize with entries 0..100
-    for (int i=0; i<30; ++i)
+    QVector<double> x(31), y(31), z(31), p(31);
+
+    int max= 200;
+    int min= 70;
+
+    for (int i=0; i<31; ++i)
     {
-      x[i] = i; // x goes from -1 to 1
-      ymax[i] = x[i]*x[i];  // let's plot a quadratic function
-      ymin[i] = 1/2*(x[i]*x[i]);  // let's plot a quadratic function
+      x[i] = i; // x goes from 0 to 30
+      y[i] = x[i]*x[i];
+      z[i] = max;
+      p[i] = min;
     }
-    // create graph and assign data to it:
+
+    // create graph and assign data to it: Blood Sugar
     Plot->addGraph();
-    Plot->graph(0)->setData(x, ymax);
+    Plot->graph(0)->setPen(QPen(Qt::black));
+    Plot->graph(0)->setLineStyle(QCPGraph::lsLine);
+    Plot->graph(0)->setName("Blutzucker Monatstrend");
+    Plot->graph(0)->setData(x,y);
+
+    //Maximal Wert
     Plot->addGraph();
-    Plot->graph(1)->setData(x, ymin);
-    Plot->graph(1)->setName("Monat");
-    // give the axes some labels:
+    QPen redDotPen;
+    redDotPen.setColor(QColor(Qt::red));
+    redDotPen.setStyle(Qt::DotLine);
+    redDotPen.setWidthF(4);
+    Plot->graph(1)->setPen(redDotPen);
+    Plot->graph(1)->setBrush(QBrush(QColor(202,255,112,50)));
+    Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
+    Plot->graph(1)->setName("Maximalwert");
+    Plot->graph(1)->setData(x,z);
+
+    //Minimal Wert
+    Plot->addGraph();
+    Plot->graph(2)->setPen(redDotPen);
+    Plot->graph(2)->setBrush(QBrush(QColor(255,48,48,70)));
+    Plot->graph(2)->setName("Minimalwert");
+    Plot->graph(2)->setData(x,p);
+
+    // give the axes some labels
     Plot->xAxis->setLabel("Tage");
     Plot->yAxis->setLabel("Blutzucker mg/dl");
-    // set axes ranges, so we see all data:
+    // set axes ranges
     Plot->xAxis->setRange(0, 30);
     Plot->yAxis->setRange(0, 300);
 }
@@ -108,19 +135,49 @@ void UserWindow::setupMonatsansicht(QCustomPlot *Plot)
 void UserWindow::setupQuartalsansicht(QCustomPlot *Plot)
 {
     // generate quartals data:
-    QVector<double> x(90), y(90); // initialize with entries 0..100
-    for (int i=0; i<90; ++i)
+    QVector<double> x(91), y(91), p(91), z(91);
+
+    int max= 200;
+    int min= 70;
+
+    for (int i=0; i<91; ++i)
     {
-      x[i] = i/30; // x goes from -1 to 1
-      y[i] = qSin(x[i]);  // let's plot a quadratic function
+      x[i] = i/30; // x goes from 0 to 90
+      y[i] = 120+20*x[i];
+      z[i] = max;
+      p[i] = min;
     }
-    // create graph and assign data to it:
+
+    // create graph and assign data to it: Blood Sugar
     Plot->addGraph();
-    Plot->graph(0)->setData(x, y);
+    Plot->graph(0)->setPen(QPen(Qt::black));
+    Plot->graph(0)->setLineStyle(QCPGraph::lsLine);
+    Plot->graph(0)->setName("Blutzucker Quartalstrend");
+    Plot->graph(0)->setData(x,y);
+
+    //Maximal Wert
+    Plot->addGraph();
+    QPen redDotPen;
+    redDotPen.setColor(QColor(Qt::red));
+    redDotPen.setStyle(Qt::DotLine);
+    redDotPen.setWidthF(4);
+    Plot->graph(1)->setPen(redDotPen);
+    Plot->graph(1)->setBrush(QBrush(QColor(202,255,112,50)));
+    Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
+    Plot->graph(1)->setName("Maximalwert");
+    Plot->graph(1)->setData(x,z);
+
+    //Minimal Wert
+    Plot->addGraph();
+    Plot->graph(2)->setPen(redDotPen);
+    Plot->graph(2)->setBrush(QBrush(QColor(255,48,48,70)));
+    Plot->graph(2)->setName("Minimalwert");
+    Plot->graph(2)->setData(x,p);
+
     // give the axes some labels:
     Plot->xAxis->setLabel("Monate");
     Plot->yAxis->setLabel("Blutzucker mg/dl");
-    // set axes ranges, so we see all data:
+    // set axes ranges
     Plot->xAxis->setRange(0, 3);
     Plot->yAxis->setRange(0, 300);
 }

@@ -46,7 +46,7 @@ private:
 public:
     ///Time stamp conforming to ISO 8601
     ///yyyy-MM-dd hh:mm:ss
-    BloodSugar(QString timeStemp, double value)
+    BloodSugar(QString &timeStemp, double value)
     {
         m_timeStemp = QDateTime::fromString(timeStemp,"yyyy.MM.dd hh:mm:ss");
         if(m_timeStemp.isNull())
@@ -58,7 +58,7 @@ public:
 
     ///Time stamp conforming to ISO 8601
     ///yyyy-MM-dd hh:mm:ss
-    QString getTimeStemp(void) const {m_timeStemp.date().toString("yyyy-MM-dd hh:mm:ss"); }
+    QString getTimeStemp(void) const {return (m_timeStemp.date().toString("yyyy-MM-dd") + " " + m_timeStemp.time().toString("hh:mm:ss")); }
     double getValue(void) const {return m_value;}
 };
 
@@ -70,7 +70,7 @@ private:
     QDateTime m_timeStemp;
     double m_value;
 public:
-    BloodPressure(QString timeStemp, double value)
+    BloodPressure(QString &timeStemp, double value)
     {
         m_timeStemp = QDateTime::fromString(timeStemp,"yyyy.MM.dd hh:mm:ss");
         if(m_timeStemp.isNull())
@@ -81,7 +81,7 @@ public:
     }
 
     ///Time stamp conforming to ISO 8601 (yyyy-MM-dd hh:mm:ss)
-    QString getTimeStemp(void) const { m_timeStemp.date().toString("yyyy-MM-dd hh:mm:ss"); }
+    QString getTimeStemp(void) const {return (m_timeStemp.date().toString("yyyy-MM-dd") + " " + m_timeStemp.time().toString("hh:mm:ss")); }
     double getValue(void) const { return m_value;}
 };
 

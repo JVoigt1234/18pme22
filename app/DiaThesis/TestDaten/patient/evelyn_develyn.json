@@ -1,0 +1,20 @@
+{
+  "patientName": "Evelyn/Develyn",
+  "email": "little_devil@hell.com",
+  "phone": "516548113",
+  "birthDate": "1001.01.01",
+  "age": 2018,
+  "weight": 100,
+  "bodysize": 200,
+  "gender": 3,
+  "targetBloodSugar": 180,
+  "bloodSugarRange": "100/300",
+  "alcohol": false,
+  "cigaret": true,
+  "address": {
+    "street": "Am Abgrund 4",
+    "city": "Rand",
+    "country": "Ger",
+    "postalCode": "11111"
+  }
+}

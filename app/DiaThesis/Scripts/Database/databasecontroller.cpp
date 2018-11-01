@@ -176,7 +176,7 @@ QJsonObject DatabaseController::convertAddress2JSON(const QGeoAddress address)
 ///checks if the database is open and returns the result
 bool DatabaseController::isConnected() const
 {
-    m_database.isOpen();
+    return m_database.isOpen();
 }
 
 ///Checks whether the user with the specified ID is stored in the database
@@ -903,7 +903,7 @@ bool DatabaseController::updateUser(const Member* user)
     userObject.insert("address", convertAddress2JSON(user->getAddress()));
 
     QJsonArray patientRelease;
-    QList<QString>* p;
+    QList<QString>* p = nullptr;
     user->getPatientRealease(p);
     patientRelease = QJsonArray::fromStringList(*p);
     userObject.insert("patientRelease", patientRelease);
@@ -953,53 +953,131 @@ bool DatabaseController::uploadData(const BloodPressure& bloodPressure)
 
     QByteArray id = QCryptographicHash::hash(QString(m_userID + QString(m_userID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
 
-
     QSqlQuery creating;
-    //creating a formular
-    creating.prepare("INSERT INTO bloodmeasurment(userid,password,data) "
+
+    creating.prepare("INSERT INTO bloodmeasurment(userid,value,timestamp) "
                      "VALUES ("
                      "(SELECT userid from registration WHERE userid = '" + QString(id) + "'),"
-                     ": timestamp,"
-                     ":data)" );
+                     ":value,"
+                     ":timestamp)");
 
-    //data
-    QJsonObject userObject;
-//    userObject = convertUser2JSON(user);
-//    QJsonDocument doc(userObject);
-//    QByteArray jsonByteArray = doc.toBinaryData();
-//    jsonByteArray = crypt(jsonByteArray, pw);
+    creating.bindValue(0,bloodPressure.getValue());
+    creating.bindValue(1,bloodPressure.getTimeStemp());
 
-//    creating.bindValue(0, jsonByteArray.toHex());
 
     creating.exec();
+
+    if(creating.lastError().type() != QSqlError::NoError)
+        return false;
+    else
+        return true;
 
 
 }
 
 bool DatabaseController::uploadData(const QList<BloodPressure>& listBloodPressure)
 {
+    if(m_userType != UserType::patient || isUserAvailable(m_userID) == false)
+    {
+        throw InvalidUser("Invaild User.");
+    }
 
+    QByteArray id = QCryptographicHash::hash(QString(m_userID + QString(m_userID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
+
+    for(int i = 0; i < listBloodPressure.count(); i++)
+    {
+        QSqlQuery creating;
+
+        creating.prepare("INSERT INTO bloodmeasurment(userid,value,timestamp) "
+                         "VALUES ("
+                         "(SELECT userid from registration WHERE userid = '" + QString(id) + "'),"
+                         ":value,"
+                         ":timestamp)");                                //#Timestemp oder Timestamp is doch eh das gleiche :D
+
+        creating.bindValue(0, listBloodPressure[i].getValue());
+        creating.bindValue(1, listBloodPressure[i].getTimeStemp());     //#Timestemp oder Timestamp is doch eh das gleiche :D
+
+
+        creating.exec();
+
+        if(creating.lastError().type() != QSqlError::NoError)
+            return false;
+    }
+    return true;
 }
 
 bool DatabaseController::uploadData(const BloodSugar& bloodSugar)
 {
 
+    if(m_userType != UserType::patient || isUserAvailable(m_userID) == false)
+    {
+        throw InvalidUser("Invaild User.");
+    }
+
+    QByteArray id = QCryptographicHash::hash(QString(m_userID + QString(m_userID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
+
+    QSqlQuery creating;
+
+    creating.prepare("INSERT INTO sugarmeasurment(userid,value,timestamp) "
+                     "VALUES ("
+                     "(SELECT userid from registration WHERE userid = '" + QString(id) + "'),"
+                     ":value,"
+                     ":timestamp)");
+
+    creating.bindValue(0, bloodSugar.getValue());
+    creating.bindValue(1, bloodSugar.getTimeStemp());
+
+
+    creating.exec();
+
+    if(creating.lastError().type() != QSqlError::NoError)
+        return false;
+    else
+        return true;
 }
 
 bool DatabaseController::uploadData(const QList<BloodSugar>& listBloodSugar)
 {
+    if(m_userType != UserType::patient || isUserAvailable(m_userID) == false)
+    {
+        throw InvalidUser("Invaild User.");
+    }
 
+    QByteArray id = QCryptographicHash::hash(QString(m_userID + QString(m_userID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
+
+    for(int i = 0; i < listBloodSugar.count(); i++)
+    {
+        QSqlQuery creating;
+
+        creating.prepare("INSERT INTO sugarmeasurment(userid,value,timestamp) "
+                         "VALUES ("
+                         "(SELECT userid from registration WHERE userid = '" + QString(id) + "'),"
+                         ":value,"
+                         ":timestamp)");                            //#Timestemp oder Timestamp is doch eh das gleiche :D
+
+        creating.bindValue(0, listBloodSugar[i].getValue());
+        creating.bindValue(1, listBloodSugar[i].getTimeStemp());    //#Timestemp oder Timestamp is doch eh das gleiche :D
+
+
+        creating.exec();
+
+        if(creating.lastError().type() != QSqlError::NoError)
+            return false;
+    }
+    return true;
 }
 
 bool DatabaseController::getBloodPressure(const QString patientID, const QDateTime From, const QDateTime To, QList<BloodPressure>& listBloodPressure) const
 {
     //Datenbankabfrage from BETWEEN to
+
+    return false;
 }
 
 
 bool DatabaseController::getBloodSugar(const QString patientID, const QDateTime From, const QDateTime To, QList<BloodSugar>& listBloodSugar) const
 {
-
+    return false;
 }
 
 
@@ -1010,7 +1088,7 @@ bool DatabaseController::deleteBloodPressureData(const QDateTime timeStamp)
     {
         throw InvalidUser("Invaild User.");
     }
-
+    return false;
 }
 
 ///     Exception: InvaildUser
@@ -1022,6 +1100,7 @@ bool DatabaseController::deleteBloodPressureData(const QDateTime from, const QDa
     }
     //delete from your_table
     //where id between bottom_value and top_value;
+    return false;
 }
 
 ///     Exception: InvaildUser
@@ -1031,6 +1110,8 @@ bool DatabaseController::deleteBloodSugarData(const QDateTime timeStemp)
     {
         throw InvalidUser("Invaild User.");
     }
+
+    return false;
 
 }
 
@@ -1043,6 +1124,8 @@ bool DatabaseController::deleteBloodSugarData(const QDateTime from, const QDateT
     }
     //delete from your_table
     //where id between bottom_value and top_value;
+
+    return false;
 }
 
 void DatabaseController::loadDataset(QList<Patient>& list)
@@ -1126,6 +1209,82 @@ void DatabaseController::loadDataset(QList<Member>& list)
             }
         }
         list.append(Member(name[0], name[1], UserType::member, jsonObject["email"].toString(), plist, address, jsonObject["phone"].toString() ) );
+    }
+}
+
+void DatabaseController::loadDataset(QList<BloodPressure>& list)
+{
+    QString val, path = "TestDaten/bloodpressure/";
+    QFile file;
+    QJsonDocument jsonDoc;
+    QJsonArray jsonObject;
+
+    QDir directory(path);
+    QStringList data = directory.entryList(QStringList() << "*.json",QDir::Files);
+
+
+    foreach(QString filename, data) {
+        file.setFileName(path + filename);
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        val = file.readAll();
+        file.close();
+
+        jsonDoc = QJsonDocument::fromJson(val.toUtf8());
+        jsonObject = jsonDoc.array();
+        QString id = jsonObject.at(0)["userid"].toString();
+
+        if(m_userID == id)
+        {
+            QString timestamp;
+            double pressureValue;
+
+            for(int i=0; i < jsonObject.count(); i++)
+            {
+                timestamp = jsonObject.at(i)["timestemp"].toString();  //QDateTime timestemp = jsonObject.at(i)["timestemp"].toVariant().toDateTime();
+                pressureValue = jsonObject.at(i)["pressureValue"].toDouble();
+
+                BloodPressure data(timestamp,pressureValue);
+                list.append(data);
+            }
+        }
+    }
+}
+
+void DatabaseController::loadDataset(QList<BloodSugar>& list)
+{
+    QString val, path = "TestDaten/bloodsugar/";
+    QFile file;
+    QJsonDocument jsonDoc;
+    QJsonArray jsonObject;
+
+    QDir directory(path);
+    QStringList data = directory.entryList(QStringList() << "*.json",QDir::Files);
+
+
+    foreach(QString filename, data) {
+        file.setFileName(path + filename);
+        file.open(QIODevice::ReadOnly | QIODevice::Text);
+        val = file.readAll();
+        file.close();
+
+        jsonDoc = QJsonDocument::fromJson(val.toUtf8());
+        jsonObject = jsonDoc.array();
+        QString id = jsonObject.at(0)["userid"].toString();
+
+        if(m_userID == id)
+        {
+            QString timestamp;
+            double pressureValue;
+
+            for(int i=0; i < jsonObject.count(); i++)
+            {
+                timestamp = jsonObject.at(i)["timestemp"].toString();  //QDateTime timestemp = jsonObject.at(i)["timestemp"].toVariant().toDateTime();
+                pressureValue = jsonObject.at(i)["pressureValue"].toDouble();
+
+                BloodSugar data(timestamp,pressureValue);
+                list.append(data);
+            }
+        }
     }
 }
 

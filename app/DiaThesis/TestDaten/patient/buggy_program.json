@@ -1,0 +1,20 @@
+{
+  "patientName": "Buggy/Program",
+  "email": "info@DiaThesis.de",
+  "phone": "1168161",
+  "birthDate": "2018.10.20",
+  "age": 0,
+  "weight": 1000,
+  "bodysize": 1111,
+  "gender": 3,
+  "targetBloodSugar": 140,
+  "bloodSugarRange": "100/160",
+  "alcohol": true,
+  "cigaret": false,
+  "address": {
+    "street": "John-Deer-Straﬂe 12",
+    "city": "Mannheim",
+    "country": "Ger",
+    "postalCode": "68222"
+  }
+}

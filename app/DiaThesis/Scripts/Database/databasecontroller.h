@@ -104,6 +104,10 @@ public:
     void loadDataset(QList<Patient>& list);
     void loadDataset(QList<Doctor>& list);
     void loadDataset(QList<Member>& list);
+
+    void loadDataset(QList<BloodPressure>& list);
+    void loadDataset(QList<BloodSugar>& list);
+
     bool creatDatabase();
     bool deleteDatabase();
 };

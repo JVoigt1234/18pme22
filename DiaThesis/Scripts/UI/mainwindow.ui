@@ -27,7 +27,7 @@
     <item row="0" column="0">
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="LogoPage">
        <layout class="QGridLayout" name="gridLayout_4">
@@ -70,6 +70,27 @@
           <property name="verticalSpacing">
            <number>30</number>
           </property>
+          <item row="2" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetNoConstraint</enum>
+            </property>
+            <item>
+             <widget class="QLabel" name="registrierung_lb">
+              <property name="text">
+               <string>Noch kein Account?</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="registrieren_btn">
+              <property name="text">
+               <string>Registrieren</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
           <item row="0" column="1">
            <layout class="QGridLayout" name="gridLayout">
             <property name="verticalSpacing">
@@ -119,27 +140,6 @@
              <widget class="QLabel" name="label_3">
               <property name="text">
                <string>Email:</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="sizeConstraint">
-             <enum>QLayout::SetNoConstraint</enum>
-            </property>
-            <item>
-             <widget class="QLabel" name="registrierung_lb">
-              <property name="text">
-               <string>Noch kein Account?</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="registrieren_btn">
-              <property name="text">
-               <string>Registrieren</string>
               </property>
              </widget>
             </item>

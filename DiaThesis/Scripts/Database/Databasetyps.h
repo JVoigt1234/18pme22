@@ -46,7 +46,7 @@ private:
 public:
     ///Time stamp conforming to ISO 8601
     ///yyyy-MM-dd hh:mm:ss
-    BloodSugar(QString timeStemp, double value)
+    BloodSugar(QString &timeStemp, double value)
     {
         m_timeStemp = QDateTime::fromString(timeStemp,"yyyy.MM.dd hh:mm:ss");
         if(m_timeStemp.isNull())
@@ -58,7 +58,8 @@ public:
 
     ///Time stamp conforming to ISO 8601
     ///yyyy-MM-dd hh:mm:ss
-    QString getTimeStemp(void) const {m_timeStemp.date().toString("yyyy-MM-dd hh:mm:ss"); }
+    QString getTimeStemp(void) const {return (m_timeStemp.date().toString("yyyy-MM-dd") + " " + m_timeStemp.time().toString("hh:mm:ss")); }
+    double getValue(void) const {return m_value;}
 };
 
 ///Time stamp conforming to ISO 8601
@@ -69,7 +70,7 @@ private:
     QDateTime m_timeStemp;
     double m_value;
 public:
-    BloodPressure(QString timeStemp, double value)
+    BloodPressure(QString &timeStemp, double value)
     {
         m_timeStemp = QDateTime::fromString(timeStemp,"yyyy.MM.dd hh:mm:ss");
         if(m_timeStemp.isNull())
@@ -80,15 +81,16 @@ public:
     }
 
     ///Time stamp conforming to ISO 8601 (yyyy-MM-dd hh:mm:ss)
-    QString getTimeStemp(void) const { m_timeStemp.date().toString("yyyy-MM-dd hh:mm:ss"); }
+    QString getTimeStemp(void) const {return (m_timeStemp.date().toString("yyyy-MM-dd") + " " + m_timeStemp.time().toString("hh:mm:ss")); }
+    double getValue(void) const { return m_value;}
 };
 
 class User
-{    
+{
 protected:
     QString m_userID;
     QString m_forename;
-    QString m_surname;  
+    QString m_surname;
     QString m_eMail;
     QString m_phone;
     UserType m_userType;
@@ -115,12 +117,12 @@ public:
     virtual UserType getUserType(void) const {return m_userType;}
     virtual QString geteMail(void) const {return m_eMail;}
     virtual QString getPhone(void) const {return m_phone;}
-    QGeoAddress getAddress(void) const {return m_address;}
+    virtual QGeoAddress getAddress(void) const {return m_address;}
 
     virtual void setForename(const QString name) { m_forename = name; }
     virtual void setSurname(const QString name) { m_surname = name; }
     virtual void setPhone(const QString phone) { m_phone = phone; }
-    void setAddress(const QGeoAddress address) { m_address = address;}
+    virtual void setAddress(const QGeoAddress address) { m_address = address;}
     //virtual void seteMail(const QString eMail) {m_eMail = eMail; m_userID = eMail; }
     bool operator==(User const& otherUser) { return (this->m_userID == otherUser.m_userID) && (this->m_userType == otherUser.getUserType());}
 
@@ -131,7 +133,6 @@ public:
 class Patient : virtual public User
 {
 private:
-    int m_age;
     double m_weight;
     double m_bodysize;
     Gender m_gender;
@@ -150,7 +151,6 @@ public:
         {
             throw InvalidDateTimeFormate("Invalid Date- or Timeformat. It musst be yyyy.MM.dd");
         }
-        m_age = 0;
         m_weight = 0;
         m_bodysize = 0;
         m_gender = Gender::other;
@@ -160,7 +160,7 @@ public:
         m_alcohol = false;
         m_cigaret = false;
     }
-    Patient(QString forename, QString surname, UserType type, QString eMail, QString phone, QString birthDay, int age, double weight, double bodysize, Gender gender, double targetBS,
+    Patient(QString forename, QString surname, UserType type, QString eMail, QString phone, QString birthDay, double weight, double bodysize, Gender gender, double targetBS,
              double minBS, double maxBS, bool alc, bool cig, QGeoAddress address) : User(forename, surname, type, eMail, address, phone)
     {
         m_birthDay = QDateTime::fromString(birthDay,"yyyy.MM.dd");
@@ -168,7 +168,6 @@ public:
         {
             throw InvalidDateTimeFormate("Invalid Date- or Timeformat. It musst be yyyy.MM.dd");
         }
-        m_age = age;
         m_weight = weight;
         m_bodysize = bodysize;
         m_gender = gender;
@@ -180,18 +179,17 @@ public:
         m_address = address;
     }
 
-    int getAge(void) const {return m_age;}
+    int getAge(void) const {return 0 /*m_age*/;}		//rechnen
     double getWeight(void) const {return m_weight;}
     double getBodysize(void) const {return m_bodysize;}
     Gender getGender(void) const {return m_gender;}
     double getTargetBloodSugar(void) const {return m_targetBloodSugar;}
     double getMinBloodSugar(void) const {return m_minBloodSugar;}
     double getMaxBloodSugar(void) const {return m_maxBloodSugar;}
+    QString getBirthDay(void) const {return m_birthDay.toString("yyyy.MM.dd");}
     bool isAlcohol(void) const {return m_alcohol;}
     bool isCigaret(void) const {return m_cigaret;}
-    QString getBirthDay(void) const {return m_birthDay.toString("yyyy.MM.dd");}
 
-    void setAge(const int age) {m_age = age;}
     void setWeight(const double weight) { m_weight = weight;}
     void setBodysize(const double size) { m_bodysize = size;}
     void setGender(const Gender type) { m_gender = type;}
@@ -207,11 +205,17 @@ public:
 class Doctor : virtual public User
 {
 private:
+    QString m_institutionName;
     //all doctor properties
 public:
-    Doctor(QString forename, QString surname, UserType type, QString eMail, QGeoAddress address, QString phone) : User(forename, surname, type, eMail, address, phone)
+    Doctor(QString forename, QString surname, UserType type, QString eMail, QString institutionName, QGeoAddress address, QString phone) : User(forename, surname, type, eMail, address, phone)
     {
+        m_institutionName = institutionName;
     }
+
+    QString getInstitutionName(void) const {return m_institutionName;}
+
+    void setInstitutionName(const QString name) {m_institutionName = name;}
 
 };
 

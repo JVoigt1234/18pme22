@@ -11,10 +11,10 @@
   "bloodSugarRange": "89/156",
   "alcohol": false,
   "cigaret": false,
-  "adress": {
-    "street": "MainStreet",
+  "address": {
+    "street": "Hildburghauser Str. 115",
     "city": "Mannheim",
     "country": "Ger",
-    "postalCode": 68217
+    "postalCode": "68217"
   }
 }

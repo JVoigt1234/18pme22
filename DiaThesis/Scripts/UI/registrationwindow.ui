@@ -107,10 +107,10 @@
          <widget class="QGroupBox" name="persoenlDaten_gb">
           <property name="geometry">
            <rect>
-            <x>340</x>
-            <y>230</y>
-            <width>221</width>
-            <height>161</height>
+            <x>260</x>
+            <y>220</y>
+            <width>341</width>
+            <height>221</height>
            </rect>
           </property>
           <property name="title">
@@ -145,7 +145,7 @@
           <widget class="QLineEdit" name="vorname_le">
            <property name="geometry">
             <rect>
-             <x>80</x>
+             <x>90</x>
              <y>40</y>
              <width>113</width>
              <height>20</height>
@@ -158,7 +158,7 @@
           <widget class="QLineEdit" name="nachname_le">
            <property name="geometry">
             <rect>
-             <x>80</x>
+             <x>90</x>
              <y>100</y>
              <width>113</width>
              <height>20</height>
@@ -166,6 +166,45 @@
            </property>
            <property name="placeholderText">
             <string>Mustermann</string>
+           </property>
+          </widget>
+          <widget class="QLineEdit" name="geburtstag_le">
+           <property name="geometry">
+            <rect>
+             <x>90</x>
+             <y>170</y>
+             <width>113</width>
+             <height>20</height>
+            </rect>
+           </property>
+           <property name="placeholderText">
+            <string>YYYY.MM.DD</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="geburtstag_lb">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>170</y>
+             <width>81</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Geburtsdatum:</string>
+           </property>
+          </widget>
+          <widget class="QLabel" name="geburtstagTip_lb">
+           <property name="geometry">
+            <rect>
+             <x>210</x>
+             <y>170</y>
+             <width>71</width>
+             <height>16</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>(YYYY.MM.DD)</string>
            </property>
           </widget>
          </widget>
@@ -303,13 +342,24 @@
           <property name="geometry">
            <rect>
             <x>690</x>
-            <y>170</y>
-            <width>111</width>
-            <height>16</height>
+            <y>180</y>
+            <width>221</width>
+            <height>151</height>
            </rect>
           </property>
           <property name="text">
-           <string>Passwortsicherheit:</string>
+           <string>Passwortsicherheit:
+
+
+Ein sicheres Passwort besteht aus: 
+
+ mindestens 6 Zeichen
+ mindestens einem Kleinbuchstaben
+ mindestens einem Großbuchstaben
+ mindestens einer Zahl</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
           </property>
          </widget>
          <widget class="QLabel" name="PwHint_lb">

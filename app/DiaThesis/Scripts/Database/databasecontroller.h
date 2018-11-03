@@ -82,6 +82,7 @@ public:
     //only for patient
     bool allowAccess(const QString foreignID);
     bool denyAccess(const QString foreignID);
+    QString getFact(void);
 
     //getter functions for users
     Doctor getDoctorData(void);
@@ -111,6 +112,7 @@ public:
     void loadDataset(QList<Doctor>& list);
     void loadDataset(QList<Member>& list);
     void loadDataset(QList<Measurement>& list, MeasurementType type);
+    void loadDateset(void);
 
     bool creatDatabase();
     bool deleteDatabase();

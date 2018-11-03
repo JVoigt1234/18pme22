@@ -28,9 +28,44 @@ int main(int argc, char *argv[])
     QList<Patient> pList;
     QList<Doctor> dList;
     QList<Member> mList;
+    QList<User> allList;
     data.loadDataset(pList);
     data.loadDataset(dList);
     data.loadDataset(mList);
+
+    data.creatDatabase();
+    //data.loadDateset();
+    qDebug() << data.getFact();
+    int deleted = 0;
+
+    for(int i=0;i<pList.length();i++)
+    {
+        if(data.isValidUser(pList[i].geteMail(), "Passwort") == UserType::patient)
+        {
+            if(data.isUserDeleted(&pList[i], "Passwort") == true)
+                deleted++;
+        }
+    }
+
+    for(int i=0;i<dList.length();i++)
+    {
+        if(data.isValidUser(dList[i].geteMail(), "Passwort") == UserType::doctor)
+        {
+            if(data.isUserDeleted(&dList[i], "Passwort") == true)
+                deleted++;
+        }
+    }
+
+    for(int i=0;i<mList.length();i++)
+    {
+        if(data.isValidUser(mList[i].geteMail(), "Passwort") == UserType::member)
+        {
+            if(data.isUserDeleted(&mList[i], "Passwort") == true)
+                deleted++;
+        }
+    }
+
+    qDebug() << QString::number(deleted) + " von " + QString::number( (pList.length()+dList.length()+mList.length()) ) + " gelöscht";
 
     for(int i=0;i<pList.length();i++)
     {
@@ -61,7 +96,7 @@ int main(int argc, char *argv[])
 
     data.isValidUser(pList[7].geteMail(),"Passwort");
 
-    qDebug() << pList[7].geteMail();
+
     QList<Measurement> pressureList;
     data.loadDataset(pressureList, MeasurementType::bloodPressure);
     data.uploadData(pressureList);

@@ -59,15 +59,22 @@ public:
 
     //Database
     bool isConnected() const;
-    bool isUserAvailable(const QString userID);
+    bool isUserAvailable(const QString eMail);
     bool isUserCreated(User* user, QString password);
     bool isUserDeleted(User* user, QString password);
-    bool isIDAuthorized(const QString id, const QString foreignID);
-    UserType isValidUser(QString userID, QString password);
+    bool isIDAuthorized(const QString patientID, const QString foreignID);
+    UserType isValidUser(QString eMail, QString password);
 
     //for other user types
-    bool getBloodPressure(const QString userID, const QDateTime From, const QDateTime To, QList<BloodPressure>& listBloodPressure) const;
-    bool getBloodSugar(const QString userID, const QDateTime From, const QDateTime To, QList<BloodSugar>& listBloodSugar) const;
+    bool getBloodPressure(const QDateTime timestamp, Measurement& measurement);
+    bool getBloodPressure(const QDateTime from, const QDateTime to, QList<Measurement>& listOfMeasurements);
+    bool getBloodPressure(const QString patientID, const QDateTime timestamp, Measurement& measurement);
+    bool getBloodPressure(const QString patientID, const QDateTime from, const QDateTime to, QList<Measurement>& listOfMeasurements);
+
+    bool getBloodSugar(const QDateTime timestamp, Measurement& measurement);
+    bool getBloodSugar(const QDateTime from, const QDateTime to, QList<Measurement>& listOfMeasurements);
+    bool getBloodSugar(const QString patientID, const QDateTime timestamp, Measurement& measurement);
+    bool getBloodSugar(const QString patientID, const QDateTime from, const QDateTime to, QList<Measurement>& listOfMeasurements);
 
     //only for doctor
     bool getListPatient(QList<Patient>& listPatient);
@@ -90,23 +97,20 @@ public:
     bool updateUser(const Member* user);
 
     //upload functions (write new data to the database)
-    bool uploadData(const BloodPressure& bloodPressure);
-    bool uploadData(const QList<BloodPressure>& listBloodPressure);
-    bool uploadData(const BloodSugar& bloodSugar);
-    bool uploadData(const QList<BloodSugar>& listBloodSugar);
+    bool uploadData(const Measurement& measurement);
+    bool uploadData(const QList<Measurement>& listOfMeasurements);
 
     //delete measurements
     bool deleteBloodPressureData(const QDateTime timeStamp);
     bool deleteBloodPressureData(const QDateTime from, const QDateTime to);
+
     bool deleteBloodSugarData(const QDateTime timeStamp);
     bool deleteBloodSugarData(const QDateTime from, const QDateTime to);
 
     void loadDataset(QList<Patient>& list);
     void loadDataset(QList<Doctor>& list);
     void loadDataset(QList<Member>& list);
-
-    void loadDataset(QList<BloodPressure>& list);
-    void loadDataset(QList<BloodSugar>& list);
+    void loadDataset(QList<Measurement>& list, MeasurementType type);
 
     bool creatDatabase();
     bool deleteDatabase();

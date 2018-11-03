@@ -26,6 +26,18 @@ public:
     QString getMessage(void) const {return m_message;}
 };
 
+class InvalidDateTimeRange : public QException
+{
+private:
+    const char *m_message;
+public:
+    void raise() const override { throw *this; }
+    InvalidDateTimeRange *clone() const override { return new InvalidDateTimeRange(*this); }
+    InvalidDateTimeRange(const char *desc) {m_message = desc; }
+
+    QString getMessage(void) const {return m_message;}
+};
+
 class InvalidUser : public QException
 {
 private:

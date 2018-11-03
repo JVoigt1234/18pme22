@@ -20,6 +20,9 @@
 
 #include "Scripts/Exceptions/InvalidExceptions.h"
 
+const static char* TimeStampFormate = "yyyy-MM-dd hh:mm:ss";
+const static char* DateFormate = "yyyy-MM-dd";
+
 enum class UserType
 {
     inValidUser = -1,
@@ -27,6 +30,12 @@ enum class UserType
     patient,
     doctor,
     member
+};
+
+enum class MeasurementType
+{
+    bloodSugar,
+    bloodPressure
 };
 
 enum class Gender
@@ -38,18 +47,18 @@ enum class Gender
 
 ///Time stamp conforming to ISO 8601
 ///throws InvalidDateTimeFormate Execption
-class BloodSugar
+/*class BloodSugar
 {
 private:
-    QDateTime m_timeStemp;
+    QDateTime m_timeStamp;
     double m_value;
 public:
     ///Time stamp conforming to ISO 8601
     ///yyyy-MM-dd hh:mm:ss
     BloodSugar(QString &timeStemp, double value)
     {
-        m_timeStemp = QDateTime::fromString(timeStemp,"yyyy.MM.dd hh:mm:ss");
-        if(m_timeStemp.isNull())
+        m_timeStamp = QDateTime::fromString(timeStemp,"yyyy.MM.dd hh:mm:ss");
+        if(m_timeStamp.isNull())
         {
             throw InvalidDateTimeFormate("Invalid Date- or Timeformat.");
         }
@@ -58,22 +67,23 @@ public:
 
     ///Time stamp conforming to ISO 8601
     ///yyyy-MM-dd hh:mm:ss
-    QString getTimeStemp(void) const {return (m_timeStemp.date().toString("yyyy-MM-dd") + " " + m_timeStemp.time().toString("hh:mm:ss")); }
+    QString getTimeStamp(void) const {return m_timeStamp.date().toString("yyyy-MM-dd hh:mm:ss"); }
+    //QString getTimeStemp(void) const {return (m_timeStemp.date().toString("yyyy-MM-dd") + " " + m_timeStemp.time().toString("hh:mm:ss")); }
     double getValue(void) const {return m_value;}
-};
+};*/
 
 ///Time stamp conforming to ISO 8601
 ///throws InvalidDateTimeFormate Execption
-class BloodPressure
+/*class BloodPressure
 {
 private:
-    QDateTime m_timeStemp;
+    QDateTime m_timeStamp;
     double m_value;
 public:
     BloodPressure(QString &timeStemp, double value)
     {
-        m_timeStemp = QDateTime::fromString(timeStemp,"yyyy.MM.dd hh:mm:ss");
-        if(m_timeStemp.isNull())
+        m_timeStamp = QDateTime::fromString(timeStemp,"yyyy.MM.dd hh:mm:ss");
+        if(m_timeStamp.isNull())
         {
             throw InvalidDateTimeFormate("Invalid Date- or Timeformat. It musst be yyyy.MM.dd hh:mm:ss");
         }
@@ -81,8 +91,38 @@ public:
     }
 
     ///Time stamp conforming to ISO 8601 (yyyy-MM-dd hh:mm:ss)
-    QString getTimeStemp(void) const {return (m_timeStemp.date().toString("yyyy-MM-dd") + " " + m_timeStemp.time().toString("hh:mm:ss")); }
+    //QString getTimeStemp(void) const {return (m_timeStemp.date().toString("yyyy-MM-dd") + " " + m_timeStemp.time().toString("hh:mm:ss")); }
     double getValue(void) const { return m_value;}
+};*/
+
+///Time stamp conforming to ISO 8601
+///throws InvalidDateTimeFormate Execption
+class Measurement
+{
+private:
+    MeasurementType m_type;
+    QDateTime m_timeStamp;
+    double m_value;
+public:
+    ///Time stamp conforming to ISO 8601
+    ///yyyy-MM-dd hh:mm:ss
+    Measurement(const QString timeStemp, const double value, const MeasurementType type)
+    {
+        m_timeStamp = QDateTime::fromString(timeStemp, TimeStampFormate);
+        if(m_timeStamp.isNull() || m_timeStamp.isValid() == false)
+        {
+            throw InvalidDateTimeFormate("Invalid Date- or Timeformat.");
+        }
+        m_value = value;
+        m_type = type;
+    }
+
+    ///Time stamp conforming to ISO 8601
+    ///yyyy-MM-dd hh:mm:ss
+    QString getTimeStamp(void) const {return m_timeStamp.toString(TimeStampFormate); }
+    double getValue(void) const {return m_value;}
+    MeasurementType getMeasurementType(void) const {return m_type;}
+
 };
 
 class User
@@ -146,10 +186,10 @@ private:
 public:
     Patient(QString forename, QString surname, UserType type, QString eMail, QString birthDay) : User(forename, surname, type, eMail)
     {
-        m_birthDay = QDateTime::fromString(birthDay,"yyyy.MM.dd");
+        m_birthDay = QDateTime::fromString(birthDay,DateFormate);
         if(m_birthDay.isNull())
         {
-            throw InvalidDateTimeFormate("Invalid Date- or Timeformat. It musst be yyyy.MM.dd");
+            throw InvalidDateTimeFormate("Invalid Date- or Timeformat. It musst be yyyy-MM-dd");
         }
         m_weight = 0;
         m_bodysize = 0;
@@ -163,10 +203,10 @@ public:
     Patient(QString forename, QString surname, UserType type, QString eMail, QString phone, QString birthDay, double weight, double bodysize, Gender gender, double targetBS,
              double minBS, double maxBS, bool alc, bool cig, QGeoAddress address) : User(forename, surname, type, eMail, address, phone)
     {
-        m_birthDay = QDateTime::fromString(birthDay,"yyyy.MM.dd");
+        m_birthDay = QDateTime::fromString(birthDay,DateFormate);
         if(m_birthDay.isNull())
         {
-            throw InvalidDateTimeFormate("Invalid Date- or Timeformat. It musst be yyyy.MM.dd");
+            throw InvalidDateTimeFormate("Invalid Date- or Timeformat. It musst be yyyy-MM-dd");
         }
         m_weight = weight;
         m_bodysize = bodysize;
@@ -186,7 +226,7 @@ public:
     double getTargetBloodSugar(void) const {return m_targetBloodSugar;}
     double getMinBloodSugar(void) const {return m_minBloodSugar;}
     double getMaxBloodSugar(void) const {return m_maxBloodSugar;}
-	QString getBirthDay(void) const {return m_birthDay.toString("yyyy.MM.dd");}
+    QString getBirthDay(void) const {return m_birthDay.toString(DateFormate);}
     bool isAlcohol(void) const {return m_alcohol;}
     bool isCigaret(void) const {return m_cigaret;}
 
@@ -198,8 +238,8 @@ public:
     void setMaxBloodSugar(const double value) { m_maxBloodSugar = value;}
     void setAlcohol(const bool value) { m_alcohol = value;}
     void setCigaret(const bool value) { m_cigaret = value;}
-    void setBirthDay(const QString date) {        m_birthDay = QDateTime::fromString(date,"yyyy.MM.dd");
-                                                  if(m_birthDay.isNull()) throw InvalidDateTimeFormate("Invalid Date- or Timeformat. It musst be yyyy.MM.dd"); }
+    void setBirthDay(const QString date) {        m_birthDay = QDateTime::fromString(date,DateFormate);
+                                                  if(m_birthDay.isNull()) throw InvalidDateTimeFormate("Invalid Date- or Timeformat. It musst be yyyy-MM-dd"); }
 };
 
 class Doctor : virtual public User
@@ -239,7 +279,7 @@ public:
         return true;
     }
     ///retrun all access id
-    void getPatientRealease(const QList<QString>* list) const {list = &m_patientRelease;}
+    void getPatientRealease(QList<QString>& list) const {list = m_patientRelease; }
     ///delete all ids
     bool deletePatientRealease(void) { m_patientRelease.clear(); return true;}
     ///delete the given id

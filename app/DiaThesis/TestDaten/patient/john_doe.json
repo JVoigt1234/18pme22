@@ -2,7 +2,7 @@
   "patientName": "John/Doe",
   "email": "j.doe@gmx.net",
   "phone": "0176 1512309112",
-  "birthDate": "1960.09.09",
+  "birthDate": "1960-09-09",
   "age": 58,
   "weight": 120,
   "bodysize": 170,

@@ -2,7 +2,7 @@
   "patientName": "Buggy/Program",
   "email": "info@DiaThesis.de",
   "phone": "1168161",
-  "birthDate": "2018.10.20",
+  "birthDate": "2018-10-20",
   "age": 0,
   "weight": 1000,
   "bodysize": 1111,
@@ -12,7 +12,7 @@
   "alcohol": true,
   "cigaret": false,
   "address": {
-    "street": "John-Deer-Straße 12",
+    "street": "John-Deer-Straï¿½e 12",
     "city": "Mannheim",
     "country": "Ger",
     "postalCode": "68222"

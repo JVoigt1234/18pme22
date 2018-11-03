@@ -2,7 +2,7 @@
   "patientName": "Nice/Guy",
   "email": "guy@men.de",
   "phone": "1234567",
-  "birthDate": "1990.04.09",
+  "birthDate": "1990-04-09",
   "age": 28,
   "weight": 75,
   "bodysize": 190,
@@ -12,7 +12,7 @@
   "alcohol": false,
   "cigaret": false,
   "address": {
-    "street": "Schlossstraße 1",
+    "street": "Schlossstraï¿½e 1",
     "city": "Heidelberg",
     "country": "Ger",
     "postalCode": "68721"

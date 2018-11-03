@@ -19,8 +19,8 @@
 *.qbs.user
 *.qbs.user.*
 *.moc
-*.Debug
-*.Release
+/*.Debug
+/*.Release
 moc_*.cpp
 qrc_*.cpp
 ui_*.h
@@ -35,6 +35,10 @@ Makefile*
 *.qmlproject.user
 *.qmlproject.user.*
 
+/*.Debug
+/*.Release
+/*.pro.user
+/*.pro.user.*
 /documentation/paper/Datenbank.docx
 DiaThesis/debug
 DiaThesis/release

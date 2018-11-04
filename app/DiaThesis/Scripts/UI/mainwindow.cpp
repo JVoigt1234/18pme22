@@ -5,13 +5,23 @@
 #include <QPixmap>
 #include "Scripts/UI/userwindow.h"
 
+#include <QWinTaskbarButton>
+#include <QIcon>
 
-
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(DatabaseController* database,QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    m_database = database;
 
+    m_userwindow = new UserWindow(m_database);
+    m_registrationwindow = new RegistrationWindow(m_database);
+
+    QWinTaskbarButton *button = new QWinTaskbarButton(this);
+    button->setWindow(this->windowHandle());
+    button->setOverlayIcon(QIcon("Pictures/Logo_DiaThesis.png"));
+
+    setWindowIcon(QIcon("Pictures/Logo_DiaThesis.png"));
     ui->setupUi(this);
 
     QPixmap logo("Pictures/Logo_DiaThesis.png");
@@ -27,13 +37,16 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_anmelden_btn_clicked()
 {
-    userwindow.show();
-    this->close();
+    if(m_database->isValidUser(ui->mail_le->text(),ui->passwort_le->text()) == UserType::patient)
+    {
+        m_userwindow->show();
+        this->close();
+    }
 }
 
 void MainWindow::on_registrieren_btn_clicked()
 {
-    registrationwindow.show();
+    m_registrationwindow->show();
 }
 
 void MainWindow::on_login_btn_clicked()

@@ -26,7 +26,7 @@
     <item row="1" column="0">
      <widget class="QStackedWidget" name="mainStackWidget">
       <property name="currentIndex">
-       <number>4</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="profilePage">
        <layout class="QGridLayout" name="gridLayout_6">
@@ -103,7 +103,7 @@
     <bool>false</bool>
    </property>
    <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
+    <enum>LeftToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
     <bool>false</bool>
@@ -187,7 +187,7 @@
   <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
-   <header>qcustomplot.h</header>
+   <header>Scripts/UI/qcustomplot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

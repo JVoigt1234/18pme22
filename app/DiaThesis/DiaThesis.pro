@@ -7,6 +7,7 @@
 QT       += core gui
 QT       += sql
 QT       += positioning
+QT       += winextras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
@@ -44,7 +45,8 @@ HEADERS += \
     Scripts/UI/qcustomplot.h \
     Scripts/UI/registrationwindow.h \
     Scripts/UI/userwindow.h \
-    Scripts/UI/workwindow.h
+    Scripts/UI/workwindow.h \
+    Scripts/UI/ui_userwindow.h
 
 
 FORMS += \

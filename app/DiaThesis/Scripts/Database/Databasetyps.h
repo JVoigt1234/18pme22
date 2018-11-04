@@ -102,25 +102,38 @@ class Measurement
 private:
     MeasurementType m_type;
     QDateTime m_timeStamp;
-    double m_value;
+    QString m_value;
 public:
     ///Time stamp conforming to ISO 8601
     ///yyyy-MM-dd hh:mm:ss
-    Measurement(const QString timeStemp, const double value, const MeasurementType type)
+    Measurement(const QString timeStamp, const double bloodsugar/*, const MeasurementType type = MeasurementType::bloodSugar*/)
     {
-        m_timeStamp = QDateTime::fromString(timeStemp, TimeStampFormate);
+        m_timeStamp = QDateTime::fromString(timeStamp, TimeStampFormate);
         if(m_timeStamp.isNull() || m_timeStamp.isValid() == false)
         {
             throw InvalidDateTimeFormate("Invalid Date- or Timeformat.");
         }
-        m_value = value;
-        m_type = type;
+        m_value = QString::number(bloodsugar);
+        m_type = MeasurementType::bloodSugar;//type;
+    }
+
+    Measurement(const QString timeStamp, const double systolicPressure, const double diastolicPressure/*, const MeasurementType type = MeasurementType::bloodPressure*/)
+    {
+        m_timeStamp = QDateTime::fromString(timeStamp, TimeStampFormate);
+        if(m_timeStamp.isNull() || m_timeStamp.isValid() == false)
+        {
+            throw InvalidDateTimeFormate("Invalid Date- or Timeformat.");
+        }
+        m_value = QString::number(systolicPressure) + "/" + QString::number(diastolicPressure);
+        m_type = MeasurementType::bloodPressure;//type;
     }
 
     ///Time stamp conforming to ISO 8601
     ///yyyy-MM-dd hh:mm:ss
     QString getTimeStamp(void) const {return m_timeStamp.toString(TimeStampFormate); }
-    double getValue(void) const {return m_value;}
+    ///returns the measurement value as string (Bloodpressure is stored as "systolic/diastolic")
+    QString getValue(void) const {return m_value;} //to get bloodPressure QStringList value = m_value.split('/', QString::SkipEmptyParts);
+                                                   //                     double sP = value[0].toDouble(); dP = value[1].toDouble();
     MeasurementType getMeasurementType(void) const {return m_type;}
 
 };

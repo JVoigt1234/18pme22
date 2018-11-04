@@ -102,10 +102,10 @@ public:
     bool uploadData(const QList<Measurement>& listOfMeasurements);
 
     //delete measurements
-    bool deleteBloodPressureData(const QDateTime timeStamp);
+    bool deleteBloodPressureData(const QDateTime timestamp);
     bool deleteBloodPressureData(const QDateTime from, const QDateTime to);
 
-    bool deleteBloodSugarData(const QDateTime timeStamp);
+    bool deleteBloodSugarData(const QDateTime timestamp);
     bool deleteBloodSugarData(const QDateTime from, const QDateTime to);
 
     void loadDataset(QList<Patient>& list);

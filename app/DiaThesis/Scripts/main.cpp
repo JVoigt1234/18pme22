@@ -1,4 +1,4 @@
-///-----------------------------------------------------------------
+    ///-----------------------------------------------------------------
 /// Namespace:
 /// Class:              main
 /// Description:        Example how to use the DatabaseController
@@ -10,20 +10,19 @@
 
 #include "Scripts/UI/mainwindow.h"
 #include <QApplication>
-#include <QList>
 
 #include "Scripts/Database/databasecontroller.h"
-//#include "Scripts/Database/sqldatabase.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
 
+//    DatabaseController *data;
+//    data = new DatabaseController("db.inftech.hs-mannheim.de");
+//***************************************************************************************
     DatabaseController data("db.inftech.hs-mannheim.de");
-
     //data.creatDatabase();
+    //data.loadDateset(); //neue Fakten auf die Datenbank schreiben (duplikate möglich/direkt!!!)
 
     QList<Patient> pList;
     QList<Doctor> dList;
@@ -33,39 +32,37 @@ int main(int argc, char *argv[])
     data.loadDataset(dList);
     data.loadDataset(mList);
 
-    data.creatDatabase();
-    //data.loadDateset();
     qDebug() << data.getFact();
     int deleted = 0;
 
-    for(int i=0;i<pList.length();i++)
-    {
-        if(data.isValidUser(pList[i].geteMail(), "Passwort") == UserType::patient)
-        {
-            if(data.isUserDeleted(&pList[i], "Passwort") == true)
-                deleted++;
-        }
-    }
+//    for(int i=0;i<pList.length();i++)
+//    {
+//        if(data.isValidUser(pList[i].geteMail(), "Passwort") == UserType::patient)
+//        {
+//            if(data.isUserDeleted(&pList[i], "Passwort") == true)
+//                deleted++;
+//        }
+//    }
 
-    for(int i=0;i<dList.length();i++)
-    {
-        if(data.isValidUser(dList[i].geteMail(), "Passwort") == UserType::doctor)
-        {
-            if(data.isUserDeleted(&dList[i], "Passwort") == true)
-                deleted++;
-        }
-    }
+//    for(int i=0;i<dList.length();i++)
+//    {
+//        if(data.isValidUser(dList[i].geteMail(), "Passwort") == UserType::doctor)
+//        {
+//            if(data.isUserDeleted(&dList[i], "Passwort") == true)
+//                deleted++;
+//        }
+//    }
 
-    for(int i=0;i<mList.length();i++)
-    {
-        if(data.isValidUser(mList[i].geteMail(), "Passwort") == UserType::member)
-        {
-            if(data.isUserDeleted(&mList[i], "Passwort") == true)
-                deleted++;
-        }
-    }
+//    for(int i=0;i<mList.length();i++)
+//    {
+//        if(data.isValidUser(mList[i].geteMail(), "Passwort") == UserType::member)
+//        {
+//            if(data.isUserDeleted(&mList[i], "Passwort") == true)
+//                deleted++;
+//        }
+//    }
 
-    qDebug() << QString::number(deleted) + " von " + QString::number( (pList.length()+dList.length()+mList.length()) ) + " gelöscht";
+//    qDebug() << QString::number(deleted) + " von " + QString::number( (pList.length()+dList.length()+mList.length()) ) + " gelöscht";
 
     for(int i=0;i<pList.length();i++)
     {
@@ -99,7 +96,7 @@ int main(int argc, char *argv[])
 
     QList<Measurement> pressureList;
     data.loadDataset(pressureList, MeasurementType::bloodPressure);
-    data.uploadData(pressureList);
+    //data.uploadData(pressureList);
 
     QDateTime from, to;
     QList<Measurement> testList;
@@ -107,13 +104,36 @@ int main(int argc, char *argv[])
     to = QDateTime::fromString("2018-10-10 15:20:10", TimeStampFormate);
     data.getBloodPressure(from, to, testList);
 
+    qDebug() << "pressure:";
+    for(int i = 0; i < testList.length(); i++)
+    {
+        qDebug() << testList[i].getValue();
+    }
+    testList.clear();
+
     QList<Measurement> sugarList;
     data.loadDataset(sugarList, MeasurementType::bloodSugar);
-    data.uploadData(sugarList);
+    //data.uploadData(sugarList);
+
+    data.getBloodSugar(from, to, testList);
+
+    qDebug() << "sugar:";
+    for(int i = 0; i < testList.length(); i++)
+    {
+        qDebug() << testList[i].getValue();
+    }
+
+    qDebug() << data.getFact();
 
     //data.deleteBloodPressureData(from, to);
 
     //data.deleteDatabase();
+    MainWindow w(&data);
 
+//***************************************************************************************
+
+    //MainWindow w(data);
+
+    w.show();
     return a.exec();
 }

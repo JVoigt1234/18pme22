@@ -139,7 +139,7 @@ bool DatabaseController::isConnected() const
 ///     Exception: SqlError
 bool DatabaseController::isUserAvailable(const QString eMail)
 {
-    QByteArray id = QCryptographicHash::hash( QString(eMail + QString(eMail.length()) ).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash( QString(eMail + QString(eMail.length()) ).toUtf8(), QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query("SELECT userid"
                     " FROM registration"
@@ -172,7 +172,7 @@ UserType DatabaseController::isValidUser(QString eMail, QString password)
         return UserType::inValidUser;
     }
 
-    QByteArray id = QCryptographicHash::hash( QString(eMail + QString(eMail.length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash( QString(eMail + QString(eMail.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query("SELECT password,usertyp,salt"
                     " FROM registration"
@@ -191,7 +191,7 @@ UserType DatabaseController::isValidUser(QString eMail, QString password)
     query.first();      //i need this to select the first one
 
     int salt = query.value(2).toInt() - password.length();
-    QByteArray pw = QCryptographicHash::hash( QString(password + QString(salt)).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray pw = QCryptographicHash::hash( QString(password + QString(salt)).toUtf8(), QCryptographicHash::Keccak_512).toHex();
 
     if(query.value(0).toByteArray() != pw)
     {
@@ -213,7 +213,7 @@ UserType DatabaseController::isValidUser(QString eMail, QString password)
         m_userType = UserType::inValidUser;
         return UserType::inValidUser;
     }
-    pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(eMail.length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(eMail.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
     usertyp = crypt(usertyp, pw);
     pw.clear();             //delete keys, protect from RAM copying
     m_userID = eMail;
@@ -229,8 +229,8 @@ bool DatabaseController::isIDAuthorized(const QString patientID, const QString f
         return true;
     }
 
-    QByteArray patientid = QCryptographicHash::hash( QString(patientID + QString(patientID.length())).toUtf8(), QCryptographicHash::Md5).toHex();
-    QByteArray foreignid = QCryptographicHash::hash( QString(foreignID + QString(foreignID.length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray patientid = QCryptographicHash::hash( QString(patientID + QString(patientID.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
+    QByteArray foreignid = QCryptographicHash::hash( QString(foreignID + QString(foreignID.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
 
 //    QSqlQuery query("SELECT *"
 //                    " FROM accessmember as m, accessdoctor as d"
@@ -282,12 +282,12 @@ bool DatabaseController::isUserCreated(User* user, QString password)
     }
 
     //user
-    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     //password
     qsrand(uint(QTime::currentTime().msec()));
     int salt =  qrand();
-    QByteArray pw = QCryptographicHash::hash( QString(password + QString(salt)).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray pw = QCryptographicHash::hash( QString(password + QString(salt)).toUtf8(), QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery creating;
     creating.prepare("INSERT INTO registration(userid,password,usertyp,salt) "
@@ -295,7 +295,7 @@ bool DatabaseController::isUserCreated(User* user, QString password)
     //userTyp
     QByteArray usertyp;
     usertyp.setNum(int(user->getUserType()));
-    QByteArray userpw = QCryptographicHash::hash( QString(pw + QString(user->getUserID().length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray userpw = QCryptographicHash::hash( QString(pw + QString(user->getUserID().length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
     usertyp = crypt(usertyp, userpw ).toHex();
 
     //salt
@@ -344,7 +344,7 @@ bool DatabaseController::isUserCreated(User* user, QString password)
     userObject = convertUser2JSON(user);
     QJsonDocument doc(userObject);
     QByteArray jsonByteArray = doc.toBinaryData();
-    userpw = QCryptographicHash::hash( QString(pw + QString(user->getUserID().length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    userpw = QCryptographicHash::hash( QString(pw + QString(user->getUserID().length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
     jsonByteArray = crypt(jsonByteArray, userpw);
     creating.bindValue(0, jsonByteArray.toHex());
 
@@ -360,7 +360,7 @@ bool DatabaseController::isUserCreated(User* user, QString password)
     userpw.clear();     //Delete key, protect from RAM copying
 
     //if it was not possible to write user to "user"table
-    pw = QCryptographicHash::hash( QString(password + QString(salt)).toUtf8(), QCryptographicHash::Md5).toHex();
+    pw = QCryptographicHash::hash( QString(password + QString(salt)).toUtf8(), QCryptographicHash::Keccak_512).toHex();
     creating.exec("DELETE FROM registration"
                 " WHERE userid = '" + QString(id) + "'"
                 " AND password = '" + QString(pw) + "'" );
@@ -384,7 +384,7 @@ bool DatabaseController::isUserDeleted(User* user, QString password)
         return false;
     }
 
-    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query("SELECT salt"
                     " FROM registration"
@@ -396,7 +396,7 @@ bool DatabaseController::isUserDeleted(User* user, QString password)
     }
     query.first();
     int salt = query.value(0).toInt() - password.length();
-    QByteArray pw = QCryptographicHash::hash( QString(password + QString(salt)).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray pw = QCryptographicHash::hash( QString(password + QString(salt)).toUtf8(), QCryptographicHash::Keccak_512).toHex();
 
     //Delete keys, protect from RAM copying
     password = "";
@@ -423,7 +423,7 @@ bool DatabaseController::isUserDeleted(User* user, QString password)
 ///     Exception: InvalidUser, UserNotFound, InvalidDateTimeFormate and SqlError Exception
 Patient DatabaseController::patientData(QString patientID)
 {
-    QByteArray id = QCryptographicHash::hash(QString(patientID + QString(patientID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(patientID + QString(patientID.length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query("SELECT password,data"
                     " FROM patient"
@@ -434,7 +434,7 @@ Patient DatabaseController::patientData(QString patientID)
         throw UserNotFound(QString("User with ID: " + patientID + " not found.").toLocal8Bit().data());
     }
     query.first();
-    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(patientID.length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(patientID.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
     QByteArray data = crypt(QByteArray::fromHex(query.value(1).toByteArray()), pw);
     pw.clear();     //Delete keys, protect from RAM copying
     QJsonObject jsonObject = QJsonDocument::fromBinaryData(data ).object();
@@ -487,8 +487,8 @@ bool DatabaseController::allowAccess(const QString foreignID)
          throw InvalidUser("Only for patient.");
     }
 
-    QByteArray patientid = QCryptographicHash::hash( QString(m_userID + QString(m_userID.length())).toUtf8(), QCryptographicHash::Md5).toHex();
-    QByteArray foreignid = QCryptographicHash::hash( QString(foreignID + QString(foreignID.length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray patientid = QCryptographicHash::hash( QString(m_userID + QString(m_userID.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
+    QByteArray foreignid = QCryptographicHash::hash( QString(foreignID + QString(foreignID.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query("SELECT password,usertyp"
                     " FROM registration"
@@ -508,7 +508,7 @@ bool DatabaseController::allowAccess(const QString foreignID)
         return false;
     }
 
-    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(foreignid.length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(foreignid.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
     usertyp = crypt(usertyp, pw);
     pw.clear();          //Delete keys, protect from RAM copying
     QString tablename;
@@ -565,8 +565,8 @@ bool DatabaseController::denyAccess(const QString foreignID)
          throw InvalidUser("Only for patient.");
     }
 
-    QByteArray patientid = QCryptographicHash::hash( QString(m_userID + QString(m_userID.length())).toUtf8(), QCryptographicHash::Md5).toHex();
-    QByteArray foreignid = QCryptographicHash::hash( QString(foreignID + QString(foreignID.length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray patientid = QCryptographicHash::hash( QString(m_userID + QString(m_userID.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
+    QByteArray foreignid = QCryptographicHash::hash( QString(foreignID + QString(foreignID.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query("SELECT password,usertyp"
                     " FROM registration"
@@ -586,7 +586,7 @@ bool DatabaseController::denyAccess(const QString foreignID)
         return false;
     }
 
-    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(foreignid.length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(foreignid.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
     usertyp = crypt(usertyp, pw);
     pw.clear();     //Delete keys, protect from RAM copying
     QString tablename;
@@ -635,7 +635,7 @@ bool DatabaseController::getListPatient(QList<Patient>& listPatient)
         throw InvalidUser("Only for doctor.");
     }
 
-    QByteArray id = QCryptographicHash::hash(QString(m_userID + QString(m_userID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(m_userID + QString(m_userID.length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query("SELECT patientid"
                     " FROM accessdoctor"
@@ -683,7 +683,7 @@ Doctor DatabaseController::getDoctorData(const QString doctorID)
         }
     }
 
-    QByteArray id = QCryptographicHash::hash(QString(doctorID + QString(doctorID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(doctorID + QString(doctorID.length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query("SELECT password,data"
                     " FROM doctor"
@@ -696,7 +696,7 @@ Doctor DatabaseController::getDoctorData(const QString doctorID)
 
     query.first();
     //decrypt data
-    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(doctorID.length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(doctorID.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
     QByteArray data = crypt(QByteArray::fromHex(query.value(1).toByteArray()), pw);
     pw.clear();     //Delete keys, protect from RAM copying
 
@@ -776,7 +776,7 @@ Member DatabaseController::getMemberData(const QString memberID)
         }
     }
 
-    QByteArray id = QCryptographicHash::hash(QString(memberID + QString(memberID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(memberID + QString(memberID.length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query("SELECT password,data"
                     " FROM member"
@@ -789,7 +789,7 @@ Member DatabaseController::getMemberData(const QString memberID)
 
     query.first();
     //decrypt data
-    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(memberID.length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(memberID.length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
     QByteArray data = crypt(QByteArray::fromHex(query.value(1).toByteArray()), pw);
     pw.clear();     //Delete keys, protect from RAM copying
     QJsonObject jsonObject = QJsonDocument::fromBinaryData(data ).object();
@@ -850,7 +850,7 @@ bool DatabaseController::updateUser(const Doctor* user)
     userObject.insert("institutionName", user->getInstitutionName());
 
     QSqlQuery creating;
-    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     //Data
     QJsonDocument doc(userObject);
@@ -867,7 +867,7 @@ bool DatabaseController::updateUser(const Doctor* user)
 
     query.first();
     //encrypt data
-    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(user->getUserID().length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(user->getUserID().length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
     jsonByteArray = crypt(jsonByteArray, pw);
     pw.clear();     //Delete keys, protect from RAM copying
 
@@ -920,7 +920,7 @@ bool DatabaseController::updateUser(const Patient* user)
     userObject.insert("address", convertAddress2JSON(user->getAddress()));
 
     QSqlQuery creating;
-    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     //Data
     QJsonDocument doc(userObject);
@@ -938,7 +938,7 @@ bool DatabaseController::updateUser(const Patient* user)
     query.first();
 
     //encrypt data
-    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(user->getUserID().length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(user->getUserID().length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
     jsonByteArray = crypt(jsonByteArray, pw);
     pw.clear();     //Delete keys, protect from RAM copying
 
@@ -989,7 +989,7 @@ bool DatabaseController::updateUser(const Member* user)
     }
 
     QSqlQuery creating;
-    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(user->getUserID() + QString(user->getUserID().length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     //Data
     QJsonDocument doc(userObject);
@@ -1007,7 +1007,7 @@ bool DatabaseController::updateUser(const Member* user)
     query.first();
 
     //encrypt data
-    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(user->getUserID().length())).toUtf8(), QCryptographicHash::Md5).toHex();
+    QByteArray  pw = QCryptographicHash::hash( QString(query.value(0).toByteArray() + QString(user->getUserID().length())).toUtf8(), QCryptographicHash::Keccak_512).toHex();
     jsonByteArray = crypt(jsonByteArray, pw);
     pw.clear();     //Delete keys, protect from RAM copying
 
@@ -1034,7 +1034,7 @@ bool DatabaseController::uploadData(const Measurement& measurement)
         throw InvalidUser("Invaild User.");
     }
 
-    QByteArray id = QCryptographicHash::hash(QString(m_userID + QString(m_userID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(m_userID + QString(m_userID.length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
     QString tablename;
 
     switch (measurement.getMeasurementType()) {
@@ -1061,7 +1061,7 @@ bool DatabaseController::uploadData(const Measurement& measurement)
     if(creating.lastError().type() != QSqlError::NoError)
     {
         creating.exec("UPDATE " + tablename +
-                      " SET value = " + QString::number(measurement.getValue()) +
+                      " SET value = " + measurement.getValue() +
                       " WHERE userid = '" + QString(id) + "'"
                       " AND timestamp = '" + measurement.getTimeStamp() + "'");
 
@@ -1186,7 +1186,7 @@ bool DatabaseController::getBloodPressure(const QString patientID, const QDateTi
         throw InvalidDateTimeRange("The query must begin with the past.");
     }
 
-    QByteArray id = QCryptographicHash::hash(QString(patientID + QString(patientID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(patientID + QString(patientID.length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query("SELECT value, timestamp"
                     " FROM pressuremeasurements"
@@ -1205,7 +1205,10 @@ bool DatabaseController::getBloodPressure(const QString patientID, const QDateTi
         QString timestamp = query.value(1).toString();
         timestamp.replace('T', " ");
         timestamp.remove(".000");
-        listOfMeasurements.append(Measurement(timestamp, query.value(0).toDouble(), MeasurementType::bloodPressure ) );
+        QStringList value = query.value(0).toString().split('/', QString::SkipEmptyParts);
+        if(value.empty() || value.size() != 2)
+            continue;
+        listOfMeasurements.append(Measurement(timestamp, value[0].toDouble(), value[1].toDouble() ) );
     }
     return true;
 }
@@ -1225,7 +1228,7 @@ bool DatabaseController::getBloodSugar(const QDateTime timestamp, Measurement& m
     }
 
     QList<Measurement> list;
-    if(getBloodPressure(m_userID, timestamp, timestamp, list) == false)
+    if(getBloodSugar(m_userID, timestamp, timestamp, list) == false)
     {
         return false;
     }
@@ -1247,7 +1250,7 @@ bool DatabaseController::getBloodSugar(const QDateTime from, const QDateTime to,
         throw InvalidUser("Incorrect user");
     }
 
-    return getBloodPressure(m_userID, from, to, listOfMeasurements);
+    return getBloodSugar(m_userID, from, to, listOfMeasurements);
 }
 
 /// for other typs
@@ -1260,7 +1263,7 @@ bool DatabaseController::getBloodSugar(const QString patientID, const QDateTime 
     }
 
     QList<Measurement> list;
-    if(getBloodPressure(patientID, timestamp, timestamp, list) == false)
+    if(getBloodSugar(patientID, timestamp, timestamp, list) == false)
     {
         return false;
     }
@@ -1293,7 +1296,7 @@ bool DatabaseController::getBloodSugar(const QString patientID, const QDateTime 
         throw InvalidDateTimeRange("The query must begin with the past.");
     }
 
-    QByteArray id = QCryptographicHash::hash(QString(patientID + QString(patientID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(patientID + QString(patientID.length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query("SELECT value, timestamp"
                     " FROM sugarmeasurements"
@@ -1312,7 +1315,7 @@ bool DatabaseController::getBloodSugar(const QString patientID, const QDateTime 
         QString timestamp = query.value(1).toString();
         timestamp.replace('T', " ");
         timestamp.remove(".000");
-        listOfMeasurements.append(Measurement(timestamp, query.value(0).toDouble(), MeasurementType::bloodPressure ) );
+        listOfMeasurements.append(Measurement(timestamp, query.value(0).toDouble()) );
     }
     return true;
 }
@@ -1341,7 +1344,7 @@ bool DatabaseController::deleteBloodPressureData(const QDateTime from, const QDa
         throw InvalidDateTimeRange("The query must begin with the past.");
     }
 
-    QByteArray id = QCryptographicHash::hash(QString(m_userID + QString(m_userID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(m_userID + QString(m_userID.length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query;
     query.exec("DELETE FROM pressuremeasurements"
@@ -1384,7 +1387,7 @@ bool DatabaseController::deleteBloodSugarData(const QDateTime from, const QDateT
         throw InvalidDateTimeRange("The query must begin with the past.");
     }
 
-    QByteArray id = QCryptographicHash::hash(QString(m_userID + QString(m_userID.length())).toUtf8(),QCryptographicHash::Md5).toHex();
+    QByteArray id = QCryptographicHash::hash(QString(m_userID + QString(m_userID.length())).toUtf8(),QCryptographicHash::Keccak_512).toHex();
 
     QSqlQuery query;
     query.exec("DELETE FROM sugarmeasurements"
@@ -1413,8 +1416,11 @@ QString DatabaseController::getFact(void)
         throw  SqlError(query.lastError().text());
     }
 
+    if(query.size() == 0)
+        return nullptr;
+
     qsrand(uint(QTime::currentTime().msec()));
-    int index =  qrand() % query.size();
+    int index = qrand() % query.size();
     int i = 0;
     while(query.next())
     {
@@ -1422,8 +1428,8 @@ QString DatabaseController::getFact(void)
             return query.value(0).toString();
         i++;
     }
+    return nullptr;
 }
-
 
 //only for development
 
@@ -1564,17 +1570,17 @@ void DatabaseController::loadDataset(QList<Measurement>& list, MeasurementType t
         if(m_userID == id)
         {
             QString timestamp;
-            double pressureValue;
 
             for(int i=0; i < jsonObject.count(); i++)
             {
                 timestamp = jsonObject.at(i)["timestamp"].toString();  //QDateTime timestemp = jsonObject.at(i)["timestemp"].toVariant().toDateTime();
-                pressureValue = jsonObject.at(i)["pressureValue"].toDouble();
+                Measurement* data;
                 if(type == MeasurementType::bloodSugar)
-                    pressureValue = jsonObject.at(i)["sugarValue"].toDouble();
+                     data = new Measurement(timestamp,jsonObject.at(i)["sugarValue"].toDouble());
+                else
+                    data = new Measurement(timestamp,jsonObject.at(i)["sys"].toDouble(), jsonObject.at(i)["dia"].toDouble());
 
-                Measurement data(timestamp,pressureValue, type);
-                list.append(data);
+                list.append(*data);
             }
         }
     }

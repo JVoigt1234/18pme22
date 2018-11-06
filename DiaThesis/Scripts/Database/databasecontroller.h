@@ -1,10 +1,13 @@
 ///-----------------------------------------------------------------
 /// Namespace:
 /// Class:              DatabaseController
-/// Description:
-/// Author:             Kevin Kastner
+/// Description:        Sends queries to an active PostgreSQL database, it is possible
+///                     to create a new user or check if it is valid or available.
+///                     You can also edit and/or delete users, measurements or get random facts from the database.
+/// Author:             Kevin Kastner & Martin Bechberger
 /// Date:               Oct 2018
-/// Notes:              -
+/// Notes:              throws Exception: InvalidDateTimeFormate, InvalidUser,
+///                     UserNotFound and SqlError
 /// Revision History:   First release
 ///-----------------------------------------------------------------
 
@@ -15,21 +18,15 @@
 #include <QString>
 #include <QList>
 
-#include <QDebug>
 #include <QDateTime>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QtSql>
 #include <QCryptographicHash>
-#include <QMetaEnum>
-
-//only once
-#include <QDirIterator>
 
 #include "Scripts/Database/Databasetyps.h"
 
-///failed: 0, sucessfull: 1
 class DatabaseController : public QThread
 {
 private:
@@ -40,41 +37,56 @@ private:
     QString m_username;
     QString m_password;
 
-    QList<Patient> patient;
+    QString m_userID;
+    UserType m_userType;
 
     QByteArray crypt (const QByteArray text, const QByteArray key);
     bool isUserOK(const User* user);
+    Patient patientData(QString patientID);
 
     //conversion features
-    QGeoAddress convertJSONArray2Address(const QJsonArray jsonArray);
-
+    QGeoAddress convertJSON2Address(const QJsonObject jsonArray);
     QJsonObject convertUser2JSON(const User* patient);
     QJsonObject convertAddress2JSON(const QGeoAddress address);
 
 public:
-    DatabaseController(QString hostname);
+    DatabaseController(QString hostname, QString databasename = "1814116_DiaThesis");
     ~DatabaseController();
 
     //Database
     bool isConnected() const;
-    bool isUserAvailable(const QString userID);
+    bool isUserAvailable(const QString eMail);
     bool isUserCreated(User* user, QString password);
     bool isUserDeleted(User* user, QString password);
-    UserType isValidUser(QString userID, QString password);
+    bool isIDAuthorized(const QString patientID, const QString foreignID);
+    UserType isValidUser(QString eMail, QString password);
 
-    //for every user
-    bool getBloodPressure(const Patient* patientID, const QDateTime From, const QDateTime To, QList<BloodPressure>& listBloodPressure) const;
-    bool getBloodSugar(const Patient* patientID, const QDateTime From, const QDateTime To, QList<BloodSugar>& listBloodSugar) const;
-    bool getBloodPressure(const User* userID, const QString patientID, const QDateTime From, const QDateTime To, QList<BloodPressure>& listBloodPressure) const;
-    bool getBloodSugar(const User* userID, const QString patientID, const QDateTime From, const QDateTime To, QList<BloodSugar>& listBloodSugar) const;
+    //for other user types
+    bool getBloodPressure(const QDateTime timestamp, Measurement& measurement);
+    bool getBloodPressure(const QDateTime from, const QDateTime to, QList<Measurement>& listOfMeasurements);
+    bool getBloodPressure(const QString patientID, const QDateTime timestamp, Measurement& measurement);
+    bool getBloodPressure(const QString patientID, const QDateTime from, const QDateTime to, QList<Measurement>& listOfMeasurements);
+
+    bool getBloodSugar(const QDateTime timestamp, Measurement& measurement);
+    bool getBloodSugar(const QDateTime from, const QDateTime to, QList<Measurement>& listOfMeasurements);
+    bool getBloodSugar(const QString patientID, const QDateTime timestamp, Measurement& measurement);
+    bool getBloodSugar(const QString patientID, const QDateTime from, const QDateTime to, QList<Measurement>& listOfMeasurements);
 
     //only for doctor
-    bool getListPatient(QList<Patient>& listPatient) const;
+    bool getListPatient(QList<Patient>& listPatient);
+
+    //only for patient
+    bool allowAccess(const QString foreignID);
+    bool denyAccess(const QString foreignID);
+    QString getFact(void);
 
     //getter functions for users
-    Doctor getDoctorData(const Doctor* userID);
-    Patient getPatientData(const Patient* userID);
-    Member getMemberData(const Member* userID);
+    Doctor getDoctorData(void);
+    Doctor getDoctorData(const QString doctorID);
+    Patient getPatientData(void);
+    //Patient getPatientData(QString foreignID);
+    Member getMemberData(void);
+    Member getMemberData(const QString memberID);
 
     //upload functions
     bool updateUser(const Doctor* user);
@@ -82,20 +94,15 @@ public:
     bool updateUser(const Member* user);
 
     //upload functions (write new data to the database)
-    bool uploadData(const BloodPressure& bloodPressure);
-    bool uploadData(const QList<BloodPressure>& listBloodPressure);
-    bool uploadData(const BloodSugar& bloodSugar);
-    bool uploadData(const QList<BloodSugar>& listBloodSugar);
+    bool uploadData(const Measurement& measurement);
+    bool uploadData(const QList<Measurement>& listOfMeasurements);
 
     //delete measurements
-    bool deleteBloodPressureData(const User* user, const QDateTime timeStemp);
-    bool deleteBloodPressureData(const User* user, const QDateTime from, const QDateTime to);
-    bool deleteBloodSugarData(const User* user, const QDateTime timeStemp);
-    bool deleteBloodSugarData(const User* user, const QDateTime from, const QDateTime to);
+    bool deleteBloodPressureData(const QDateTime timestamp);
+    bool deleteBloodPressureData(const QDateTime from, const QDateTime to);
 
-    void loadDataset(QList<Patient>& list, QString path);
-    bool creatDatabase();
-    bool deleteDatabase();
+    bool deleteBloodSugarData(const QDateTime timestamp);
+    bool deleteBloodSugarData(const QDateTime from, const QDateTime to);
 };
 
 #endif // DATABASECONTROLLER_H

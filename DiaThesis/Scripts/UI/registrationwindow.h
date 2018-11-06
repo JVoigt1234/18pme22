@@ -2,6 +2,10 @@
 #define REGISTRATIONWINDOW_H
 
 #include <QMainWindow>
+#include <QMessageBox>
+
+#include <Scripts/Database/databasecontroller.h>
+#include <Scripts/Database/Databasetyps.h>
 
 namespace Ui {
 class RegistrationWindow;
@@ -12,8 +16,14 @@ class RegistrationWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit RegistrationWindow(QWidget *parent = nullptr);
+    explicit RegistrationWindow(DatabaseController* database, QWidget *parent = nullptr);
     ~RegistrationWindow();
+    //Variable zur Prüfung der eingegebenen Daten zur Registrierung
+    bool alleAngabenRichtig = true;
+    //Messagebox zur Warnung bei falsch oder nicht ausgefüllten Feldern
+    QMessageBox msgBox;
+    //Nachricht über falsch oder nicht ausgefüllte Felder
+    QString falscheFelder;
 
 private slots:
 
@@ -33,6 +43,8 @@ private slots:
 
 private:
     Ui::RegistrationWindow *ui;
+
+    DatabaseController* m_database;
 
     bool pwHasCapitalLetter, pwHasSmallLetter, pwHasNumber, pwHasSixChars;
 };

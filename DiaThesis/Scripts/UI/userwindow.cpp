@@ -8,10 +8,13 @@
 #include "qcustomplot.h"
 #include <QtMath>
 
-UserWindow::UserWindow(QWidget *parent) :
+UserWindow::UserWindow(DatabaseController* database, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::UserWindow)
 {
+    m_database = database;
+
+    setWindowIcon(QIcon("Pictures/Logo_DiaThesis.png"));
     ui->setupUi(this);
     ui->mainStackWidget->setCurrentIndex(0);
 }
@@ -24,6 +27,7 @@ UserWindow::~UserWindow()
 void UserWindow::setupTagesansicht(QCustomPlot *Plot)
 {
     // generate daily data:
+<<<<<<< HEAD
     QVector<double> x(97), y(97), z(97), p(97);
 
     //Minimaler und Maximaler Blutzuckerwert
@@ -38,6 +42,33 @@ void UserWindow::setupTagesansicht(QCustomPlot *Plot)
         p[i]= min;
     }
 
+=======
+    QVector<double> x(97), z(97), p(97), y(97);
+    QList<Measurement> listMeasurement;
+
+    //Minimaler und Maximaler Blutzuckerwert
+    double max= m_database->getPatientData().getMaxBloodSugar();
+    double min= m_database->getPatientData().getMinBloodSugar();
+
+
+//    QDateTime to = QDateTime::currentDateTime();
+//    QDateTime from = to.addDays(-1);
+    QDateTime from = QDateTime::fromString("2018-10-10 15:00:10", TimeStampFormate);
+    QDateTime to = QDateTime::fromString("2018-10-10 15:29:55", TimeStampFormate);
+
+    m_database->getBloodSugar(from,to,listMeasurement);
+
+    for (int i=0; i<97; i++)
+    {
+        z[i]= max;
+        p[i]= min;
+        x[i]= i/4;
+        y[i]= listMeasurement[i].getValue().toDouble();
+    }
+
+
+
+>>>>>>> master
     //Legende
     /*
     Plot->legend->setVisible(true);
@@ -49,6 +80,7 @@ void UserWindow::setupTagesansicht(QCustomPlot *Plot)
     Plot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignBottom|Qt::AlignRight);
 */
     // create graph and assign data to it: Blood Sugar
+<<<<<<< HEAD
     Plot->addGraph();
     Plot->graph(0)->setPen(QPen(Qt::black));
     Plot->graph(0)->setLineStyle(QCPGraph::lsLine);
@@ -57,13 +89,26 @@ void UserWindow::setupTagesansicht(QCustomPlot *Plot)
 
     //Maximal Wert
     Plot->addGraph();
+=======
+    Plot->addGraph();
+    Plot->graph(0)->setPen(QPen(Qt::black));
+    Plot->graph(0)->setLineStyle(QCPGraph::lsLine);
+    Plot->graph(0)->setName("Blutzucker Tagestrend");
+    Plot->graph(0)->setData(x,y);
+
+    //Maximal Wert
+    Plot->addGraph();
+>>>>>>> master
     QPen redDotPen;
     redDotPen.setColor(QColor(Qt::red));
     redDotPen.setStyle(Qt::DotLine);
     redDotPen.setWidthF(4);
     Plot->graph(1)->setPen(redDotPen);
     Plot->graph(1)->setBrush(QBrush(QColor(202,255,112,50)));
+<<<<<<< HEAD
     //Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
+=======
+>>>>>>> master
     Plot->graph(1)->setName("Maximalwert");
     Plot->graph(1)->setData(x,z);
 
@@ -74,6 +119,11 @@ void UserWindow::setupTagesansicht(QCustomPlot *Plot)
     Plot->graph(2)->setName("Minimalwert");
     Plot->graph(2)->setData(x,p);
 
+<<<<<<< HEAD
+=======
+    Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
+
+>>>>>>> master
     // give the axes some labels:
     Plot->xAxis->setLabel("Uhrzeit");
     Plot->yAxis->setLabel("Blutzucker mg/dl");
@@ -113,7 +163,11 @@ void UserWindow::setupMonatsansicht(QCustomPlot *Plot)
     redDotPen.setWidthF(4);
     Plot->graph(1)->setPen(redDotPen);
     Plot->graph(1)->setBrush(QBrush(QColor(202,255,112,50)));
+<<<<<<< HEAD
     Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
+=======
+    //Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
+>>>>>>> master
     Plot->graph(1)->setName("Maximalwert");
     Plot->graph(1)->setData(x,z);
 
@@ -124,6 +178,11 @@ void UserWindow::setupMonatsansicht(QCustomPlot *Plot)
     Plot->graph(2)->setName("Minimalwert");
     Plot->graph(2)->setData(x,p);
 
+<<<<<<< HEAD
+=======
+    Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
+
+>>>>>>> master
     // give the axes some labels
     Plot->xAxis->setLabel("Tage");
     Plot->yAxis->setLabel("Blutzucker mg/dl");
@@ -163,7 +222,11 @@ void UserWindow::setupQuartalsansicht(QCustomPlot *Plot)
     redDotPen.setWidthF(4);
     Plot->graph(1)->setPen(redDotPen);
     Plot->graph(1)->setBrush(QBrush(QColor(202,255,112,50)));
+<<<<<<< HEAD
     Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
+=======
+    //Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
+>>>>>>> master
     Plot->graph(1)->setName("Maximalwert");
     Plot->graph(1)->setData(x,z);
 
@@ -174,6 +237,11 @@ void UserWindow::setupQuartalsansicht(QCustomPlot *Plot)
     Plot->graph(2)->setName("Minimalwert");
     Plot->graph(2)->setData(x,p);
 
+<<<<<<< HEAD
+=======
+    Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
+
+>>>>>>> master
     // give the axes some labels:
     Plot->xAxis->setLabel("Monate");
     Plot->yAxis->setLabel("Blutzucker mg/dl");
@@ -218,6 +286,7 @@ void UserWindow::mousePressMonat()
   else
     ui->Monatplot->axisRect()->setRangeDrag(Qt::Horizontal|Qt::Vertical);
 }
+<<<<<<< HEAD
 
 void UserWindow::mouseWheelMonat()
 {
@@ -231,6 +300,21 @@ void UserWindow::mouseWheelMonat()
     ui->Monatplot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
 }
 
+=======
+
+void UserWindow::mouseWheelMonat()
+{
+  // if an axis is selected, only allow the direction of that axis to be zoomed
+  // if no axis is selected, both directions may be zoomed
+  if (ui->Monatplot->xAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Monatplot->axisRect()->setRangeZoom(ui->Monatplot->xAxis->orientation());
+  else if (ui->Monatplot->yAxis->selectedParts().testFlag(QCPAxis::spAxis))
+    ui->Monatplot->axisRect()->setRangeZoom(ui->Monatplot->yAxis->orientation());
+  else
+    ui->Monatplot->axisRect()->setRangeZoom(Qt::Horizontal|Qt::Vertical);
+}
+
+>>>>>>> master
 void UserWindow::mousePressQuartal()
 {
   // if an axis is selected, only allow the direction of that axis to be dragged
@@ -272,8 +356,13 @@ void UserWindow::on_actionTagesansicht_triggered()
     ui->Tagesplot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes |
                                       QCP::iSelectLegend | QCP::iSelectPlottables);
     setupTagesansicht(ui->Tagesplot);
+<<<<<<< HEAD
     connect(ui->Tagesplot, SIGNAL(mousePressTag(QMouseEvent*)), this, SLOT(mousePressTag()));
     connect(ui->Tagesplot, SIGNAL(mouseWheelTag(QWheelEvent*)), this, SLOT(mouseWheelTag()));
+=======
+    //connect(ui->Tagesplot, SIGNAL(mousePressTag(QMouseEvent*)), this, SLOT(mousePressTag()));
+    //connect(ui->Tagesplot, SIGNAL(mouseWheelTag(QWheelEvent*)), this, SLOT(mouseWheelTag()));
+>>>>>>> master
     ui->mainStackWidget->setCurrentIndex(2);
 }
 
@@ -282,8 +371,13 @@ void UserWindow::on_actionMonatsansicht_triggered()
     ui->Monatplot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes |
                                       QCP::iSelectLegend | QCP::iSelectPlottables);
     setupMonatsansicht(ui->Monatplot);
+<<<<<<< HEAD
     connect(ui->Monatplot, SIGNAL(mousePressMonat(QMouseEvent*)), this, SLOT(mousePressMonat()));
     connect(ui->Monatplot, SIGNAL(mouseWheelMonat(QWheelEvent*)), this, SLOT(mouseWheelMonat()));
+=======
+    //connect(ui->Monatplot, SIGNAL(mousePressMonat(QMouseEvent*)), this, SLOT(mousePressMonat()));
+    //connect(ui->Monatplot, SIGNAL(mouseWheelMonat(QWheelEvent*)), this, SLOT(mouseWheelMonat()));
+>>>>>>> master
     ui->mainStackWidget->setCurrentIndex(3);
 }
 
@@ -292,8 +386,13 @@ void UserWindow::on_actionQuartalsansicht_triggered()
     ui->Quartalsplot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectAxes |
                                       QCP::iSelectLegend | QCP::iSelectPlottables);
     setupQuartalsansicht(ui->Quartalsplot);
+<<<<<<< HEAD
     connect(ui->Quartalsplot, SIGNAL(mousePressQuartal(QMouseEvent*)), this, SLOT(mousePressQuartal()));
     connect(ui->Quartalsplot, SIGNAL(mouseWheelQuartal(QWheelEvent*)), this, SLOT(mouseWheelQuartal()));
+=======
+    //connect(ui->Quartalsplot, SIGNAL(mousePressQuartal(QMouseEvent*)), this, SLOT(mousePressQuartal()));
+    //connect(ui->Quartalsplot, SIGNAL(mouseWheelQuartal(QWheelEvent*)), this, SLOT(mouseWheelQuartal()));
+>>>>>>> master
     ui->mainStackWidget->setCurrentIndex(4);
 }
 

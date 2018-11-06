@@ -1,0 +1,482 @@
+[
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:00:10",
+    "sugarValue": 120
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:00:25",
+    "sugarValue": 132
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:00:40",
+    "sugarValue": 134
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:00:55",
+    "sugarValue": 138
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:01:10",
+    "sugarValue": 130
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:01:25",
+    "sugarValue": 138
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:01:40",
+    "sugarValue": 130
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:01:55",
+    "sugarValue": 125
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:02:10",
+    "sugarValue": 120
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:02:25",
+    "sugarValue": 115
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:02:40",
+    "sugarValue": 110
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:02:55",
+    "sugarValue": 114
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:03:10",
+    "sugarValue": 120
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:03:25",
+    "sugarValue": 128
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:03:40",
+    "sugarValue": 120
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:03:55",
+    "sugarValue": 120
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:04:10",
+    "sugarValue": 120
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:04:25",
+    "sugarValue": 124
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:05:40",
+    "sugarValue": 138
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:05:55",
+    "sugarValue": 147
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:06:10",
+    "sugarValue": 170
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:06:25",
+    "sugarValue": 190
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:06:40",
+    "sugarValue": 200
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:06:55",
+    "sugarValue": 200
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:07:10",
+    "sugarValue": 110
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:07:25",
+    "sugarValue": 120
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:07:40",
+    "sugarValue": 110
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:07:55",
+    "sugarValue": 110
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:08:10",
+    "sugarValue": 108
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:08:25",
+    "sugarValue": 111
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:09:40",
+    "sugarValue": 111
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:09:55",
+    "sugarValue": 109
+  },
+{
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:10:15",
+    "sugarValue": 104
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:10:25",
+    "sugarValue": 102
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:10:40",
+    "sugarValue": 104
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:10:55",
+    "sugarValue": 108
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:11:10",
+    "sugarValue": 110
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:11:25",
+    "sugarValue": 108
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:11:40",
+    "sugarValue": 100
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:11:55",
+    "sugarValue": 92
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:12:10",
+    "sugarValue": 90
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:12:25",
+    "sugarValue": 92
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:12:40",
+    "sugarValue": 100
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:12:55",
+    "sugarValue": 108
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:13:10",
+    "sugarValue": 110
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:13:25",
+    "sugarValue": 108
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:13:40",
+    "sugarValue": 100
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:13:55",
+    "sugarValue": 90
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:14:10",
+    "sugarValue": 82
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:14:25",
+    "sugarValue": 90
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:15:40",
+    "sugarValue": 95
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:15:55",
+    "sugarValue": 100
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:16:10",
+    "sugarValue": 102
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:16:25",
+    "sugarValue": 100
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:16:40",
+    "sugarValue": 102
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:16:55",
+    "sugarValue": 103
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:17:10",
+    "sugarValue": 97
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:17:25",
+    "sugarValue": 100
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:17:40",
+    "sugarValue": 103
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:17:55",
+    "sugarValue": 110
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:18:10",
+    "sugarValue": 108
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:18:25",
+    "sugarValue": 111
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:19:40",
+    "sugarValue": 111
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:19:55",
+    "sugarValue": 109
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:20:15",
+    "sugarValue": 104
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:20:25",
+    "sugarValue": 102
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:20:40",
+    "sugarValue": 104
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:20:55",
+    "sugarValue": 108
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:21:10",
+    "sugarValue": 110
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:21:25",
+    "sugarValue": 108
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:21:40",
+    "sugarValue": 100
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:21:55",
+    "sugarValue": 92
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:22:10",
+    "sugarValue": 90
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:22:25",
+    "sugarValue": 92
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:22:40",
+    "sugarValue": 100
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:22:55",
+    "sugarValue": 108
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:23:10",
+    "sugarValue": 110
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:23:25",
+    "sugarValue": 108
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:23:40",
+    "sugarValue": 100
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:23:55",
+    "sugarValue": 90
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:24:10",
+    "sugarValue": 82
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:24:25",
+    "sugarValue": 90
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:25:40",
+    "sugarValue": 95
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:25:55",
+    "sugarValue": 100
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:26:10",
+    "sugarValue": 102
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:26:25",
+    "sugarValue": 100
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:26:40",
+    "sugarValue": 102
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:26:55",
+    "sugarValue": 103
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:27:10",
+    "sugarValue": 97
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:27:25",
+    "sugarValue": 100
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:27:40",
+    "sugarValue": 103
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:27:55",
+    "sugarValue": 110
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:28:10",
+    "sugarValue": 108
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:28:25",
+    "sugarValue": 111
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:29:40",
+    "sugarValue": 111
+  },
+  {
+    "userid": "doiso@hasna.de",
+    "timestamp": "2018-09-10 15:29:55",
+    "sugarValue": 109
+  }
+]

@@ -6,6 +6,8 @@
 #include <QWidget>
 #include <QWidgetItem>
 
+#include <Scripts/Database/databasecontroller.h>
+
 
 namespace Ui {
 class UserWindow;
@@ -16,7 +18,7 @@ class UserWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit UserWindow(QWidget *parent = nullptr);
+    explicit UserWindow(DatabaseController* database, QWidget *parent = nullptr);
     ~UserWindow();
     //QTabBar tb;
 
@@ -45,6 +47,8 @@ private slots:
 
 private:
     Ui::UserWindow *ui;
+
+    DatabaseController* m_database;
 };
 
 #endif // USERWINDOW_H

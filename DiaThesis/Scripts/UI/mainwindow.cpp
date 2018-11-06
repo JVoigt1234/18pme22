@@ -17,6 +17,8 @@ MainWindow::MainWindow(DatabaseController* database,QWidget *parent) :
     m_userwindow = new UserWindow(m_database);
     m_registrationwindow = new RegistrationWindow(m_database);
 
+    m_timer = new QTimer();
+    connect(m_timer, SIGNAL(timeout()), this, SLOT(on_timeout()));
     QWinTaskbarButton *button = new QWinTaskbarButton(this);
     button->setWindow(this->windowHandle());
     button->setOverlayIcon(QIcon("Pictures/Logo_DiaThesis.png"));
@@ -27,12 +29,21 @@ MainWindow::MainWindow(DatabaseController* database,QWidget *parent) :
     QPixmap logo("Pictures/Logo_DiaThesis.png");
     ui->picture_lb->setPixmap(logo);
 
+    ui->random_facts->setText(m_database->getFact());
+
     ui->stackedWidget->setCurrentIndex(0);
+
+    m_timer->start(6000);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::on_timeout()
+{
+   ui->stackedWidget->setCurrentIndex(1);
 }
 
 void MainWindow::on_anmelden_btn_clicked()
@@ -47,9 +58,4 @@ void MainWindow::on_anmelden_btn_clicked()
 void MainWindow::on_registrieren_btn_clicked()
 {
     m_registrationwindow->show();
-}
-
-void MainWindow::on_login_btn_clicked()
-{
-    ui->stackedWidget->setCurrentIndex(1);
 }

@@ -179,7 +179,7 @@
      <normaloff>Pictures/Logo_DiaThesis.png</normaloff>Pictures/Logo_DiaThesis.png</iconset>
    </property>
    <property name="text">
-    <string>Logo</string>
+    <string/>
    </property>
   </action>
  </widget>

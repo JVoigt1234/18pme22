@@ -2,7 +2,7 @@
   "patientName": "Jennifer/Frei",
   "email": "j.frei@googlemail.com",
   "phone": "0175 9124910",
-  "birthDate": "1980.06.08",
+  "birthDate": "1980-06-08",
   "age": 38,
   "weight": 100,
   "bodysize": 150,
@@ -13,7 +13,7 @@
   "cigaret": true,
   "address": {
     "street": "Am Arbeitsamt 3",
-    "city": "Köln",
+    "city": "Kï¿½ln",
     "country": "Ger",
     "postalCode": "78122"
   }

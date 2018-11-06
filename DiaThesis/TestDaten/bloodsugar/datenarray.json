@@ -1,32 +1,32 @@
 [
   {
     "userid": "hans@gmail.com",
-    "timestemp": "2018.10.10 15:00:25",
+    "timestamp": "2018-10-10 15:00:25",
     "sugarValue": 56
   },
   {
     "userid": "hans@gmail.com",
-    "timestemp": "2018.10.10 15:15:32",
+    "timestamp": "2018-10-10 15:15:32",
     "sugarValue": 56
   },
   {
     "userid": "hans@gmail.com",
-    "timestemp": "2018.10.10 15:30:26",
+    "timestamp": "2018-10-10 15:30:26",
     "sugarValue": 56
   },
   {
     "userid": "hans@gmail.com",
-    "timestemp": "2018.10.10 15:45:20",
+    "timestamp": "2018-10-10 15:45:20",
     "sugarValue": 56
   },
   {
     "userid": "hans@gmail.com",
-    "timestemp": "2018.10.10 16:00:48",
+    "timestamp": "2018-10-10 16:00:48",
     "sugarValue": 56
   },
   {
     "userid": "hans@gmail.com",
-    "timestemp": "2018.10.10 16:15:59",
+    "timestamp": "2018-10-10 16:15:59",
     "sugarValue": 56
   }
 ]

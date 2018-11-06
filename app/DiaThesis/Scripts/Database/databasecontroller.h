@@ -3,7 +3,7 @@
 /// Class:              DatabaseController
 /// Description:        Sends queries to an active PostgreSQL database, it is possible
 ///                     to create a new user or check if it is valid or available.
-///                     You can also edit and/or delete users or measurements from the database.
+///                     You can also edit and/or delete users, measurements or get random facts from the database.
 /// Author:             Kevin Kastner & Martin Bechberger
 /// Date:               Oct 2018
 /// Notes:              throws Exception: InvalidDateTimeFormate, InvalidUser,
@@ -54,7 +54,7 @@ private:
     QJsonObject convertAddress2JSON(const QGeoAddress address);
 
 public:
-    DatabaseController(QString hostname);
+    DatabaseController(QString hostname, QString databasename = "1814116_DiaThesis");
     ~DatabaseController();
 
     //Database

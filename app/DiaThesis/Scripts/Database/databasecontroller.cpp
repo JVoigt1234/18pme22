@@ -3,7 +3,7 @@
 /// Class:              DatabaseController
 /// Description:        Sends queries to an active PostgreSQL database, it is possible
 ///                     to create a new user or check if it is valid or available.
-///                     You can also edit and/or delete users or measurements from the database.
+///                     You can also edit and/or delete users, measurements or get random facts from the database.
 /// Author:             Kevin Kastner & Martin Bechberger
 /// Date:               Oct 2018
 /// Notes:              throws Exception: InvalidDateTimeFormate, InvalidUser,
@@ -13,11 +13,11 @@
 
 #include "Scripts/Database/databasecontroller.h"
 
-DatabaseController::DatabaseController(QString hostname)
+DatabaseController::DatabaseController(QString hostname, QString databasename)
 {
 
     m_hostname = hostname;     //"db.inftech.hs-mannheim.de"
-    m_databasename = "1814116_DiaThesis";
+    m_databasename = databasename; //repo: 1814116_PME2Development
     m_username = "1814116";
     m_password = "#DiaThesis";
 
@@ -161,7 +161,7 @@ bool DatabaseController::isUserAvailable(const QString eMail)
     return false;
 }
 
-///checks if the databse has the given user and password
+///checks if the database has the given user and password
 ///    Exception: InvalidUser
 UserType DatabaseController::isValidUser(QString eMail, QString password)
 {
@@ -222,6 +222,7 @@ UserType DatabaseController::isValidUser(QString eMail, QString password)
 
 }
 
+///checks if the database has the given ids and returns true if the foreign id is allowed to access the patient data otherwise false
 bool DatabaseController::isIDAuthorized(const QString patientID, const QString foreignID)
 {
     if(isUserAvailable(patientID) == false || isUserAvailable(foreignID) == false)
@@ -267,7 +268,7 @@ bool DatabaseController::isIDAuthorized(const QString patientID, const QString f
     return false;
 }
 
-///create a new user on the database
+///creates a new user in the database and returns true, otherwise false
 ///     Exception: InvalidUser
 bool DatabaseController::isUserCreated(User* user, QString password)
 {
@@ -464,21 +465,21 @@ Patient DatabaseController::patientData(QString patientID)
     }
 
     if(bs.isEmpty()){
-        return Patient(name[0], name[1], UserType::patient, jsonObject["email"].toString(), jsonObject["birthDate"].toString() );
+        return Patient(name[0], name[1], UserType::patient, jsonObject["email"].toString(), QDateTime::fromString(jsonObject["birthDate"].toString(),DateFormate));
     }
 
     if(bs.length() == 2)
     {
 
-        return Patient(name[0], name[1], UserType::patient, jsonObject["email"].toString(), jsonObject["phone"].toString() , jsonObject["birthDate"].toString(), jsonObject["weight"].toDouble(),
-                  jsonObject["bodysize"].toDouble(), static_cast<Gender>(jsonObject["gender"].toInt()), jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(),
+        return Patient(name[0], name[1], UserType::patient, jsonObject["email"].toString(), jsonObject["phone"].toString() , QDateTime::fromString(jsonObject["birthDate"].toString(),DateFormate),
+                        jsonObject["weight"].toDouble(), jsonObject["bodysize"].toDouble(), static_cast<Gender>(jsonObject["gender"].toInt()), jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(),
                    bs[1].toDouble(), jsonObject["alcohol"].toBool(), jsonObject["cigaret"].toBool(), address);
     }
     throw InvalidUser("Not enough information.");
 }
 
-///  a patient can give a stranger access to his own data
-/// this function is only the patients
+///  a patient can give a foreign access to his own data, if it was successful there will be
+/// return true otherwise false. This function is only the patients (must be registered with his id)
 ///     Exception: InvalidUser, SqlError
 bool DatabaseController::allowAccess(const QString foreignID)
 {
@@ -555,9 +556,9 @@ bool DatabaseController::allowAccess(const QString foreignID)
 
 }
 
-///  a patient can deny a stranger access to his own data.
-/// this function is only the patients
-///     Exception: InvalidUser, SqlError
+///a patient can deny a foreign id access to his own data, if it was successful there will be
+///return true otherwise false. This function is only the patients (must be registered with his id)
+///     Exception: InvalidUser, SqlError */
 bool DatabaseController::denyAccess(const QString foreignID)
 {
     if(m_userType != UserType::patient || m_userID.trimmed().isEmpty())
@@ -626,7 +627,7 @@ bool DatabaseController::denyAccess(const QString foreignID)
     return false;
 }
 
-/// returns a list of all patients the doctor can access. Only for the user type doctor
+/// returns a list of all patients the doctor can access. Only for the user type doctor (must be registered with his id)
 ///     Exception: InvalidUser, SqlError
 bool DatabaseController::getListPatient(QList<Patient>& listPatient)
 {
@@ -654,7 +655,7 @@ bool DatabaseController::getListPatient(QList<Patient>& listPatient)
     return true;
 }
 
-/// returns a object from typeof Doctor if the user exists and is a doctor
+/// returns an object of type Doctor of its own data the user must be registered with his ID
 ///     Exception: InvalidUser, UserNotFound, InvalidDateTimeFormate and SqlError Exception
 Doctor DatabaseController::getDoctorData(void)
 {
@@ -663,7 +664,7 @@ Doctor DatabaseController::getDoctorData(void)
         throw SqlError("Database closed.");
     }
 
-    if( m_userType != UserType::doctor || isUserAvailable(m_userID) == false )
+    if(m_userID.trimmed().isEmpty() || m_userType != UserType::doctor || isUserAvailable(m_userID) == false )
     {
         throw InvalidUser("Incorrect user");
     }
@@ -671,7 +672,7 @@ Doctor DatabaseController::getDoctorData(void)
     return getDoctorData(m_userID);
 }
 
-/// returns a object from typeof Doctor if the user exists and is a doctor
+/// returns a object from typeof Doctor if the user exists, is a doctor and the foreign member has given authorization to the "registered" user ID
 ///     Exception: InvalidUser, UserNotFound, InvalidDateTimeFormate and SqlError Exception
 Doctor DatabaseController::getDoctorData(const QString doctorID)
 {
@@ -748,7 +749,7 @@ Patient DatabaseController::getPatientData(void)
     return patientData(m_userID);
 }
 
-/// returns a object from typeof Member if the user exists and is a member
+/// returns a object from typeof Member of its own data (the user must be registered with his ID)
 ///     Exception: InvalidUser, UserNotFound, InvalidDateTimeFormate and SqlError Exception
 Member DatabaseController::getMemberData(void)
 {
@@ -766,6 +767,8 @@ Member DatabaseController::getMemberData(void)
 
 }
 
+/// returns a object from typeof Member if the user (member) exists and the foreign member has given authorization to the "registered" user ID
+///     Exception: InvalidUser, UserNotFound, InvalidDateTimeFormate and SqlError Exception
 Member DatabaseController::getMemberData(const QString memberID)
 {
     if(m_userID != memberID)
@@ -825,6 +828,8 @@ Member DatabaseController::getMemberData(const QString memberID)
 
 }
 
+///this function is only for the usertype doctor to update his own data (must be registered with his id)
+///if it was successful there will be return true otherwise false
 ///     Exception: InvaildUser
 bool DatabaseController::updateUser(const Doctor* user)
 {
@@ -885,6 +890,8 @@ bool DatabaseController::updateUser(const Doctor* user)
     }
 }
 
+///this function is only for the usertype patient to update his own data (must be registered with his id)
+///if it was successful there will be return true otherwise false
 ///     Exception: InvaildUser
 bool DatabaseController::updateUser(const Patient* user)
 {
@@ -956,6 +963,8 @@ bool DatabaseController::updateUser(const Patient* user)
     }
 }
 
+///this function is only for the usertype member to update his own data (must be registered with his id)
+///if it was successful there will be return true otherwise false
 ///     Exception: InvaildUser
 bool DatabaseController::updateUser(const Member* user)
 {
@@ -1026,6 +1035,8 @@ bool DatabaseController::updateUser(const Member* user)
 
 }
 
+///this function is only for the usertype patient (must be registered with his id) to insert or update a single measurement
+///if it was successful there will be return true otherwise false
 ///     Exception: InvaildUser
 bool DatabaseController::uploadData(const Measurement& measurement)
 {
@@ -1075,6 +1086,8 @@ bool DatabaseController::uploadData(const Measurement& measurement)
     return true;
 }
 
+///this function is only for the usertype patient (must be registered with his id) to insert or update a list of measurements
+///if it was successful there will be return true otherwise false
 ///     Exception: InvaildUser
 bool DatabaseController::uploadData(const QList<Measurement>& listOfMeasurements)
 {
@@ -1103,7 +1116,8 @@ bool DatabaseController::uploadData(const QList<Measurement>& listOfMeasurements
     return true;
 }
 
-/// for patient typs
+///this function is only for the usertype patient (must be registered with his id) to get a single blood pressure (of his own data) with the given timestamp
+///the reslut is stored in measurement, if it was successful there will be return true otherwise false
 ///     Exception: InvalidUser, InvalidDateTimeRange and UserNotFound
 bool DatabaseController::getBloodPressure(const QDateTime timestamp, Measurement& measurement)
 {
@@ -1127,7 +1141,8 @@ bool DatabaseController::getBloodPressure(const QDateTime timestamp, Measurement
 
 }
 
-/// for patient typs
+///this function is only available for the usertype patient (must be registered with his id) to get a list of his blood pressure over the given time period
+///the list is stored in measurements, if it was successful there will be return true otherwise false
 ///     Exception: InvalidUser, InvalidDateTimeRange and UserNotFound
 bool DatabaseController::getBloodPressure(const QDateTime from, const QDateTime to, QList<Measurement>& listOfMeasurements)
 {
@@ -1144,7 +1159,8 @@ bool DatabaseController::getBloodPressure(const QDateTime from, const QDateTime 
     return getBloodPressure(m_userID, from, to, listOfMeasurements);
 }
 
-/// for patient typs
+///returns the blood pressure for the given timestamp and patientID (if registered id has access)
+///the reslut is stored in measurement, if it was successful there will be return true otherwise false
 ///     Exception: InvalidUser, InvalidDateTimeRange and UserNotFound
 bool DatabaseController::getBloodPressure(const QString patientID, const QDateTime timestamp, Measurement& measurement)
 {
@@ -1162,7 +1178,8 @@ bool DatabaseController::getBloodPressure(const QString patientID, const QDateTi
     return true;
 }
 
-/// for other typs
+///returns a list of blood pressure for the given time period and patientID (if registered id has access)
+///the list is stored in measurements, if it was successful there will be return true otherwise false
 ///     Exception: InvalidUser and UserNotFound
 bool DatabaseController::getBloodPressure(const QString patientID, const QDateTime from, const QDateTime to, QList<Measurement>& listOfMeasurements)
 {
@@ -1208,12 +1225,13 @@ bool DatabaseController::getBloodPressure(const QString patientID, const QDateTi
         QStringList value = query.value(0).toString().split('/', QString::SkipEmptyParts);
         if(value.empty() || value.size() != 2)
             continue;
-        listOfMeasurements.append(Measurement(timestamp, value[0].toDouble(), value[1].toDouble() ) );
+        listOfMeasurements.append(Measurement(QDateTime::fromString(timestamp,TimeStampFormate), value[0].toDouble(), value[1].toDouble() ) );
     }
     return true;
 }
 
-/// for patient typs
+///this function is only for the usertype patient (must be registered with his id) to get a single blood sugar (of his own data) with the given timestamp
+///the reslut is stored in measurement, if it was successful there will be return true otherwise false
 ///     Exception: InvalidUser, InvalidDateTimeRange and UserNotFound
 bool DatabaseController::getBloodSugar(const QDateTime timestamp, Measurement& measurement)
 {
@@ -1236,7 +1254,8 @@ bool DatabaseController::getBloodSugar(const QDateTime timestamp, Measurement& m
     return true;
 }
 
-/// for patient typs
+///this function is only available for the usertype patient (must be registered with his id) to get a list of his blood sugar values over the given time period
+///the list is stored in measurements, if it was successful there will be return true otherwise false
 ///     Exception: InvalidUser, InvalidDateTimeRange and UserNotFound
 bool DatabaseController::getBloodSugar(const QDateTime from, const QDateTime to, QList<Measurement>& listOfMeasurements)
 {
@@ -1253,7 +1272,8 @@ bool DatabaseController::getBloodSugar(const QDateTime from, const QDateTime to,
     return getBloodSugar(m_userID, from, to, listOfMeasurements);
 }
 
-/// for other typs
+///returns the blood pressure for the given timestamp and patientID (if registered id has access)
+///the reslut is stored in measurement, if it was successful there will be return true otherwise false
 ///     Exception: InvalidUser and UserNotFound
 bool DatabaseController::getBloodSugar(const QString patientID, const QDateTime timestamp, Measurement& measurement)
 {
@@ -1272,7 +1292,8 @@ bool DatabaseController::getBloodSugar(const QString patientID, const QDateTime 
 
 }
 
-/// for other typs
+///returns a list of blood sugar values for the given time period and patientID (if registered id has access)
+///the list is stored in measurements, if it was successful there will be return true otherwise false
 ///     Exception: InvalidUser and UserNotFound
 bool DatabaseController::getBloodSugar(const QString patientID, const QDateTime from, const QDateTime to, QList<Measurement>& listOfMeasurements)
 {
@@ -1315,11 +1336,13 @@ bool DatabaseController::getBloodSugar(const QString patientID, const QDateTime 
         QString timestamp = query.value(1).toString();
         timestamp.replace('T', " ");
         timestamp.remove(".000");
-        listOfMeasurements.append(Measurement(timestamp, query.value(0).toDouble()) );
+        listOfMeasurements.append(Measurement(QDateTime::fromString(timestamp,TimeStampFormate), query.value(0).toDouble()) );
     }
     return true;
 }
 
+///this function is only available for the usertype patient (must be registered with his id) to delete a single blood pressure with the given timestamp
+/// if it was successful there will be return true otherwise false
 ///     Exception: InvaildUser
 bool DatabaseController::deleteBloodPressureData(const QDateTime timeStamp)
 {
@@ -1331,6 +1354,8 @@ bool DatabaseController::deleteBloodPressureData(const QDateTime timeStamp)
     return deleteBloodPressureData(timeStamp, timeStamp);
 }
 
+///this function is only available for the usertype patient (must be registered with his id) to delete a list of blood pressure values with the given time period
+/// if it was successful there will be return true otherwise false
 ///     Exception: InvaildUser and InvalidDateTimeRange
 bool DatabaseController::deleteBloodPressureData(const QDateTime from, const QDateTime to)
 {
@@ -1362,6 +1387,8 @@ bool DatabaseController::deleteBloodPressureData(const QDateTime from, const QDa
     return false;
 }
 
+///this function is only available for the usertype patient (must be registered with his id) to delete a single blood sugar with the given timestamp
+/// if it was successful there will be return true otherwise false
 ///     Exception: InvaildUser
 bool DatabaseController::deleteBloodSugarData(const QDateTime timeStamp)
 {
@@ -1374,6 +1401,8 @@ bool DatabaseController::deleteBloodSugarData(const QDateTime timeStamp)
 
 }
 
+///this function is only available for the usertype patient (must be registered with his id) to delete a list of blood sugar values with the given time period
+/// if it was successful there will be return true otherwise false
 ///     Exception: InvaildUser
 bool DatabaseController::deleteBloodSugarData(const QDateTime from, const QDateTime to)
 {
@@ -1405,10 +1434,11 @@ bool DatabaseController::deleteBloodSugarData(const QDateTime from, const QDateT
     return false;
 }
 
+/// returns a random fact
 ///     Exception: SqlError
 QString DatabaseController::getFact(void)
 {
-    QSqlQuery query(" SELECT text"
+    QSqlQuery query(" SELECT data"
                     " FROM facts");
 
     if(query.lastError().type() != QSqlError::NoError)
@@ -1419,16 +1449,12 @@ QString DatabaseController::getFact(void)
     if(query.size() == 0)
         return nullptr;
 
+    query.first();
+    QJsonArray array = QJsonDocument::fromBinaryData(QByteArray::fromHex(query.value(0).toByteArray())).array();
     qsrand(uint(QTime::currentTime().msec()));
-    int index = qrand() % query.size();
-    int i = 0;
-    while(query.next())
-    {
-        if(index == i)
-            return query.value(0).toString();
-        i++;
-    }
-    return nullptr;
+    int index = qrand() % array.size();
+
+    return array[index].toString();
 }
 
 //only for development
@@ -1455,8 +1481,8 @@ void DatabaseController::loadDataset(QList<Patient>& list)
         QStringList bs = jsonDoc["bloodSugarRange"].toString().split('/', QString::SkipEmptyParts);
 
         QGeoAddress address = convertJSON2Address(jsonObject["address"].toObject());
-         list.append( Patient(name[0], name[1], UserType::patient, jsonObject["email"].toString(), jsonObject["phone"].toString() , jsonObject["birthDate"].toString(), jsonObject["weight"].toDouble(), jsonObject["bodysize"].toDouble(),
-                static_cast<Gender>(jsonObject["gender"].toInt()), jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(), bs[1].toDouble(), jsonObject["alcohol"].toBool(), jsonObject["cigaret"].toBool(), address) );
+         list.append( Patient(name[0], name[1], UserType::patient, jsonObject["email"].toString(), jsonObject["phone"].toString() , QDateTime::fromString(jsonObject["birthDate"].toString(), DateFormate), jsonObject["weight"].toDouble(),
+                        jsonObject["bodysize"].toDouble(), static_cast<Gender>(jsonObject["gender"].toInt()), jsonObject["targetBloodSugar"].toDouble(), bs[0].toDouble(), bs[1].toDouble(), jsonObject["alcohol"].toBool(), jsonObject["cigaret"].toBool(), address) );
     }
 }
 
@@ -1533,13 +1559,16 @@ void DatabaseController::loadDateset(void)
         val = file.readAll();
         file.close();
 
+        //Data
         jsonDoc = QJsonDocument::fromJson(val.toUtf8());
-        QJsonArray array = jsonDoc.array();
-        foreach (const QJsonValue & value, array) {
-            creating.prepare("INSERT INTO facts(text) "
-                             "VALUES ('" + value.toString() + "')" );
-            creating.exec();
-        }
+        QJsonArray array = jsonDoc.array();        
+        QJsonDocument doc(array);
+        QByteArray jsonByteArray = doc.toBinaryData();
+
+        creating.prepare("UPDATE facts "
+                         "SET data = '" + jsonByteArray.toHex() + "'" );
+        creating.exec();
+
     }
 }
 
@@ -1576,9 +1605,9 @@ void DatabaseController::loadDataset(QList<Measurement>& list, MeasurementType t
                 timestamp = jsonObject.at(i)["timestamp"].toString();  //QDateTime timestemp = jsonObject.at(i)["timestemp"].toVariant().toDateTime();
                 Measurement* data;
                 if(type == MeasurementType::bloodSugar)
-                     data = new Measurement(timestamp,jsonObject.at(i)["sugarValue"].toDouble());
+                     data = new Measurement(QDateTime::fromString(timestamp,TimeStampFormate),jsonObject.at(i)["sugarValue"].toDouble());
                 else
-                    data = new Measurement(timestamp,jsonObject.at(i)["sys"].toDouble(), jsonObject.at(i)["dia"].toDouble());
+                    data = new Measurement(QDateTime::fromString(timestamp,TimeStampFormate),jsonObject.at(i)["sys"].toDouble(), jsonObject.at(i)["dia"].toDouble());
 
                 list.append(*data);
             }
@@ -1661,7 +1690,7 @@ bool DatabaseController::creatDatabase()
 
                 "CREATE TABLE facts("
                 "id BIGSERIAL NOT NULL,"
-                "text text NOT NULL,"
+                "data bytea NOT NULL,"
                 "UNIQUE(id),"
                 "PRIMARY KEY (id)"
                 ");"

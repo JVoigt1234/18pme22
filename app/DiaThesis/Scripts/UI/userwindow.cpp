@@ -17,6 +17,7 @@ UserWindow::UserWindow(DatabaseController* database, QWidget *parent) :
     setWindowIcon(QIcon("Pictures/Logo_DiaThesis.png"));
     ui->setupUi(this);
     ui->mainStackWidget->setCurrentIndex(0);
+    ui->actionNutzername->setText(m_database->getPatientData().getForename() + " " + m_database->getPatientData().getSurname());
 }
 
 UserWindow::~UserWindow()
@@ -27,19 +28,30 @@ UserWindow::~UserWindow()
 void UserWindow::setupTagesansicht(QCustomPlot *Plot)
 {
     // generate daily data:
-    QVector<double> x(97), y(97), z(97), p(97);
+    QVector<double> x(97), z(97), p(97), y(97);
+    QList<Measurement> listMeasurement;
 
     //Minimaler und Maximaler Blutzuckerwert
-    int max= 200;
-    int min= 70;
+    double max= m_database->getPatientData().getMaxBloodSugar();
+    double min= m_database->getPatientData().getMinBloodSugar();
 
-    for (int i=0; i<97; ++i)
+
+//    QDateTime to = QDateTime::currentDateTime();
+//    QDateTime from = to.addDays(-1);
+    QDateTime from = QDateTime::fromString("2018-10-10 15:00:10", TimeStampFormate);
+    QDateTime to = QDateTime::fromString("2018-10-10 15:29:55", TimeStampFormate);
+
+    m_database->getBloodSugar(from,to,listMeasurement);
+
+    for (int i=0; i<97; i++)
     {
-        x[i] = i/4; // x goes from 0 to 24
-        y[i] = x[i]*x[i];
         z[i]= max;
         p[i]= min;
+        x[i]= i/4;
+        y[i]= listMeasurement[i].getValue().toDouble();
     }
+
+
 
     //Legende
     /*
@@ -66,7 +78,6 @@ void UserWindow::setupTagesansicht(QCustomPlot *Plot)
     redDotPen.setWidthF(4);
     Plot->graph(1)->setPen(redDotPen);
     Plot->graph(1)->setBrush(QBrush(QColor(202,255,112,50)));
-    //Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
     Plot->graph(1)->setName("Maximalwert");
     Plot->graph(1)->setData(x,z);
 
@@ -76,6 +87,8 @@ void UserWindow::setupTagesansicht(QCustomPlot *Plot)
     Plot->graph(2)->setBrush(QBrush(QColor(255,48,48,70)));
     Plot->graph(2)->setName("Minimalwert");
     Plot->graph(2)->setData(x,p);
+
+    Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
 
     // give the axes some labels:
     Plot->xAxis->setLabel("Uhrzeit");
@@ -127,6 +140,8 @@ void UserWindow::setupMonatsansicht(QCustomPlot *Plot)
     Plot->graph(2)->setName("Minimalwert");
     Plot->graph(2)->setData(x,p);
 
+    Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
+
     // give the axes some labels
     Plot->xAxis->setLabel("Tage");
     Plot->yAxis->setLabel("Blutzucker mg/dl");
@@ -176,6 +191,8 @@ void UserWindow::setupQuartalsansicht(QCustomPlot *Plot)
     Plot->graph(2)->setBrush(QBrush(QColor(255,48,48,70)));
     Plot->graph(2)->setName("Minimalwert");
     Plot->graph(2)->setData(x,p);
+
+    Plot->graph(1)->setChannelFillGraph(Plot->graph(2));
 
     // give the axes some labels:
     Plot->xAxis->setLabel("Monate");

@@ -138,37 +138,42 @@ void RegistrationWindow::on_accountErstellen_btn_clicked()
     {
         //Erst dann neuen Benutzer anlegen und in die Datenbank schreiben
         User* newUser;
+        UserType type = UserType::inValidUser;
         //Benutzerprofil anlegen (User)
         if (ui->Arzt_rb->isChecked())
         {
-            //newUser = new Doctor(ui->vorname_le, ui->nachname_le, UserType::doctor, ui->user_le, );
+            type = UserType::doctor;
         }
         else if (ui->Patient_rb->isChecked())
         {
-            newUser = new Patient(ui->vorname_le->text(), ui->nachname_le->text(), UserType::patient, ui->user_le->text(), ui->geburtstag_le->text());
+            type = UserType::patient;
+        }
+        else if (ui->Angehoeriger_rb->isChecked())
+        {
+            type = UserType::member;
+        }
+
+        if(type != UserType::inValidUser)
+        {
+            newUser = new User(ui->vorname_le->text(), ui->nachname_le->text(), type, ui->user_le->text());
 
             if(m_database->isUserAvailable(ui->user_le->text()) == false)
             {
                 if(m_database->isUserCreated(newUser,ui->password_le->text()))
                 {
                     qDebug() << "successful created";
-                }
-                else
-                {
-                    msgBox.setWindowTitle("Fehler beim Erstellen des Accounts");
-                    msgBox.setText("Die E-Mail Adresse ist leider schon vergeben!");
-                    msgBox.setStandardButtons(QMessageBox::Ok);
-                    msgBox.show();
+                    //Dieses Fenster schließen
+                    this->close(); //zuvor muss das neue Profil in der Datenbank gespeichert werden
                 }
             }
+            else
+            {
+                msgBox.setWindowTitle("Fehler beim Erstellen des Accounts");
+                msgBox.setText("Die E-Mail Adresse ist leider schon vergeben!");
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.show();
+            }
         }
-        else if (ui->Angehoeriger_rb->isChecked())
-        {
-            //newUser = new Member(ui->vorname_le->text(), ui->nachname_le->text(), UserType::member,...... PATIENT RELEASE?!?! );
-        }
-
-        //Dieses Fenster schließen
-        this->close(); //zuvor muss das neue Profil in der Datenbank gespeichert werden
     }
     else
     {

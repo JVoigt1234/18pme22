@@ -20,14 +20,15 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(DatabaseController *database,QWidget *parent = nullptr);
     ~MainWindow();
-     //QTimer m_timer;
+
+public slots:
+
+    void on_timeout();
 
 private slots:
     void on_anmelden_btn_clicked();
 
     void on_registrieren_btn_clicked();
-
-    void on_login_btn_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -36,6 +37,7 @@ private:
 
     RegistrationWindow* m_registrationwindow;
     UserWindow* m_userwindow;
+    QTimer* m_timer;
 };
 
 #endif // MAINWINDOW_H

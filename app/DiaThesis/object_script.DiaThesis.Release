@@ -1,0 +1,14 @@
+INPUT(
+./release\databasecontroller.o
+./release\mainwindow.o
+./release\qcustomplot.o
+./release\registrationwindow.o
+./release\userwindow.o
+./release\workwindow.o
+./release\main.o
+./release\moc_mainwindow.o
+./release\moc_qcustomplot.o
+./release\moc_registrationwindow.o
+./release\moc_userwindow.o
+./release\moc_workwindow.o
+);

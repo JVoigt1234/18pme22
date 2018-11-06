@@ -1,0 +1,12 @@
+﻿{
+  "patientName": "Dr. Herbert/Mueller",
+  "institutionName": "Universitätsklinikum Heidelberg",
+  "email": "h.mueller@uniklinikumheidelberg.de",
+  "phone": "06221 56-0",
+  "address": {
+    "street": "Im Neuenheimer Feld 672",
+    "city": "Heidelberg",
+    "country": "Ger",
+    "postalCode": "69120"
+  }
+}

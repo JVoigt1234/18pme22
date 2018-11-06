@@ -48,3 +48,6 @@ DiaThesis/release
 /documentation/CODING Standard.pdf
 *.user
 *.user
+DiaThesis/object_script.DiaThesis.Release
+DiaThesis/object_script.DiaThesis.Debug
+DiaThesis/.qmake.stash

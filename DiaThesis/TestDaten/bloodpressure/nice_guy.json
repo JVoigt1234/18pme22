@@ -1,0 +1,722 @@
+[
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:00:10",
+    "sys": 129,
+    "dia": 79
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:00:25",
+    "sys": 133,
+    "dia": 80
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:00:40",
+    "sys": 142,
+    "dia": 86
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:00:55",
+    "sys": 141,
+    "dia": 84
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:01:10",
+    "sys": 137,
+    "dia": 81
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:01:25",
+    "sys": 115,
+    "dia": 59
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:01:40",
+    "sys": 120,
+    "dia": 60
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:01:55",
+    "sys": 105,
+    "dia": 58
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:02:10",
+    "sys": 118,
+    "dia": 75
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:02:25",
+    "sys": 120,
+    "dia": 60
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:02:40",
+    "sys": 134,
+    "dia": 85
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:02:55",
+    "sys": 125,
+    "dia": 67
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:03:10",
+    "sys": 138,
+    "dia": 75
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:03:25",
+    "sys": 138,
+    "dia": 75
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:03:40",
+    "sys": 117,
+    "dia": 70
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:03:55",
+    "sys": 130,
+    "dia": 60
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:04:10",
+    "sys": 109,
+    "dia": 55
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:04:25",
+    "sys": 110,
+    "dia": 49
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:04:40",
+    "sys": 108,
+    "dia": 55
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:04:55",
+    "sys": 113,
+    "dia": 48
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:05:10",
+    "sys": 103,
+    "dia": 49
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:05:25",
+    "sys": 120,
+    "dia": 40
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:05:40",
+    "sys": 112,
+    "dia": 62
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:05:55",
+    "sys": 124,
+    "dia": 52
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:06:10",
+    "sys": 102,
+    "dia": 53
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:06:25",
+    "sys": 118,
+    "dia": 58
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:06:40",
+    "sys": 115,
+    "dia": 54
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:06:55",
+    "sys": 113,
+    "dia": 56
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:07:10",
+    "sys": 110,
+    "dia": 58
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:07:25",
+    "sys": 140,
+    "dia": 72
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:07:40",
+    "sys": 134,
+    "dia": 70
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:07:55",
+    "sys": 120,
+    "dia": 80
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:08:10",
+    "sys": 150,
+    "dia": 80
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:08:25",
+    "sys": 120,
+    "dia": 110
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:08:40",
+    "sys": 160,
+    "dia": 60
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:08:55",
+    "sys": 125,
+    "dia": 60
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:09:10",
+    "sys": 129,
+    "dia": 79
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:09:25",
+    "sys": 134,
+    "dia": 72
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:09:40",
+    "dia": 79,
+    "sys": 129
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:09:55",
+    "dia": 80,
+    "sys": 133
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:10:10",
+    "dia": 86,
+    "sys": 142
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:10:25",
+    "dia": 84,
+    "sys": 141
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:10:40",
+    "dia": 81,
+    "sys": 137
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:10:55",
+    "dia": 59,
+    "sys": 115
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:11:10",
+    "dia": 60,
+    "sys": 120
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:11:25",
+    "dia": 58,
+    "sys": 105
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:11:40",
+    "dia": 75,
+    "sys": 118
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:11:55",
+    "dia": 60,
+    "sys": 120
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:12:10",
+    "dia": 85,
+    "sys": 134
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:12:25",
+    "dia": 67,
+    "sys": 125
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:12:40",
+    "dia": 75,
+    "sys": 138
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:12:55",
+    "dia": 75,
+    "sys": 138
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:13:10",
+    "dia": 70,
+    "sys": 117
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:13:25",
+    "dia": 60,
+    "sys": 130
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:13:40",
+    "dia": 55,
+    "sys": 109
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:13:55",
+    "dia": 49,
+    "sys": 110
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:14:10",
+    "dia": 55,
+    "sys": 108
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:14:25",
+    "dia": 48,
+    "sys": 113
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:14:40",
+    "dia": 49,
+    "sys": 103
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:14:55",
+    "dia": 40,
+    "sys": 120
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:15:10",
+    "dia": 62,
+    "sys": 112
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:15:25",
+    "dia": 52,
+    "sys": 124
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:15:40",
+    "dia": 53,
+    "sys": 102
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:15:55",
+    "dia": 58,
+    "sys": 118
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:16:10",
+    "dia": 54,
+    "sys": 115
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:16:25",
+    "dia": 56,
+    "sys": 113
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:16:40",
+    "dia": 58,
+    "sys": 110
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:16:55",
+    "dia": 72,
+    "sys": 140
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:17:10",
+    "dia": 70,
+    "sys": 134
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:17:25",
+    "dia": 80,
+    "sys": 120
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:17:40",
+    "dia": 80,
+    "sys": 150
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:17:55",
+    "dia": 110,
+    "sys": 120
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:18:10",
+    "dia": 60,
+    "sys": 160
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:18:25",
+    "dia": 60,
+    "sys": 125
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:18:40",
+    "dia": 79,
+    "sys": 129
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:18:55",
+    "dia": 72,
+    "sys": 134
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:19:10",
+    "dia": 79,
+    "sys": 129
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:19:25",
+    "dia": 80,
+    "sys": 133
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:19:40",
+    "dia": 86,
+    "sys": 142
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:19:55",
+    "dia": 84,
+    "sys": 141
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:20:10",
+    "dia": 81,
+    "sys": 137
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:20:25",
+    "dia": 59,
+    "sys": 115
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:20:40",
+    "dia": 60,
+    "sys": 120
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:20:55",
+    "dia": 58,
+    "sys": 105
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:21:10",
+    "dia": 75,
+    "sys": 118
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:21:25",
+    "dia": 60,
+    "sys": 120
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:21:40",
+    "dia": 85,
+    "sys": 134
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:21:55",
+    "dia": 67,
+    "sys": 125
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:22:10",
+    "dia": 75,
+    "sys": 138
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:22:25",
+    "dia": 70,
+    "sys": 117
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:22:40",
+    "dia": 60,
+    "sys": 130
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:22:55",
+    "dia": 55,
+    "sys": 109
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:23:10",
+    "dia": 49,
+    "sys": 110
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:23:25",
+    "dia": 55,
+    "sys": 108
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:23:40",
+    "dia": 48,
+    "sys": 113
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:23:55",
+    "dia": 49,
+    "sys": 103
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:24:10",
+    "dia": 40,
+    "sys": 120
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:24:25",
+    "dia": 62,
+    "sys": 112
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:24:40",
+    "dia": 52,
+    "sys": 124
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:24:55",
+    "dia": 53,
+    "sys": 102
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:25:10",
+    "dia": 58,
+    "sys": 118
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:25:25",
+    "dia": 54,
+    "sys": 115
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:25:40",
+    "dia": 56,
+    "sys": 113
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:25:55",
+    "dia": 58,
+    "sys": 110
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:26:10",
+    "dia": 72,
+    "sys": 140
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:26:25",
+    "dia": 70,
+    "sys": 134
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:26:40",
+    "dia": 80,
+    "sys": 120
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:26:55",
+    "dia": 80,
+    "sys": 150
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:27:10",
+    "dia": 110,
+    "sys": 120
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:27:25",
+    "dia": 60,
+    "sys": 160
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:27:40",
+    "dia": 60,
+    "sys": 125
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:27:55",
+    "dia": 79,
+    "sys": 129
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:28:10",
+    "dia": 72,
+    "sys": 134
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:28:25",
+    "dia": 79,
+    "sys": 129
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:28:40",
+    "dia": 80,
+    "sys": 133
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:28:55",
+    "dia": 86,
+    "sys": 142
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:29:10",
+    "dia": 84,
+    "sys": 141
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:29:25",
+    "dia": 81,
+    "sys": 137
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:29:40",
+    "dia": 59,
+    "sys": 115
+  },
+  {
+    "userid": "guy@men.de",
+    "timestamp": "2018-10-10 15:29:55",
+    "dia": 60,
+    "sys": 120
+  }
+]

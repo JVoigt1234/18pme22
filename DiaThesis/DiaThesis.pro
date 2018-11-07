@@ -7,6 +7,7 @@
 QT       += core gui
 QT       += sql
 QT       += positioning
+QT       += winextras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
@@ -60,9 +61,20 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 DISTFILES += \
-    Pictures/Logo_DiaThesis.png \
-    Pictures/Logo_DiaThesis.png \
-    TestDaten/Patient.json \
-    TestDaten/measurment/datasingle.json \
-    TestDaten/measurment/datenarray.json
+    Pictures/Logo_DiaThesis.png
+
+target.files += \
+            $${_PRO_FILE_PWD_}/Scripts/Database/Libs/libeay32.dll \
+            $${_PRO_FILE_PWD_}/Scripts/Database/Libs/libiconv-2.dll \
+            $${_PRO_FILE_PWD_}/Scripts/Database/Libs/libintl-8.dll \
+            $${_PRO_FILE_PWD_}/Scripts/Database/Libs/libpq.dll \
+            $${_PRO_FILE_PWD_}/Scripts/Database/Libs/ssleay32.dll
+
+CONFIG(debug, debug|release) {
+    target.path += $${OUT_PWD}/$${DESTDIR}/debug
+} else {
+    target.path += $${OUT_PWD}/$${DESTDIR}/release
+}
+
+INSTALLS += target
 

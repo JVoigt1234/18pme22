@@ -1,15 +1,17 @@
 #include "Scripts/UI/registrationwindow.h"
 #include "ui_registrationwindow.h"
 #include <QChar>
-#include "Scripts/Database/Databasetyps.h"
-#include "Scripts/Database/databasecontroller.h"
 #include <QMessageBox>
 #include <QDate>
 
-RegistrationWindow::RegistrationWindow(QWidget *parent) :
+
+RegistrationWindow::RegistrationWindow(DatabaseController* database, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::RegistrationWindow)
 {
+    m_database = database;
+
+    setWindowIcon(QIcon("Pictures/Logo_DiaThesis.png"));
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
 
@@ -136,38 +138,42 @@ void RegistrationWindow::on_accountErstellen_btn_clicked()
     {
         //Erst dann neuen Benutzer anlegen und in die Datenbank schreiben
         User* newUser;
+        UserType type = UserType::inValidUser;
         //Benutzerprofil anlegen (User)
         if (ui->Arzt_rb->isChecked())
         {
-            //Neuen Arzt erstellen
-            //newUser = new Doctor(ui->vorname_le, ui->nachname_le, UserType::doctor, ui->user_le, );
+            type = UserType::doctor;
         }
         else if (ui->Patient_rb->isChecked())
         {
-            //Neuen Patient erstellen
-            newUser = new Patient(ui->vorname_le->text(), ui->nachname_le->text(), UserType::patient, ui->user_le->text(), ui->geburtstag_le->text());
+            type = UserType::patient;
         }
         else if (ui->Angehoeriger_rb->isChecked())
         {
-            //Neuen Angehörigen erstellen
-            //newUser = new Member(ui->vorname_le->text(), ui->nachname_le->text(), UserType::member,...... PATIENT RELEASE?!?! );
+            type = UserType::member;
         }
 
-        //Hier dann in Datenbank abspeichern
-        DatabaseController data("db.inftech.hs-mannheim.de");
-        if(data.isUserCreated(newUser, ui->password_le->text()) == true)
+        if(type != UserType::inValidUser)
         {
-            //Nutzer ist angelegt
+            newUser = new User(ui->vorname_le->text(), ui->nachname_le->text(), type, ui->user_le->text());
+
+            if(m_database->isUserAvailable(ui->user_le->text()) == false)
+            {
+                if(m_database->isUserCreated(newUser,ui->password_le->text()))
+                {
+                    qDebug() << "successful created";
+                    //Dieses Fenster schließen
+                    this->close(); //zuvor muss das neue Profil in der Datenbank gespeichert werden
+                }
+            }
+            else
+            {
+                msgBox.setWindowTitle("Fehler beim Erstellen des Accounts");
+                msgBox.setText("Die E-Mail Adresse ist leider schon vergeben!");
+                msgBox.setStandardButtons(QMessageBox::Ok);
+                msgBox.show();
+            }
         }
-
-        else
-        {
-            //Benutzer ist vorhanden oder Exception wurde geworfen k.Pl
-        }
-
-
-        //Dieses Fenster schließen
-        this->close(); //zuvor muss das neue Profil in der Datenbank gespeichert werden
     }
     else
     {
